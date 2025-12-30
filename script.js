@@ -1,79 +1,70 @@
-let questions = [];
-let index = 0;
-let coins = 0;
-let time = 10;
-let timer;
-let answered = false;
+const allQuestions = [
+  {q:"Capital of India?",o:["Delhi","Mumbai","Chennai","Kolkata"],a:0},
+  {q:"Father of Nation?",o:["Gandhi","Nehru","Patel","Bose"],a:0},
+  {q:"National Animal of India?",o:["Lion","Tiger","Elephant","Leopard"],a:1},
+  {q:"Who wrote National Anthem?",o:["Tagore","Bankim","Premchand","Nehru"],a:0},
+  {q:"Taj Mahal is in?",o:["Agra","Delhi","Jaipur","Bhopal"],a:0}
+];
 
-/* ELEMENTS */
-const qEl = document.getElementById("question");
-const optEl = document.getElementById("options");
-const bar = document.getElementById("bar");
-const timeText = document.getElementById("timeText");
-const coinsEl = document.getElementById("coins");
-
-/* FETCH QUESTIONS */
-async function loadFromAPI(){
-  try{
-    const res = await fetch("https://opentdb.com/api.php?amount=10&category=9&type=multiple");
-    const data = await res.json();
-
-    questions = data.results.map(q => {
-      const options = [...q.incorrect_answers];
-      const correctIndex = Math.floor(Math.random() * 4);
-      options.splice(correctIndex, 0, q.correct_answer);
-
-      return {
-        q: q.question.replace(/&quot;/g,'"'),
-        o: options,
-        a: correctIndex
-      };
-    });
-
-    index = 0;
-    loadQ();
-
-  }catch(e){
-    qEl.innerText = "Question load failed";
+function shuffle(arr){
+  for(let i=arr.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [arr[i],arr[j]]=[arr[j],arr[i]];
   }
 }
 
-/* LOAD QUESTION */
+let questions=[...allQuestions];
+shuffle(questions);
+
+let index=0;
+let coins=0;
+let time=10;
+let timer;
+let answered=false;
+
+const qEl=document.getElementById("question");
+const optEl=document.getElementById("options");
+const bar=document.getElementById("bar");
+const timeText=document.getElementById("timeText");
+const coinsEl=document.getElementById("coins");
+
+loadQ();
+
 function loadQ(){
   clearInterval(timer);
-  answered = false;
+  answered=false;
 
-  if(index >= questions.length){
-    loadFromAPI();
-    return;
+  if(index>=questions.length){
+    questions=[...allQuestions];
+    shuffle(questions);
+    index=0;
   }
 
-  const q = questions[index];
-  qEl.innerHTML = q.q;
-  optEl.innerHTML = "";
+  const q=questions[index];
+  qEl.innerText=q.q;
+  optEl.innerHTML="";
 
   q.o.forEach((text,i)=>{
-    const btn = document.createElement("button");
-    btn.innerHTML = text;
-    btn.onclick = ()=>selectAnswer(i);
+    const btn=document.createElement("button");
+    btn.innerText=text;
+    btn.onclick=()=>selectAnswer(i);
     optEl.appendChild(btn);
   });
 
   startTimer();
 }
 
-/* TIMER */
 function startTimer(){
-  time = 10;
-  bar.style.width = "100%";
-  timeText.innerText = "Time: 10s";
+  time=10;
+  bar.style.width="100%";
+  timeText.innerText="Time: 10s";
 
-  timer = setInterval(()=>{
+  timer=setInterval(()=>{
     time--;
-    bar.style.width = time*10 + "%";
-    timeText.innerText = "Time: " + time + "s";
+    bar.style.width=(time*10)+"%";
+    timeText.innerText="Time: "+time+"s";
 
-    if(time <= 0){
+    if(time<=0){
       clearInterval(timer);
       showCorrect();
       setTimeout(nextQ,1200);
@@ -81,20 +72,19 @@ function startTimer(){
   },1000);
 }
 
-/* ANSWER */
 function selectAnswer(i){
   if(answered) return;
-  answered = true;
+  answered=true;
   clearInterval(timer);
 
-  const q = questions[index];
-  const btns = optEl.children;
+  const q=questions[index];
+  const btns=optEl.children;
 
   btns[q.a].classList.add("correct");
 
-  if(i === q.a){
-    coins += 10;
-    coinsEl.innerText = coins;
+  if(i===q.a){
+    coins+=10;
+    coinsEl.innerText=coins;
   }else{
     btns[i].classList.add("wrong");
   }
@@ -102,16 +92,29 @@ function selectAnswer(i){
   setTimeout(nextQ,1200);
 }
 
-/* SHOW CORRECT */
 function showCorrect(){
   optEl.children[questions[index].a].classList.add("correct");
 }
 
-/* NEXT */
 function nextQ(){
   index++;
   loadQ();
 }
 
-/* START */
-loadFromAPI();
+function watchAd(){
+  navigator.vibrate?.(80);
+  coins+=20;
+  coinsEl.innerText=coins;
+  alert("🎉 Ad watched! +20 coins");
+}
+
+function withdrawCoins(){
+  navigator.vibrate?.([100,50,100]);
+  if(coins<100){
+    alert("❌ Minimum 100 coins required");
+  }else{
+    alert("✅ Withdraw request sent!");
+    coins=0;
+    coinsEl.innerText=coins;
+  }
+}
