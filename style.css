@@ -19,7 +19,7 @@ body {
   align-items: center;
 }
 
-/* APP CARD */
+/* APP */
 .app {
   width: 100%;
   max-width: 420px;
@@ -27,32 +27,28 @@ body {
   background: linear-gradient(180deg, #eef2ff, #dbe3ff);
   border-radius: 20px;
   padding: 20px;
-
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-
   box-shadow: 0 20px 40px rgba(0,0,0,0.3);
 }
 
 /* TITLE */
 h1 {
   text-align: center;
-  color: #1f2937;
 }
 
-/* TOP BAR */
+/* TOP */
 .top {
   display: flex;
   justify-content: space-between;
 }
 
 .top span {
-  background: #ffffff;
+  background: #fff;
   padding: 6px 12px;
   border-radius: 12px;
   font-weight: bold;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
 }
 
 /* TIMER */
@@ -64,7 +60,12 @@ h1 {
 #timerText {
   font-weight: bold;
   margin-bottom: 6px;
-  color: #111827;
+}
+
+/* 🔥 RED BLINK WHEN TIME LOW */
+#timerText.danger {
+  color: #ef4444;
+  animation: blink 1s infinite;
 }
 
 .timer-wrap {
@@ -95,32 +96,11 @@ h1 {
   width: 100%;
   padding: 15px;
   margin: 6px 0;
-  font-size: 15px;
   border: none;
   border-radius: 14px;
-  cursor: pointer;
   background: linear-gradient(135deg, #6d83f2, #5b6de0);
-  color: white;
-}
-
-/* AD BOX */
-.ad-box {
-  margin-top: 10px;
-  border: 2px dashed #9aa5ff;
-  padding: 14px;
-  text-align: center;
-  border-radius: 14px;
-  background: rgba(255,255,255,0.7);
-}
-
-.ad-box button {
-  margin-top: 8px;
-  padding: 10px;
-  border-radius: 10px;
-  border: none;
-  background: #4f46e5;
-  color: white;
-  font-weight: bold;
+  color: #fff;
+  font-size: 15px;
 }
 
 /* CORRECT / WRONG */
@@ -130,13 +110,28 @@ h1 {
 
 .wrong {
   background: linear-gradient(135deg, #ef4444, #b91c1c) !important;
-  animation: shake 0.4s;
 }
 
-@keyframes shake {
-  0% { transform: translateX(0); }
-  25% { transform: translateX(-6px); }
-  50% { transform: translateX(6px); }
-  75% { transform: translateX(-6px); }
-  100% { transform: translateX(0); }
+/* AD */
+.ad-box {
+  border: 2px dashed #9aa5ff;
+  padding: 14px;
+  border-radius: 14px;
+  text-align: center;
+}
+
+.ad-box button {
+  margin-top: 8px;
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
+  background: #4f46e5;
+  color: white;
+}
+
+/* BLINK ANIMATION */
+@keyframes blink {
+  0% { opacity: 1; }
+  50% { opacity: 0.2; }
+  100% { opacity: 1; }
 }
