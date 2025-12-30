@@ -5,15 +5,25 @@ let timer = null;
 let timeLeft = 10;
 let seenQuestions = new Set();
 
+/* DOM */
+const questionEl = document.getElementById("question");
+const A = document.getElementById("A");
+const B = document.getElementById("B");
+const C = document.getElementById("C");
+const D = document.getElementById("D");
+const coinsEl = document.getElementById("coins");
+const levelEl = document.getElementById("level");
+const timerText = document.getElementById("timerText");
+const timerBar = document.getElementById("timerBar");
+
 /* API */
 function apiURL(){
-  return "https://opentdb.com/api.php?amount=10&type=multiple&ts=" + Date.now();
+  return "https://opentdb.com/api.php?amount=10&type=multiple&ts="+Date.now();
 }
 
-/* Helpers */
 function decodeHTML(t){
-  const e = document.createElement("textarea");
-  e.innerHTML = t;
+  const e=document.createElement("textarea");
+  e.innerHTML=t;
   return e.value;
 }
 
@@ -24,43 +34,51 @@ function shuffle(a){
   }
 }
 
-/* Load Questions */
+/* LOAD */
 function loadFromAPI(){
   fetch(apiURL()).then(r=>r.json()).then(d=>{
-    const fresh=[];
+    quiz=[];
     d.results.forEach(q=>{
-      const text=decodeHTML(q.question);
-      if(seenQuestions.has(text)) return;
-      seenQuestions.add(text);
+      const qt=decodeHTML(q.question);
+      if(seenQuestions.has(qt)) return;
+      seenQuestions.add(qt);
 
-      const opts=[q.correct_answer,...q.incorrect_answers].map(decodeHTML);
+      const opts=[decodeHTML(q.correct_answer),...q.incorrect_answers.map(decodeHTML)];
       shuffle(opts);
-      const correctKey=["A","B","C","D"][opts.indexOf(decodeHTML(q.correct_answer))];
 
-      fresh.push({
-        q:text,
+      quiz.push({
+        q:qt,
         options:{A:opts[0],B:opts[1],C:opts[2],D:opts[3]},
-        ans:correctKey,
-        level:"Online",
-        reward:10
+        ans:["A","B","C","D"][opts.indexOf(decodeHTML(q.correct_answer))],
+        reward:10,
+        level:"Online"
       });
     });
-    if(!fresh.length){ loadFromAPI(); return; }
-    quiz=fresh; index=0; loadQuestion();
+    index=0;
+    loadQuestion();
   });
 }
 
-/* Timer */
+/* ⏱️ TIMER WITH DANGER MODE */
 function startTimer(){
   stopTimer();
-  timeLeft = 10;
-  timerText.innerText = "Time: 10s";
-  timerBar.style.width = "100%";
+  timeLeft=10;
+  timerText.innerText="Time: 10s";
+  timerText.classList.remove("danger");
+  timerBar.style.width="100%";
 
-  timer = setInterval(()=>{
+  timer=setInterval(()=>{
     timeLeft--;
-    timerText.innerText = "Time: " + timeLeft + "s";
-    timerBar.style.width = (timeLeft/10*100) + "%";
+    timerText.innerText="Time: "+timeLeft+"s";
+    timerBar.style.width=(timeLeft/10*100)+"%";
+
+    /* 🔴 LAST 3 SEC ALERT */
+    if(timeLeft<=3){
+      timerText.classList.add("danger");
+      if(navigator.vibrate){
+        navigator.vibrate(200);
+      }
+    }
 
     if(timeLeft<=0){
       stopTimer();
@@ -77,33 +95,34 @@ function stopTimer(){
   }
 }
 
-/* Load Question */
+/* LOAD QUESTION */
 function loadQuestion(){
-  if(index>=quiz.length){ loadFromAPI(); return; }
+  if(index>=quiz.length){
+    loadFromAPI();
+    return;
+  }
   const q=quiz[index];
-  question.innerText=q.q;
+  questionEl.innerText=q.q;
   A.innerText=q.options.A;
   B.innerText=q.options.B;
   C.innerText=q.options.C;
   D.innerText=q.options.D;
-  level.innerText="Level: "+q.level;
+  levelEl.innerText="Level: "+q.level;
   resetButtons();
   startTimer();
 }
 
 function resetButtons(){
-  ["A","B","C","D"].forEach(id=>{
-    document.getElementById(id).classList.remove("correct","wrong");
-  });
+  [A,B,C,D].forEach(b=>b.classList.remove("correct","wrong"));
 }
 
-/* Answer */
-function checkAnswer(option){
+/* ANSWER */
+function checkAnswer(o){
   stopTimer();
-  const btn=document.getElementById(option);
   resetButtons();
+  const btn=document.getElementById(o);
 
-  if(option===quiz[index].ans){
+  if(o===quiz[index].ans){
     btn.classList.add("correct");
     coins+=quiz[index].reward;
     coinsEl.innerText="Coins: "+coins;
@@ -117,12 +136,11 @@ function checkAnswer(option){
   },700);
 }
 
-/* Ad */
+/* AD */
 function watchAd(){
   coins+=20;
   coinsEl.innerText="Coins: "+coins;
   alert("+20 Coins");
 }
 
-const coinsEl=document.getElementById("coins");
 loadFromAPI();
