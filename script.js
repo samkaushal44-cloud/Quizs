@@ -2,18 +2,21 @@ let coins = 0;
 let index = 0;
 let quiz = [];
 let timer = null;
-let timeLeft = 10; // ⏱️ seconds
+let timeLeft = 10;
 let seenQuestions = new Set();
 
-/* ===== API with cache-bust ===== */
+/* API */
 function apiURL(){
   return "https://opentdb.com/api.php?amount=10&type=multiple&ts=" + Date.now();
 }
 
-/* ===== helpers ===== */
+/* Helpers */
 function decodeHTML(t){
-  const e=document.createElement("textarea"); e.innerHTML=t; return e.value;
+  const e = document.createElement("textarea");
+  e.innerHTML = t;
+  return e.value;
 }
+
 function shuffle(a){
   for(let i=a.length-1;i>0;i--){
     const j=Math.floor(Math.random()*(i+1));
@@ -21,7 +24,7 @@ function shuffle(a){
   }
 }
 
-/* ===== fetch questions ===== */
+/* Load Questions */
 function loadFromAPI(){
   fetch(apiURL()).then(r=>r.json()).then(d=>{
     const fresh=[];
@@ -47,39 +50,36 @@ function loadFromAPI(){
   });
 }
 
-/* ===== timer UI ===== */
-function ensureTimerUI(){
-  if(document.querySelector(".timer-wrap")) return;
-  const wrap=document.createElement("div");
-  wrap.className="timer-wrap";
-  wrap.innerHTML='<div class="timer-bar" id="timerBar"></div>';
-  document.querySelector(".app").insertBefore(
-    wrap, document.getElementById("question")
-  );
-}
-
+/* Timer */
 function startTimer(){
   stopTimer();
-  timeLeft=10;
-  const bar=document.getElementById("timerBar");
-  bar.style.width="100%";
-  timer=setInterval(()=>{
+  timeLeft = 10;
+  timerText.innerText = "Time: 10s";
+  timerBar.style.width = "100%";
+
+  timer = setInterval(()=>{
     timeLeft--;
-    bar.style.width=(timeLeft/10*100)+"%";
+    timerText.innerText = "Time: " + timeLeft + "s";
+    timerBar.style.width = (timeLeft/10*100) + "%";
+
     if(timeLeft<=0){
       stopTimer();
-      timeUp();
+      index++;
+      loadQuestion();
     }
   },1000);
 }
+
 function stopTimer(){
-  if(timer){ clearInterval(timer); timer=null; }
+  if(timer){
+    clearInterval(timer);
+    timer=null;
+  }
 }
 
-/* ===== load question ===== */
+/* Load Question */
 function loadQuestion(){
   if(index>=quiz.length){ loadFromAPI(); return; }
-  ensureTimerUI();
   const q=quiz[index];
   question.innerText=q.q;
   A.innerText=q.options.A;
@@ -97,37 +97,31 @@ function resetButtons(){
   });
 }
 
-/* ===== answer ===== */
+/* Answer */
 function checkAnswer(option){
   stopTimer();
   const btn=document.getElementById(option);
-  const app=document.querySelector(".app");
-  resetButtons(); void btn.offsetWidth;
+  resetButtons();
 
   if(option===quiz[index].ans){
     btn.classList.add("correct");
     coins+=quiz[index].reward;
     coinsEl.innerText="Coins: "+coins;
-    app.classList.add("celebrate");
-    setTimeout(()=>app.classList.remove("celebrate"),500);
   }else{
     btn.classList.add("wrong");
   }
-  setTimeout(()=>{ index++; loadQuestion(); },700);
+
+  setTimeout(()=>{
+    index++;
+    loadQuestion();
+  },700);
 }
 
-/* ===== time up ===== */
-function timeUp(){
-  const app=document.querySelector(".app");
-  app.classList.add("celebrate");
-  setTimeout(()=>app.classList.remove("celebrate"),400);
-  index++;
-  loadQuestion();
-}
-
-/* ===== ad ===== */
+/* Ad */
 function watchAd(){
-  coins+=20; coinsEl.innerText="Coins: "+coins; alert("+20 Coins");
+  coins+=20;
+  coinsEl.innerText="Coins: "+coins;
+  alert("+20 Coins");
 }
 
 const coinsEl=document.getElementById("coins");
