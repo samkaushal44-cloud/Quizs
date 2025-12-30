@@ -1,42 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Quiz Jeeto</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
 <div class="app">
-  <h1>Quiz Jeeto</h1>
 
-  <div class="top">
-    <span id="coins">Coins: 0</span>
-    <span id="level">Level: Online</span>
-  </div>
-
-  <!-- ⏱️ TIMER -->
-  <div class="timer-box">
-    <div id="timerText">Time: 10s</div>
-    <div class="timer-wrap">
-      <div class="timer-bar" id="timerBar"></div>
+  <!-- BANNER AD -->
+  <div class="banner-ad">
+    <span>🔔 Sponsored</span>
+    <div class="banner-box" onclick="alert('Ad Clicked!')">
+      <p>🔥 Banner Ad</p>
+      <small>320 × 50</small>
     </div>
   </div>
 
-  <h2 id="question">Loading...</h2>
+  <h1>Quiz Jeeto</h1>
+
+  <div class="top">
+    <div class="badge" id="coins">Coins: 0</div>
+    <div class="badge" id="level">Level: GK / HISTORY</div>
+  </div>
+
+  <div class="timer">
+    Time: <span id="time">10</span>s
+    <div class="progress">
+      <div class="progress-bar" id="progress"></div>
+    </div>
+  </div>
+
+  <div id="question">Loading question...</div>
 
   <div class="options">
-    <button id="A" onclick="checkAnswer('A')"></button>
-    <button id="B" onclick="checkAnswer('B')"></button>
-    <button id="C" onclick="checkAnswer('C')"></button>
-    <button id="D" onclick="checkAnswer('D')"></button>
+    <button class="option" onclick="checkAnswer(0)" id="opt0"></button>
+    <button class="option" onclick="checkAnswer(1)" id="opt1"></button>
+    <button class="option" onclick="checkAnswer(2)" id="opt2"></button>
+    <button class="option" onclick="checkAnswer(3)" id="opt3"></button>
   </div>
 
   <div class="ad-box">
-    <p>📺 Watch Ad & Get Coins</p>
-    <button onclick="watchAd()">Watch Ad</button>
+    <span>📺 Watch Ad & Get Coins</span>
+    <button onclick="alert('Ad Playing…')">Watch Ad</button>
   </div>
+
 </div>
 
 <script src="script.js"></script>
