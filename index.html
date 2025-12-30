@@ -1,49 +1,27 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Quiz Jeeto</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body>
+let answered = false;
 
-<div class="app">
-  <div class="card">
+function selectAnswer(i) {
+  if (answered) return;   // LOCK
+  answered = true;
+  clearInterval(timer);
 
-    <h1>Quiz Jeeto</h1>
+  const correct = questions[index].answer;
 
-    <div class="top-info">
-      <div class="badge" id="coins">Coins: 0</div>
-      <div class="badge" id="level">Level: GK / HISTORY</div>
-    </div>
+  // disable all buttons
+  optBtns.forEach(btn => btn.disabled = true);
 
-    <div class="timer">Time: <span id="time">10</span>s</div>
-    <div class="progress">
-      <div id="progress-bar"></div>
-    </div>
+  if (i === correct) {
+    optBtns[i].classList.add("correct");
+    coins += 10;
+    coinEl.innerText = "Coins: " + coins;
+  } else {
+    optBtns[i].classList.add("wrong");
+    optBtns[correct].classList.add("correct");
+  }
 
-    <div id="question">Loading...</div>
-
-    <div id="options">
-      <button class="option">Option 1</button>
-      <button class="option">Option 2</button>
-      <button class="option">Option 3</button>
-      <button class="option">Option 4</button>
-    </div>
-
-    <div class="withdraw">
-      💰 Minimum Withdraw: <b>100 Coins</b>
-      <button>Withdraw</button>
-    </div>
-
-  </div>
-</div>
-
-<div class="banner-ad">
-  🔥 Banner Ad 320 × 50
-</div>
-
-<script src="script.js"></script>
-</body>
-</html>
+  // ⏳ WAIT 2 SECONDS THEN NEXT
+  setTimeout(() => {
+    index++;
+    loadQuestion();
+  }, 2000);
+}
