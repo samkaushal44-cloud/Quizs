@@ -1,8 +1,7 @@
 let coins = 0;
 let index = 0;
+let time = 10;
 let timer;
-let timeLeft = 10;
-let answered = false;
 
 const questions = [
   {
@@ -16,83 +15,69 @@ const questions = [
     o: ["Gandhi","Nehru","Patel","Bose"],
     a: "Nehru",
     level: "History"
-  },
-  {
-    q: "Who wrote Ramayana?",
-    o: ["Valmiki","Tulsidas","Ved Vyas","Kalidas"],
-    a: "Valmiki",
-    level: "History"
   }
 ];
 
 const qEl = document.getElementById("question");
-const opts = document.querySelectorAll(".option");
+const optEls = document.querySelectorAll(".option");
 const timeEl = document.getElementById("time");
-const bar = document.querySelector(".progress-bar");
 const coinsEl = document.getElementById("coins");
 const levelEl = document.getElementById("level");
+const progress = document.getElementById("progress");
 
 function loadQuestion() {
-  answered = false;
   clearInterval(timer);
+  time = 10;
+  timeEl.innerText = time;
+  progress.style.width = "100%";
 
   const q = questions[index % questions.length];
   qEl.innerText = q.q;
   levelEl.innerText = q.level;
 
-  opts.forEach((b,i)=>{
-    b.innerText = q.o[i];
-    b.className = "option";
-    b.disabled = false;
+  optEls.forEach((btn,i)=>{
+    btn.innerText = q.o[i];
+    btn.className = "option";
+    btn.disabled = false;
+    btn.onclick = () => checkAnswer(btn.innerText);
   });
 
-  startTimer(q.a);
-}
-
-function startTimer(correct) {
-  timeLeft = 10;
-  timeEl.innerText = timeLeft+"s";
-  bar.style.width = "100%";
-
   timer = setInterval(()=>{
-    timeLeft--;
-    timeEl.innerText = timeLeft+"s";
-    bar.style.width = (timeLeft*10)+"%";
+    time--;
+    timeEl.innerText = time;
+    progress.style.width = (time*10)+"%";
 
-    if(timeLeft<=0){
+    if(time<=0){
       clearInterval(timer);
-      showCorrect(correct);
+      showCorrect(q.a);
       next();
     }
   },1000);
 }
 
-opts.forEach(btn=>{
-  btn.onclick = ()=>{
-    if(answered) return;
-    answered = true;
-    clearInterval(timer);
+function checkAnswer(ans){
+  clearInterval(timer);
+  const correct = questions[index % questions.length].a;
 
-    const correct = questions[index % questions.length].a;
+  optEls.forEach(b=>{
+    b.disabled = true;
+    if(b.innerText===correct) b.classList.add("correct");
+  });
 
-    opts.forEach(b=>{
-      b.disabled = true;
-      if(b.innerText===correct) b.classList.add("correct");
+  if(ans===correct){
+    coins += 10;
+    coinsEl.innerText = coins;
+  } else {
+    optEls.forEach(b=>{
+      if(b.innerText===ans) b.classList.add("wrong");
     });
+  }
 
-    if(btn.innerText!==correct){
-      btn.classList.add("wrong");
-    } else {
-      coins+=10;
-      coinsEl.innerText=coins;
-    }
-
-    next();
-  };
-});
+  next();
+}
 
 function showCorrect(ans){
-  opts.forEach(b=>{
+  optEls.forEach(b=>{
     if(b.innerText===ans) b.classList.add("correct");
   });
 }
@@ -105,13 +90,8 @@ function next(){
 }
 
 function withdraw(){
-  if(coins<100){
-    alert("Minimum 100 coins needed");
-  }else{
-    alert("Withdraw request sent!");
-    coins=0;
-    coinsEl.innerText=coins;
-  }
+  if(coins < 100) alert("Minimum 100 coins required");
+  else alert("Withdraw request sent!");
 }
 
 loadQuestion();
