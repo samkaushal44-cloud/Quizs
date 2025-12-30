@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Quiz Jeeto – Play & Earn</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="app">
+  <h1>Quiz Jeeto</h1>
+
+  <p id="coins">Coins: 0</p>
+  <p id="level">Level: Easy</p>
+
+  <h2 id="question"></h2>
+
+  <button id="A" onclick="checkAnswer('A')"></button>
+  <button id="B" onclick="checkAnswer('B')"></button>
+  <button id="C" onclick="checkAnswer('C')"></button>
+  <button id="D" onclick="checkAnswer('D')"></button>
+
+  <div class="ad-box">
+    <p>📺 Watch Ad & Get Coins</p>
+    <button onclick="watchAd()">Watch Ad</button>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

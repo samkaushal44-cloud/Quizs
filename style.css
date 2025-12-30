@@ -1,0 +1,47 @@
+body {
+  font-family: Arial, sans-serif;
+  background: linear-gradient(to right, #667eea, #764ba2);
+  text-align: center;
+}
+
+.app {
+  background: #fff;
+  max-width: 360px;
+  margin: 25px auto;
+  padding: 20px;
+  border-radius: 12px;
+}
+
+h1 {
+  color: #333;
+}
+
+#coins, #level {
+  font-weight: bold;
+  margin: 5px 0;
+}
+
+button {
+  width: 100%;
+  padding: 12px;
+  margin: 6px 0;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  background: #667eea;
+  color: #fff;
+}
+
+button:hover {
+  background: #5a67d8;
+}
+
+.next {
+  background: #38a169;
+}
+
+.ad-box {
+  margin-top: 15px;
+  padding: 10px;
+  border: 2px dashed #aaa;
+}

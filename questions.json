@@ -1,0 +1,122 @@
+[
+  {
+    "level": "Easy",
+    "q": "India ka capital kya hai?",
+    "options": {
+      "A": "Delhi",
+      "B": "Mumbai",
+      "C": "Jaipur",
+      "D": "Chennai"
+    },
+    "ans": "A",
+    "reward": 5
+  },
+  {
+    "level": "Easy",
+    "q": "Bharat ka rashtriya phool kaun sa hai?",
+    "options": {
+      "A": "Gulab",
+      "B": "Kamal",
+      "C": "Surajmukhi",
+      "D": "Genda"
+    },
+    "ans": "B",
+    "reward": 5
+  },
+  {
+    "level": "Medium",
+    "q": "UNO ka headquarters kahan sthit hai?",
+    "options": {
+      "A": "Paris",
+      "B": "London",
+      "C": "New York",
+      "D": "Geneva"
+    },
+    "ans": "C",
+    "reward": 10
+  },
+  {
+    "level": "Medium",
+    "q": "Computer ka janak kise kaha jata hai?",
+    "options": {
+      "A": "Alan Turing",
+      "B": "Charles Babbage",
+      "C": "Bill Gates",
+      "D": "Steve Jobs"
+    },
+    "ans": "B",
+    "reward": 10
+  },
+  {
+    "level": "Hard",
+    "q": "Human body ki sabse badi gland kaun si hai?",
+    "options": {
+      "A": "Thyroid",
+      "B": "Pituitary",
+      "C": "Liver",
+      "D": "Pancreas"
+    },
+    "ans": "C",
+    "reward": 20
+  },
+  {
+    "level": "Hard",
+    "q": "Article 370 ka sambandh kis rajya se tha?",
+    "options": {
+      "A": "Punjab",
+      "B": "Himachal Pradesh",
+      "C": "Jammu & Kashmir",
+      "D": "Uttarakhand"
+    },
+    "ans": "C",
+    "reward": 20
+  },
+  {
+    "level": "Very Hard",
+    "q": "Light ka SI unit kya hai?",
+    "options": {
+      "A": "Watt",
+      "B": "Lux",
+      "C": "Candela",
+      "D": "Volt"
+    },
+    "ans": "C",
+    "reward": 25
+  },
+  {
+    "level": "Very Hard",
+    "q": "World Trade Organization (WTO) ka headquarters kahan hai?",
+    "options": {
+      "A": "New York",
+      "B": "Paris",
+      "C": "Geneva",
+      "D": "Rome"
+    },
+    "ans": "C",
+    "reward": 25
+  },
+  {
+    "level": "Extreme",
+    "q": "DNA ka full form kya hai?",
+    "options": {
+      "A": "Deoxyribo Nucleic Acid",
+      "B": "Deoxyribo Nuclear Acid",
+      "C": "Deoxyribo Natural Acid",
+      "D": "None"
+    },
+    "ans": "A",
+    "reward": 30
+  },
+  {
+    "level": "Extreme",
+    "q": "RBI ka headquarters kahan hai?",
+    "options": {
+      "A": "Delhi",
+      "B": "Kolkata",
+      "C": "Mumbai",
+      "D": "Chennai"
+    },
+    "ans": "C",
+    "reward": 30
+  }
+]
