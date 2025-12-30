@@ -1,186 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Quiz Jeeto</title>
-
-<style>
-body{
-  margin:0;
-  min-height:100vh;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  background:linear-gradient(135deg,#667eea,#764ba2);
-  font-family:Arial, sans-serif;
-}
-
-.app{
-  width:95%;
-  max-width:420px;
-  background:#f4f7ff;
-  border-radius:16px;
-  padding:20px;
-  box-shadow:0 10px 25px rgba(0,0,0,.2);
-}
-
-.top{
-  display:flex;
-  justify-content:space-between;
-  font-weight:bold;
-}
-
-.timer{
-  margin:12px 0;
-  height:8px;
-  background:#ddd;
-  border-radius:10px;
-  overflow:hidden;
-}
-
-.bar{
-  height:100%;
-  width:100%;
-  background:linear-gradient(90deg,#2ecc71,#f1c40f,#e74c3c);
-}
-
-h2{
-  text-align:center;
-}
-
-.options button{
-  width:100%;
-  margin:8px 0;
-  padding:14px;
-  border:none;
-  border-radius:10px;
-  background:#5f7cff;
-  color:#fff;
-  font-size:16px;
-}
-
-.options button.correct{background:#2ecc71;}
-.options button.wrong{background:#e74c3c;}
-
-.ads{
-  margin-top:15px;
-  padding:10px;
-  border:2px dashed #aaa;
-  text-align:center;
-  border-radius:10px;
-}
-
-.banner{
-  margin-top:10px;
-  padding:10px;
-  background:orange;
-  text-align:center;
-  border-radius:8px;
-  color:#000;
-}
-</style>
+<link rel="stylesheet" href="style.css">
 </head>
-
 <body>
+
 <div class="app">
-  <h2>Quiz Jeeto</h2>
+
+  <h1>Quiz Jeeto</h1>
 
   <div class="top">
-    <div id="coins">Coins: 0</div>
+    <div>Coins: <span id="coins">0</span></div>
     <div>Level: GK</div>
   </div>
 
-  <div class="timer"><div class="bar" id="bar"></div></div>
+  <div id="timeText">Time: 10s</div>
 
-  <h3 id="question">Loading...</h3>
-
-  <div class="options" id="options"></div>
-
-  <div class="ads">
-    📺 Watch Ad & Get Coins<br>
-    <button onclick="alert('Ad Played')">Watch Ad</button><br><br>
-    💰 Minimum Withdraw: 100 Coins<br>
-    <button onclick="alert('Withdraw Later')">Withdraw</button>
+  <div class="timer">
+    <div class="bar" id="bar"></div>
   </div>
 
-  <div class="banner">🔥 Banner Ad 320 × 50</div>
+  <h2 id="question">Loading...</h2>
+
+  <div id="options"></div>
+
+  <div class="ads-box">
+    📺 Watch Ad & Get Coins  
+    <button onclick="watchAd()">Watch Ad</button>
+  </div>
+
+  <div class="withdraw">
+    💰 Minimum Withdraw: 100 Coins  
+    <button onclick="withdraw()">Withdraw</button>
+  </div>
+
 </div>
 
-<script>
-const questions = [
- {q:"Capital of India?",o:["Delhi","Mumbai","Chennai","Kolkata"],a:0},
- {q:"Father of Nation?",o:["Gandhi","Nehru","Patel","Bose"],a:0},
- {q:"National Animal?",o:["Lion","Tiger","Elephant","Leopard"],a:1},
- {q:"Who wrote National Anthem?",o:["Tagore","Bankim","Premchand","Nehru"],a:0}
-];
+<div class="banner">🔥 Banner Ad 320 × 50</div>
 
-let index=0,coins=0,time=10,timer,answered=false;
-
-const qEl=document.getElementById("question");
-const oEl=document.getElementById("options");
-const bar=document.getElementById("bar");
-const coinsEl=document.getElementById("coins");
-
-function loadQ(){
- clearInterval(timer);
- answered=false;
- time=10;
- bar.style.width="100%";
-
- const q=questions[index];
- qEl.innerText=q.q;
- oEl.innerHTML="";
-
- q.o.forEach((opt,i)=>{
-  const b=document.createElement("button");
-  b.innerText=opt;
-  b.onclick=()=>check(i,b);
-  oEl.appendChild(b);
- });
-
- timer=setInterval(()=>{
-  time--;
-  bar.style.width=(time*10)+"%";
-  if(time<=0){
-    clearInterval(timer);
-    showCorrect();
-    setTimeout(nextQ,1200);
-  }
- },1000);
-}
-
-function check(i,btn){
- if(answered)return;
- answered=true;
- clearInterval(timer);
-
- const correct=questions[index].a;
- const btns=oEl.querySelectorAll("button");
-
- if(i===correct){
-  btn.classList.add("correct");
-  coins+=10;
-  coinsEl.innerText="Coins: "+coins;
- }else{
-  btn.classList.add("wrong");
-  btns[correct].classList.add("correct");
- }
- setTimeout(nextQ,1200);
-}
-
-function showCorrect(){
- const btns=oEl.querySelectorAll("button");
- btns[questions[index].a].classList.add("correct");
-}
-
-function nextQ(){
- index++;
- if(index>=questions.length)index=0;
- loadQ();
-}
-
-loadQ();
-</script>
+<script src="script.js"></script>
 </body>
 </html>
