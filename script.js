@@ -1,121 +1,117 @@
 let coins = 0;
 let index = 0;
-let answered = false;
 let timer;
 let timeLeft = 10;
+let answered = false;
 
-const coinsEl = document.getElementById("coins");
-const levelEl = document.getElementById("level");
-const qEl = document.getElementById("question");
-const timeEl = document.getElementById("time");
-const bar = document.querySelector(".progress-bar");
-const options = document.querySelectorAll(".option");
-
-/* 🔁 SAFE INDIA GK QUESTIONS (fallback) */
-const fallbackQuestions = [
+const questions = [
   {
     q: "Capital of India?",
-    options: ["Delhi", "Mumbai", "Chennai", "Kolkata"],
-    answer: "Delhi",
+    o: ["Delhi","Mumbai","Chennai","Kolkata"],
+    a: "Delhi",
     level: "GK"
   },
   {
-    q: "First Prime Minister of India?",
-    options: ["Gandhi", "Nehru", "Patel", "Rajendra Prasad"],
-    answer: "Nehru",
+    q: "First PM of India?",
+    o: ["Gandhi","Nehru","Patel","Bose"],
+    a: "Nehru",
     level: "History"
   },
   {
     q: "Who wrote Ramayana?",
-    options: ["Tulsidas", "Valmiki", "Kalidas", "Ved Vyas"],
-    answer: "Valmiki",
+    o: ["Valmiki","Tulsidas","Ved Vyas","Kalidas"],
+    a: "Valmiki",
     level: "History"
   }
 ];
 
-let questions = fallbackQuestions;
+const qEl = document.getElementById("question");
+const opts = document.querySelectorAll(".option");
+const timeEl = document.getElementById("time");
+const bar = document.querySelector(".progress-bar");
+const coinsEl = document.getElementById("coins");
+const levelEl = document.getElementById("level");
 
-/* 🔥 LOAD QUESTION */
 function loadQuestion() {
   answered = false;
   clearInterval(timer);
 
-  if (!questions.length) {
-    qEl.innerText = "No questions available";
-    return;
-  }
-
   const q = questions[index % questions.length];
-
   qEl.innerText = q.q;
   levelEl.innerText = q.level;
 
-  options.forEach((btn, i) => {
-    btn.innerText = q.options[i];
-    btn.className = "option";
-    btn.disabled = false;
+  opts.forEach((b,i)=>{
+    b.innerText = q.o[i];
+    b.className = "option";
+    b.disabled = false;
   });
 
-  startTimer(q.answer);
+  startTimer(q.a);
 }
 
-/* ⏱ TIMER */
-function startTimer(correctAnswer) {
+function startTimer(correct) {
   timeLeft = 10;
-  timeEl.innerText = timeLeft + "s";
+  timeEl.innerText = timeLeft+"s";
   bar.style.width = "100%";
 
-  timer = setInterval(() => {
+  timer = setInterval(()=>{
     timeLeft--;
-    timeEl.innerText = timeLeft + "s";
-    bar.style.width = (timeLeft * 10) + "%";
+    timeEl.innerText = timeLeft+"s";
+    bar.style.width = (timeLeft*10)+"%";
 
-    if (timeLeft <= 0) {
+    if(timeLeft<=0){
       clearInterval(timer);
-      revealAnswer(correctAnswer);
-      goNext();
+      showCorrect(correct);
+      next();
     }
-  }, 1000);
+  },1000);
 }
 
-/* 🧠 CLICK HANDLER */
-options.forEach(btn => {
-  btn.onclick = () => {
-    if (answered) return;
+opts.forEach(btn=>{
+  btn.onclick = ()=>{
+    if(answered) return;
     answered = true;
     clearInterval(timer);
 
-    const correct = questions[index % questions.length].answer;
+    const correct = questions[index % questions.length].a;
 
-    options.forEach(b => {
+    opts.forEach(b=>{
       b.disabled = true;
-      if (b.innerText === correct) b.classList.add("correct");
-      if (b === btn && b.innerText !== correct) b.classList.add("wrong");
+      if(b.innerText===correct) b.classList.add("correct");
     });
 
-    if (btn.innerText === correct) {
-      coins += 10;
-      coinsEl.innerText = coins;
+    if(btn.innerText!==correct){
+      btn.classList.add("wrong");
+    } else {
+      coins+=10;
+      coinsEl.innerText=coins;
     }
 
-    goNext();
+    next();
   };
 });
 
-/* ✅ SHOW CORRECT */
-function revealAnswer(correct) {
-  options.forEach(b => {
-    b.disabled = true;
-    if (b.innerText === correct) b.classList.add("correct");
+function showCorrect(ans){
+  opts.forEach(b=>{
+    if(b.innerText===ans) b.classList.add("correct");
   });
 }
 
-/* 🔁 NEXT QUESTION (ANTI-STUCK) */
-function goNext() {
-  setTimeout(() => {
+function next(){
+  setTimeout(()=>{
     index++;
     loadQuestion();
-  }, 1500);
+  },1500);
 }
 
-/* 🚀 START */
+function withdraw(){
+  if(coins<100){
+    alert("Minimum 100 coins needed");
+  }else{
+    alert("Withdraw request sent!");
+    coins=0;
+    coinsEl.innerText=coins;
+  }
+}
+
+loadQuestion();
