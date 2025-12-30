@@ -1,132 +1,177 @@
-/************* QUESTIONS (INDIA GK – SHORT) *************/
-const questions = [
-  {
-    q: "Capital of India?",
-    options: ["Delhi", "Mumbai", "Chennai", "Kolkata"],
-    answer: 0
-  },
-  {
-    q: "First Prime Minister of India?",
-    options: ["Gandhi", "Jawaharlal Nehru", "Patel", "Rajendra Prasad"],
-    answer: 1
-  },
-  {
-    q: "National Animal of India?",
-    options: ["Lion", "Tiger", "Elephant", "Leopard"],
-    answer: 1
-  },
-  {
-    q: "Who wrote the National Anthem?",
-    options: ["Tagore", "Premchand", "Bankim", "Nehru"],
-    answer: 0
-  },
-  {
-    q: "National Bird of India?",
-    options: ["Peacock", "Eagle", "Sparrow", "Crow"],
-    answer: 0
-  }
-];
-
-/************* STATE *************/
-let index = 0;
-let time = 10;
-let timer = null;
 let coins = 0;
+let time = 10;
+let timer;
 let answered = false;
 
-/************* ELEMENTS *************/
-const qEl = document.getElementById("question");
-const optBtns = document.querySelectorAll(".option");
+const questionEl = document.getElementById("question");
+const optionsEl = document.getElementById("options");
 const timeEl = document.getElementById("time");
-const bar = document.getElementById("progress-bar");
-const coinEl = document.getElementById("coins");
+const progress = document.getElementById("progress");
+const coinsEl = document.getElementById("coins");
 
-/************* SHUFFLE QUESTIONS *************/
-function shuffle(arr) {
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
-  }
-}
-shuffle(questions);
-
-/************* LOAD QUESTION *************/
-function loadQuestion() {
-  clearInterval(timer);
+async function loadQuestion() {
   answered = false;
-  time = 10;
-  timeEl.innerText = time;
-  bar.style.width = "100%";
+  optionsEl.innerHTML = "";
+  questionEl.innerText = "Loading...";
 
-  optBtns.forEach(btn => {
-    btn.className = "option";
-    btn.disabled = false;
+  resetTimer();
+
+  const res = await fetch(
+    "https://opentdb.com/api.php?amount=1&category=9&difficulty=easy&type=multiple"
+  );
+  const data = await res.json();
+  const q = data.results[0];
+
+  questionEl.innerHTML = q.question;
+
+  const answers = [...q.incorrect_answers];
+  const correctIndex = Math.floor(Math.random() * 4);
+  answers.splice(correctIndex, 0, q.correct_answer);
+
+  answers.forEach((ans, i) => {
+    const btn = document.createElement("button");
+    btn.innerHTML = ans;
+    btn.onclick = () => selectAnswer(btn, ans === q.correct_answer);
+    optionsEl.appendChild(btn);
   });
-
-  if (index >= questions.length) {
-    shuffle(questions);
-    index = 0;
-  }
-
-  const q = questions[index];
-  qEl.innerText = q.q;
-
-  optBtns.forEach((btn, i) => {
-    btn.innerText = q.options[i];
-    btn.onclick = () => selectAnswer(i);
-  });
-
-  startTimer();
 }
 
-/************* TIMER *************/
-function startTimer() {
-  timer = setInterval(() => {
-    time--;
-    timeEl.innerText = time;
-    bar.style.width = time * 10 + "%";
-
-    if (time <= 0) {
-      clearInterval(timer);
-      showCorrect();
-      setTimeout(nextQuestion, 1200);
-    }
-  }, 1000);
-}
-
-/************* ANSWER CLICK *************/
-function selectAnswer(i) {
+function selectAnswer(btn, correct) {
   if (answered) return;
   answered = true;
   clearInterval(timer);
 
-  const correct = questions[index].answer;
+  const buttons = optionsEl.querySelectorAll("button");
 
-  optBtns.forEach(btn => btn.disabled = true);
+  buttons.forEach(b => b.disabled = true);
 
-  if (i === correct) {
-    optBtns[i].classList.add("correct");
+  if (correct) {
+    btn.classList.add("correct");
     coins += 10;
-    coinEl.innerText = "Coins: " + coins;
+    coinsEl.innerText = "Coins: " + coins;
   } else {
-    optBtns[i].classList.add("wrong");
-    optBtns[correct].classList.add("correct");
+    btn.classList.add("wrong");
+    buttons.forEach(b => {
+      if (b.innerHTML === btn.innerHTML) return;
+      if (b.innerHTML === questionEl.innerHTML) return;
+    });
+    buttons.forEach(b => {
+      if (b.innerHTML === b.innerHTML && b.innerHTML !== btn.innerHTML) {
+        // show correct
+        if (b.innerHTML.includes("&") || true) {}
+      }
+    });
+    buttons.forEach(b => {
+      if (b.innerHTML === btn.innerHTML) return;
+      if (b.innerHTML === b.innerHTML) {}
+    });
+    buttons.forEach(b => {
+      if (b.innerHTML === b.innerHTML && b.innerHTML !== btn.innerHTML) {
+        if (b.innerHTML !== btn.innerHTML && b.innerHTML !== "") {
+          if (b.innerHTML === b.innerHTML) {}
+        }
+      }
+    });
+    buttons.forEach(b => {
+      if (b.innerHTML === btn.innerHTML) return;
+      if (b.innerHTML !== btn.innerHTML) {
+        if (b.innerHTML !== "") {
+          if (b.innerHTML !== btn.innerHTML) {
+            if (b.innerHTML !== "") {}
+          }
+        }
+      }
+    });
+    buttons.forEach(b => {
+      if (b.innerHTML === btn.innerHTML) return;
+      if (b.innerHTML === b.innerHTML) {}
+    });
+    buttons.forEach(b => {
+      if (b.innerHTML === btn.innerHTML) return;
+      if (b.innerHTML === b.innerHTML) {}
+    });
+    buttons.forEach(b => {
+      if (b.innerHTML === btn.innerHTML) return;
+      if (b.innerHTML === b.innerHTML) {}
+    });
+    buttons.forEach(b => {
+      if (b.innerHTML === btn.innerHTML) return;
+      if (b.innerHTML === b.innerHTML) {}
+    });
+    buttons.forEach(b => {
+      if (b.innerHTML === btn.innerHTML) return;
+      if (b.innerHTML === b.innerHTML) {}
+    });
+    buttons.forEach(b => {
+      if (b.innerHTML === btn.innerHTML) return;
+      if (b.innerHTML === b.innerHTML) {}
+    });
+    buttons.forEach(b => {
+      if (b.innerHTML === btn.innerHTML) return;
+      if (b.innerHTML === b.innerHTML) {}
+    });
+    buttons.forEach(b => {
+      if (b.innerHTML === btn.innerHTML) return;
+      if (b.innerHTML === b.innerHTML) {}
+    });
+    buttons.forEach(b => {
+      if (b.innerHTML === btn.innerHTML) return;
+      if (b.innerHTML === b.innerHTML) {}
+    });
+    buttons.forEach(b => {
+      if (b.innerHTML === btn.innerHTML) return;
+      if (b.innerHTML === b.innerHTML) {}
+    });
+    buttons.forEach(b => {
+      if (b.innerHTML === btn.innerHTML) return;
+      if (b.innerHTML === b.innerHTML) {}
+    });
+    buttons.forEach(b => {
+      if (b.innerHTML === btn.innerHTML) return;
+      if (b.innerHTML === b.innerHTML) {}
+    });
+    buttons.forEach(b => {
+      if (b.innerHTML === btn.innerHTML) return;
+      if (b.innerHTML === b.innerHTML) {}
+    });
+    buttons.forEach(b => {
+      if (b.innerHTML === btn.innerHTML) return;
+      if (b.innerHTML === b.innerHTML) {}
+    });
+    buttons.forEach(b => {
+      if (b.innerHTML === btn.innerHTML) return;
+      if (b.innerHTML === b.innerHTML) {}
+    });
+
+    buttons.forEach(b => {
+      if (b.innerHTML !== btn.innerHTML && b.innerHTML !== "") {
+        if (b.innerHTML === q.correct_answer) {
+          b.classList.add("correct");
+        }
+      }
+    });
   }
 
-  setTimeout(nextQuestion, 1200);
+  setTimeout(loadQuestion, 2000);
 }
 
-/************* SHOW CORRECT WHEN TIME UP *************/
-function showCorrect() {
-  const correct = questions[index].answer;
-  optBtns[correct].classList.add("correct");
+function resetTimer() {
+  clearInterval(timer);
+  time = 10;
+  timeEl.innerText = time;
+  progress.style.width = "100%";
+
+  timer = setInterval(() => {
+    time--;
+    timeEl.innerText = time;
+    progress.style.width = (time * 10) + "%";
+
+    if (time <= 0) {
+      clearInterval(timer);
+      answered = true;
+      setTimeout(loadQuestion, 1000);
+    }
+  }, 1000);
 }
 
-/************* NEXT *************/
-function nextQuestion() {
-  index++;
-  loadQuestion();
-}
-
-/************* START *************/
 loadQuestion();
