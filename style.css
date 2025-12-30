@@ -1,4 +1,6 @@
-/* RESET */
+/* =========================
+   RESET
+========================= */
 * {
   margin: 0;
   padding: 0;
@@ -10,7 +12,9 @@ html, body {
   height: 100%;
 }
 
-/* BACKGROUND */
+/* =========================
+   BODY BACKGROUND
+========================= */
 body {
   font-family: Arial, sans-serif;
   background: linear-gradient(135deg, #667eea, #764ba2);
@@ -19,7 +23,9 @@ body {
   align-items: center;
 }
 
-/* APP */
+/* =========================
+   APP CARD
+========================= */
 .app {
   width: 100%;
   max-width: 420px;
@@ -27,31 +33,44 @@ body {
   background: linear-gradient(180deg, #eef2ff, #dbe3ff);
   border-radius: 20px;
   padding: 20px;
+
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+
   box-shadow: 0 20px 40px rgba(0,0,0,0.3);
 }
 
-/* TITLE */
+/* =========================
+   TITLE
+========================= */
 h1 {
   text-align: center;
+  font-size: 26px;
+  color: #1f2937;
 }
 
-/* TOP */
+/* =========================
+   TOP BAR
+========================= */
 .top {
   display: flex;
   justify-content: space-between;
+  margin-top: 8px;
 }
 
 .top span {
-  background: #fff;
+  background: #ffffff;
   padding: 6px 12px;
   border-radius: 12px;
   font-weight: bold;
+  color: #1f2937;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
 }
 
-/* TIMER */
+/* =========================
+   TIMER
+========================= */
 .timer-box {
   text-align: center;
   margin: 12px 0;
@@ -60,9 +79,10 @@ h1 {
 #timerText {
   font-weight: bold;
   margin-bottom: 6px;
+  color: #111827;
 }
 
-/* 🔥 RED BLINK WHEN TIME LOW */
+/* 🔴 LAST 3 SEC */
 #timerText.danger {
   color: #ef4444;
   animation: blink 1s infinite;
@@ -79,59 +99,122 @@ h1 {
 .timer-bar {
   height: 100%;
   width: 100%;
-  background: linear-gradient(90deg,#22c55e,#f59e0b,#ef4444);
+  background: linear-gradient(90deg, #22c55e, #f59e0b, #ef4444);
   transition: width 1s linear;
 }
 
-/* QUESTION */
+/* =========================
+   QUESTION
+========================= */
 #question {
   text-align: center;
   margin: 18px 0;
   font-size: 18px;
   font-weight: 600;
+  color: #111827;
 }
 
-/* OPTIONS */
+/* =========================
+   OPTIONS
+========================= */
 .options button {
   width: 100%;
   padding: 15px;
   margin: 6px 0;
+  font-size: 15px;
   border: none;
   border-radius: 14px;
+  cursor: pointer;
+
   background: linear-gradient(135deg, #6d83f2, #5b6de0);
-  color: #fff;
-  font-size: 15px;
+  color: white;
+
+  transition: transform 0.2s ease;
 }
 
-/* CORRECT / WRONG */
+.options button:active {
+  transform: scale(0.97);
+}
+
+/* =========================
+   CORRECT / WRONG
+========================= */
 .correct {
   background: linear-gradient(135deg, #22c55e, #16a34a) !important;
 }
 
 .wrong {
   background: linear-gradient(135deg, #ef4444, #b91c1c) !important;
+  animation: shake 0.4s;
 }
 
-/* AD */
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  50% { transform: translateX(6px); }
+  75% { transform: translateX(-6px); }
+  100% { transform: translateX(0); }
+}
+
+/* =========================
+   WATCH AD – HIGH CTR DESIGN
+========================= */
 .ad-box {
-  border: 2px dashed #9aa5ff;
-  padding: 14px;
-  border-radius: 14px;
+  margin-top: 14px;
+  padding: 16px;
+  border-radius: 16px;
   text-align: center;
+
+  background: linear-gradient(135deg, #fff7ed, #ffedd5);
+  border: 2px dashed #f59e0b;
+
+  animation: pulse 1.5s infinite;
 }
 
-.ad-box button {
-  margin-top: 8px;
-  padding: 10px;
-  border-radius: 10px;
+.ad-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: #92400e;
+}
+
+.ad-sub {
+  font-size: 14px;
+  margin: 6px 0 10px;
+  color: #7c2d12;
+}
+
+/* CTA BUTTON */
+.ad-btn {
+  width: 100%;
+  padding: 14px;
+  font-size: 16px;
+  font-weight: bold;
+
   border: none;
-  background: #4f46e5;
+  border-radius: 14px;
+  cursor: pointer;
+
   color: white;
+  background: linear-gradient(135deg, #f59e0b, #ea580c);
+
+  box-shadow: 0 6px 15px rgba(245,158,11,0.6);
+  transition: transform 0.2s ease;
 }
 
-/* BLINK ANIMATION */
+.ad-btn:active {
+  transform: scale(0.96);
+}
+
+/* ATTENTION PULSE */
+@keyframes pulse {
+  0%   { box-shadow: 0 0 0 rgba(245,158,11,0.0); }
+  50%  { box-shadow: 0 0 18px rgba(245,158,11,0.6); }
+  100% { box-shadow: 0 0 0 rgba(245,158,11,0.0); }
+}
+
+/* BLINK */
 @keyframes blink {
-  0% { opacity: 1; }
-  50% { opacity: 0.2; }
+  0%   { opacity: 1; }
+  50%  { opacity: 0.2; }
   100% { opacity: 1; }
 }
