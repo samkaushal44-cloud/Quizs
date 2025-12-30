@@ -6,12 +6,6 @@ const questions = [
     level: "GK / HISTORY"
   },
   {
-    q: "Ashoka belonged to which dynasty?",
-    options: ["Maurya", "Gupta", "Chola", "Mughal"],
-    answer: 0,
-    level: "HISTORY"
-  },
-  {
     q: "Capital of India?",
     options: ["Mumbai", "Delhi", "Kolkata", "Chennai"],
     answer: 1,
@@ -21,8 +15,8 @@ const questions = [
 
 let index = 0;
 let coins = 0;
-let timeLeft = 10;
-let timerInterval = null;
+let timer = 10;
+let interval;
 let answered = false;
 
 const qEl = document.getElementById("question");
@@ -33,8 +27,10 @@ const timeEl = document.getElementById("time");
 const bar = document.querySelector(".progress-bar");
 
 function loadQuestion() {
+  if (!questions.length) return;
+
   answered = false;
-  clearInterval(timerInterval);
+  clearInterval(interval);
 
   const q = questions[index % questions.length];
 
@@ -48,22 +44,22 @@ function loadQuestion() {
     btn.disabled = false;
   });
 
-  timeLeft = 10;
-  timeEl.innerText = timeLeft + "s";
+  timer = 10;
+  timeEl.innerText = timer + "s";
   bar.style.width = "100%";
 
   startTimer();
 }
 
 function startTimer() {
-  timerInterval = setInterval(() => {
-    timeLeft--;
-    timeEl.innerText = timeLeft + "s";
-    bar.style.width = (timeLeft * 10) + "%";
+  interval = setInterval(() => {
+    timer--;
+    timeEl.innerText = timer + "s";
+    bar.style.width = timer * 10 + "%";
 
-    if (timeLeft <= 0) {
-      clearInterval(timerInterval);
-      showAnswer(-1); // time up
+    if (timer <= 0) {
+      clearInterval(interval);
+      showAnswer(-1);
     }
   }, 1000);
 }
@@ -75,30 +71,24 @@ options.forEach((btn, i) => {
   };
 });
 
-function showAnswer(selectedIndex) {
+function showAnswer(selected) {
   answered = true;
-  clearInterval(timerInterval);
+  clearInterval(interval);
 
-  const correctIndex = questions[index % questions.length].answer;
+  const correct = questions[index % questions.length].answer;
 
   options.forEach((btn, i) => {
     btn.disabled = true;
-
-    if (i === correctIndex) {
-      btn.classList.add("correct");
-    }
-
-    if (i === selectedIndex && i !== correctIndex) {
-      btn.classList.add("wrong");
-    }
+    if (i === correct) btn.classList.add("correct");
+    if (i === selected && i !== correct) btn.classList.add("wrong");
   });
 
-  if (selectedIndex === correctIndex) {
-    coins += 10;
-    coinsEl.innerText = coins;
-  }
+  if (selected === correct) coins += 10;
 
-  // 🔥 VERY IMPORTANT — ALWAYS GO NEXT
   setTimeout(() => {
     index++;
     loadQuestion();
+  }, 1200);
+}
+
+loadQuestion();
