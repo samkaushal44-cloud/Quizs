@@ -1,85 +1,134 @@
-* {
-  box-sizing: border-box;
-  font-family: Arial, sans-serif;
+let questions = [];
+let index = 0;
+let coins = 0;
+let time = 10;
+let timer;
+let answered = false;
+
+// DOM
+const qEl = document.getElementById("question");
+const optEl = document.getElementById("options");
+const coinsEl = document.getElementById("coins");
+const progressEl = document.getElementById("progress");
+
+// 🔹 FETCH QUESTIONS (INDIA GK)
+async function loadQuestions() {
+  try {
+    const res = await fetch(
+      "https://opentdb.com/api.php?amount=20&category=9&type=multiple"
+    );
+    const data = await res.json();
+
+    questions = data.results.map(q => {
+      const options = [...q.incorrect_answers];
+      options.splice(Math.floor(Math.random() * 4), 0, q.correct_answer);
+
+      return {
+        question: decode(q.question),
+        options: options.map(o => decode(o)),
+        answer: options.indexOf(q.correct_answer)
+      };
+    });
+
+    index = 0;
+    showQuestion();
+  } catch (e) {
+    qEl.innerText = "No question found, retrying...";
+    setTimeout(loadQuestions, 2000);
+  }
 }
 
-body {
-  margin: 0;
-  min-height: 100vh;
-  background: linear-gradient(135deg,#6a7cff,#8e6de8);
-  display: flex;
-  flex-direction: column;
+// 🔹 SHOW QUESTION
+function showQuestion() {
+  clearInterval(timer);
+  answered = false;
+
+  if (index >= questions.length) {
+    loadQuestions();
+    return;
+  }
+
+  const q = questions[index];
+  qEl.innerText = q.question;
+  optEl.innerHTML = "";
+
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement("button");
+    btn.innerText = opt;
+    btn.onclick = () => selectAnswer(i);
+    optEl.appendChild(btn);
+  });
+
+  time = 10;
+  progressEl.style.width = "100%";
+  startTimer();
 }
 
-.app {
-  background: #f3f6ff;
-  margin: auto;
-  width: 95%;
-  max-width: 420px;
-  padding: 20px;
-  border-radius: 18px;
-  text-align: center;
+// 🔹 TIMER
+function startTimer() {
+  timer = setInterval(() => {
+    time--;
+    progressEl.style.width = (time * 10) + "%";
+
+    if (time <= 0) {
+      clearInterval(timer);
+      revealCorrect();
+    }
+  }, 1000);
 }
 
-.top {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 10px;
+// 🔹 ANSWER CLICK
+function selectAnswer(i) {
+  if (answered) return;
+  answered = true;
+  clearInterval(timer);
+
+  const correct = questions[index].answer;
+  const buttons = optEl.querySelectorAll("button");
+
+  buttons[correct].classList.add("correct");
+
+  if (i === correct) {
+    coins += 10;
+    coinsEl.innerText = "Coins: " + coins;
+  } else {
+    buttons[i].classList.add("wrong");
+  }
+
+  setTimeout(nextQuestion, 2000);
 }
 
-.timer {
-  height: 8px;
-  background: #ddd;
-  border-radius: 5px;
-  overflow: hidden;
-  margin: 10px 0;
+// 🔹 TIMEOUT ANSWER
+function revealCorrect() {
+  if (answered) return;
+  answered = true;
+
+  const correct = questions[index].answer;
+  const buttons = optEl.querySelectorAll("button");
+  buttons[correct].classList.add("correct");
+
+  setTimeout(nextQuestion, 2000);
 }
 
-#progress {
-  height: 100%;
-  width: 100%;
-  background: linear-gradient(to right,green,yellow,red);
+// 🔹 NEXT QUESTION
+function nextQuestion() {
+  index++;
+  showQuestion();
 }
 
-#options button {
-  width: 100%;
-  padding: 14px;
-  margin: 8px 0;
-  border: none;
-  border-radius: 12px;
-  background: #5f7cff;
-  color: white;
-  font-size: 16px;
+// 🔹 WATCH AD (FAKE)
+function watchAd() {
+  alert("Ad watched! +20 Coins");
+  coins += 20;
+  coinsEl.innerText = "Coins: " + coins;
 }
 
-.watch-ad {
-  margin-top: 15px;
-  padding: 15px;
-  border: 2px dashed #7b7bff;
-  border-radius: 12px;
-  background: #eef1ff;
+// 🔹 HTML DECODE
+function decode(text) {
+  const t = document.createElement("textarea");
+  t.innerHTML = text;
+  return t.value;
 }
 
-.watch-ad button {
-  margin-top: 8px;
-  padding: 10px 18px;
-  border-radius: 10px;
-  border: none;
-  background: #6a5cff;
-  color: white;
-  font-size: 15px;
-}
-
-.withdraw {
-  margin-top: 15px;
-}
-
-.banner-ad {
-  height: 50px;
-  background: orange;
-  color: black;
-  font-weight: bold;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
+// 🔹 START
+loadQuestions();
