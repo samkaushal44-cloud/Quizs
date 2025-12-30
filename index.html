@@ -2,7 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Quiz Jeeto – Play & Earn</title>
+
+  <!-- 🔴 MOST IMPORTANT FOR FULL SCREEN -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Quiz Jeeto</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -10,15 +14,19 @@
 <div class="app">
   <h1>Quiz Jeeto</h1>
 
-  <p id="coins">Coins: 0</p>
-  <p id="level">Level: Easy</p>
+  <div class="top">
+    <p id="coins">Coins: 0</p>
+    <p id="level">Level: Easy</p>
+  </div>
 
-  <h2 id="question"></h2>
+  <h2 id="question">Loading...</h2>
 
-  <button id="A" onclick="checkAnswer('A')"></button>
-  <button id="B" onclick="checkAnswer('B')"></button>
-  <button id="C" onclick="checkAnswer('C')"></button>
-  <button id="D" onclick="checkAnswer('D')"></button>
+  <div class="options">
+    <button id="A" onclick="checkAnswer('A')"></button>
+    <button id="B" onclick="checkAnswer('B')"></button>
+    <button id="C" onclick="checkAnswer('C')"></button>
+    <button id="D" onclick="checkAnswer('D')"></button>
+  </div>
 
   <div class="ad-box">
     <p>📺 Watch Ad & Get Coins</p>
