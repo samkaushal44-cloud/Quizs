@@ -1,149 +1,115 @@
 let coins = 0;
 let time = 10;
 let timer;
-let currentQuestion = null;
 let answered = false;
+let usedQuestions = [];
 
-const questionEl = document.getElementById("question");
-const optionsEl = document.getElementById("options");
-const coinsEl = document.getElementById("coins");
-const timeText = document.getElementById("timeText");
-const progress = document.getElementById("progress");
+const apiURL = "https://opentdb.com/api.php?amount=50&category=9&type=multiple";
 
-/* ---------- UTIL ---------- */
-function decodeHTML(text) {
-  const txt = document.createElement("textarea");
-  txt.innerHTML = text;
-  return txt.value;
-}
-
-/* ---------- BUTTONS ---------- */
-document.getElementById("watchAd").onclick = () => {
-  coins += 20;
-  updateCoins();
-  alert("🎉 You earned 20 coins!");
-};
-
-document.getElementById("withdraw").onclick = () => {
-  if (coins < 100) {
-    alert("❌ Minimum 100 coins required");
-  } else {
-    alert("✅ Withdraw request sent!");
-    coins = 0;
-    updateCoins();
-  }
-};
-
-function updateCoins() {
-  coinsEl.innerText = "Coins: " + coins;
-}
-
-/* ---------- QUESTION LOADER ---------- */
-async function loadQuestion() {
-  answered = false;
-  optionsEl.innerHTML = "";
-  questionEl.innerText = "Loading...";
+async function fetchQuestion() {
+  document.getElementById("question").innerText = "Loading...";
+  document.getElementById("options").innerHTML = "";
 
   try {
-    const res = await fetch(
-      "https://opentdb.com/api.php?amount=1&category=9&type=multiple"
-    );
+    const res = await fetch(apiURL);
     const data = await res.json();
+    let q = data.results.find(q => !usedQuestions.includes(q.question));
 
-    if (!data.results || data.results.length === 0) {
-      throw "Empty API";
+    if (!q) {
+      usedQuestions = [];
+      q = data.results[0];
     }
 
-    const q = data.results[0];
+    usedQuestions.push(q.question);
+    showQuestion(q);
 
-    currentQuestion = {
-      question: decodeHTML(q.question),
-      correct: decodeHTML(q.correct_answer),
-      options: shuffle([
-        ...q.incorrect_answers.map(decodeHTML),
-        decodeHTML(q.correct_answer)
-      ])
-    };
-
-    renderQuestion();
-  } catch (e) {
-    console.warn("API failed, using fallback");
-
-    // 🔁 FALLBACK QUESTION
-    currentQuestion = {
-      question: "Capital of India?",
-      correct: "New Delhi",
-      options: shuffle(["New Delhi", "Mumbai", "Chennai", "Kolkata"])
-    };
-
-    renderQuestion();
+  } catch {
+    document.getElementById("question").innerText = "Error loading question";
   }
 }
 
-/* ---------- RENDER ---------- */
-function renderQuestion() {
-  questionEl.innerText = currentQuestion.question;
-  optionsEl.innerHTML = "";
-
-  currentQuestion.options.forEach(opt => {
-    const btn = document.createElement("button");
-    btn.innerText = opt;
-    btn.onclick = () => selectAnswer(opt, btn);
-    optionsEl.appendChild(btn);
-  });
-
+function showQuestion(q) {
+  answered = false;
+  time = 10;
   startTimer();
+
+  document.getElementById("question").innerHTML = q.question;
+
+  const opts = [...q.incorrect_answers, q.correct_answer].sort(() => Math.random() - 0.5);
+  const box = document.getElementById("options");
+
+  opts.forEach(opt => {
+    const btn = document.createElement("button");
+    btn.innerHTML = opt;
+    btn.onclick = () => selectAnswer(btn, opt === q.correct_answer);
+    box.appendChild(btn);
+  });
 }
 
-/* ---------- ANSWER ---------- */
-function selectAnswer(ans, btn) {
+function selectAnswer(btn, correct) {
   if (answered) return;
   answered = true;
   clearInterval(timer);
 
-  const buttons = document.querySelectorAll("#options button");
-  buttons.forEach(b => b.disabled = true);
-
-  if (ans === currentQuestion.correct) {
+  if (correct) {
     btn.classList.add("correct");
     coins += 10;
-    updateCoins();
   } else {
     btn.classList.add("wrong");
-    buttons.forEach(b => {
-      if (b.innerText === currentQuestion.correct) {
+    document.querySelectorAll("#options button").forEach(b => {
+      if (b.innerHTML === btn.parentNode.querySelector(".correct")?.innerHTML) {
         b.classList.add("correct");
       }
     });
   }
 
-  setTimeout(loadQuestion, 2000);
+  document.getElementById("coins").innerText = "Coins: " + coins;
+
+  setTimeout(fetchQuestion, 2000);
 }
 
-/* ---------- TIMER ---------- */
 function startTimer() {
-  time = 10;
-  progress.style.width = "100%";
-  timeText.innerText = "Time: 10s";
+  clearInterval(timer);
+  document.getElementById("progress").style.width = "100%";
 
   timer = setInterval(() => {
     time--;
-    timeText.innerText = "Time: " + time + "s";
-    progress.style.width = time * 10 + "%";
+    document.getElementById("progress").style.width = (time * 10) + "%";
 
     if (time <= 0) {
       clearInterval(timer);
-      answered = true;
-      loadQuestion();
+      fetchQuestion();
     }
   }, 1000);
 }
 
-/* ---------- HELPERS ---------- */
-function shuffle(arr) {
-  return arr.sort(() => Math.random() - 0.5);
+// Ads & Withdraw
+document.getElementById("watchAd").onclick = () => {
+  coins += 5;
+  document.getElementById("coins").innerText = "Coins: " + coins;
+  alert("Ad watched! +5 coins");
+};
+
+document.getElementById("withdrawBtn").onclick = () => {
+  if (coins < 100) {
+    alert("Minimum 100 coins required");
+    return;
+  }
+  document.getElementById("withdrawModal").style.display = "flex";
+};
+
+function closeModal() {
+  document.getElementById("withdrawModal").style.display = "none";
 }
 
-/* ---------- START ---------- */
-updateCoins();
-loadQuestion();
+function confirmWithdraw() {
+  const upi = document.getElementById("upi").value;
+  if (!upi) return alert("Enter UPI ID");
+  alert("Withdraw request sent!");
+  coins = 0;
+  document.getElementById("coins").innerText = "Coins: 0";
+  closeModal();
+}
+
+// Start
+fetchQuestion();
