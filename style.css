@@ -1,47 +1,72 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
 body {
   font-family: Arial, sans-serif;
+  min-height: 100vh;
   background: linear-gradient(to right, #667eea, #764ba2);
-  text-align: center;
+
+  /* FULL SCREEN CENTER */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .app {
-  background: #fff;
-  max-width: 360px;
-  margin: 25px auto;
+  background: #ffffff;
+
+  /* FULL WIDTH ON MOBILE */
+  width: 100%;
+  max-width: 420px;
+
+  min-height: 90vh;
   padding: 20px;
-  border-radius: 12px;
+
+  border-radius: 16px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 h1 {
-  color: #333;
+  text-align: center;
+  margin-bottom: 10px;
 }
 
-#coins, #level {
+#coins,
+#level {
   font-weight: bold;
-  margin: 5px 0;
+  text-align: center;
+  margin: 4px 0;
+}
+
+#question {
+  text-align: center;
+  margin: 20px 0;
 }
 
 button {
   width: 100%;
-  padding: 12px;
+  padding: 14px;
   margin: 6px 0;
   font-size: 16px;
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
   background: #667eea;
   color: #fff;
 }
 
-button:hover {
-  background: #5a67d8;
-}
-
-.next {
-  background: #38a169;
+button:active {
+  opacity: 0.85;
 }
 
 .ad-box {
   margin-top: 15px;
   padding: 10px;
   border: 2px dashed #aaa;
+  text-align: center;
 }
