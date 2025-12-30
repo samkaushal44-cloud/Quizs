@@ -30,6 +30,7 @@ body {
   width: 100%;
   max-width: 420px;
   min-height: 90vh;
+
   background: linear-gradient(180deg, #eef2ff, #dbe3ff);
   border-radius: 20px;
   padding: 20px;
@@ -42,10 +43,11 @@ body {
   transition: box-shadow 0.3s ease;
 }
 
-/* 🎉 CELEBRATION FLASH (KEY FEATURE) */
+/* 🎉 CELEBRATION FLASH */
 .app.celebrate {
-  box-shadow: 0 0 40px rgba(34,197,94,0.9),
-              0 0 80px rgba(34,197,94,0.6);
+  box-shadow:
+    0 0 40px rgba(34,197,94,0.9),
+    0 0 80px rgba(34,197,94,0.6);
 }
 
 /* =========================
@@ -58,7 +60,7 @@ h1 {
 }
 
 /* =========================
-   TOP BAR
+   TOP BAR (Coins + Level)
 ========================= */
 .top {
   display: flex;
@@ -76,18 +78,42 @@ h1 {
 }
 
 /* =========================
+   TIMER BAR
+========================= */
+.timer-wrap {
+  width: 100%;
+  height: 10px;
+  background: #e5e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+  margin: 12px 0;
+}
+
+.timer-bar {
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(
+    90deg,
+    #22c55e,
+    #f59e0b,
+    #ef4444
+  );
+  transition: width 0.1s linear;
+}
+
+/* =========================
    QUESTION
 ========================= */
 #question {
   text-align: center;
-  margin: 25px 0;
+  margin: 20px 0;
   font-size: 20px;
   font-weight: 600;
   color: #111827;
 }
 
 /* =========================
-   OPTIONS
+   OPTIONS BUTTONS
 ========================= */
 .options button {
   width: 100%;
@@ -97,8 +123,10 @@ h1 {
   border: none;
   border-radius: 14px;
   cursor: pointer;
+
   background: linear-gradient(135deg, #6d83f2, #5b6de0);
   color: white;
+
   transition: all 0.3s ease;
 }
 
@@ -110,6 +138,7 @@ h1 {
    AD BOX
 ========================= */
 .ad-box {
+  margin-top: 10px;
   border: 2px dashed #9aa5ff;
   padding: 14px;
   text-align: center;
@@ -128,21 +157,30 @@ h1 {
 }
 
 /* =========================
-   CORRECT / WRONG
+   CORRECT ANSWER
 ========================= */
 .correct {
   background: linear-gradient(135deg, #22c55e, #16a34a) !important;
+  transform: scale(1.05);
+  box-shadow: 0 0 20px rgba(34,197,94,0.9);
 }
 
+/* =========================
+   WRONG ANSWER
+========================= */
 .wrong {
   background: linear-gradient(135deg, #ef4444, #b91c1c) !important;
   animation: shake 0.4s;
+  box-shadow: 0 0 20px rgba(239,68,68,0.9);
 }
 
+/* =========================
+   SHAKE ANIMATION
+========================= */
 @keyframes shake {
-  0% { transform: translateX(0); }
-  25% { transform: translateX(-6px); }
-  50% { transform: translateX(6px); }
-  75% { transform: translateX(-6px); }
+  0%   { transform: translateX(0); }
+  25%  { transform: translateX(-6px); }
+  50%  { transform: translateX(6px); }
+  75%  { transform: translateX(-6px); }
   100% { transform: translateX(0); }
 }
