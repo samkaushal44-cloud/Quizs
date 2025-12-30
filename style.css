@@ -1,3 +1,4 @@
+/* RESET */
 * {
   margin: 0;
   padding: 0;
@@ -9,7 +10,7 @@ html, body {
   height: 100%;
 }
 
-/* BACKGROUND (OUTSIDE) */
+/* 🌈 BACKGROUND */
 body {
   font-family: Arial, sans-serif;
   background: linear-gradient(135deg, #667eea, #764ba2);
@@ -18,14 +19,14 @@ body {
   align-items: center;
 }
 
-/* APP CARD (SOFT COLOURED – NOT WHITE) */
+/* 🟦 APP CARD (SOFT COLOUR) */
 .app {
   width: 100%;
   max-width: 420px;
   min-height: 90vh;
 
-  /* 🌈 SOFT PREMIUM COLOUR */
-  background: linear-gradient(180deg, #f8f9ff, #eef1ff);
+  /* 👇 YAHI COLOUR CHAHIYE THA */
+  background: linear-gradient(180deg, #f5f7ff, #e9ecff);
 
   border-radius: 18px;
   padding: 20px;
@@ -37,12 +38,12 @@ body {
   box-shadow: 0 20px 40px rgba(0,0,0,0.25);
 }
 
-/* HEADER */
+/* TITLE */
 h1 {
   text-align: center;
 }
 
-/* COINS + LEVEL */
+/* TOP BAR */
 .top {
   display: flex;
   justify-content: space-between;
@@ -82,18 +83,18 @@ h1 {
   border: 2px dashed #aaa;
   padding: 12px;
   text-align: center;
-  background: #ffffffaa;
   border-radius: 10px;
+  background: #ffffffaa;
 }
 
-/* ✅ CORRECT ANIMATION */
+/* ✅ CORRECT */
 .correct {
   background: #16a34a !important;
   transform: scale(1.12);
   box-shadow: 0 0 25px rgba(22,163,74,0.9);
 }
 
-/* ❌ WRONG ANIMATION */
+/* ❌ WRONG */
 .wrong {
   background: #dc2626 !important;
   animation: shake 0.4s;
