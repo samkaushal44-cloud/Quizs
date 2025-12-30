@@ -1,47 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Quiz Jeeto</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quiz Jeeto</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-<div class="app">
-  <h1>Quiz Jeeto</h1>
+  <!-- MAIN APP -->
+  <div class="app">
 
-  <div class="top">
-    <span id="coins">Coins: 0</span>
-    <span>Level: GK / HISTORY</span>
+    <h1>Quiz Jeeto</h1>
+
+    <!-- TOP INFO -->
+    <div class="top">
+      <span id="coins">Coins: 0</span>
+      <span>Level: GK</span>
+    </div>
+
+    <!-- TIMER BAR -->
+    <div class="timer">
+      <div id="progress"></div>
+    </div>
+
+    <!-- QUESTION -->
+    <h2 id="question">Loading...</h2>
+
+    <!-- OPTIONS (JS yahin buttons create karega) -->
+    <div id="options"></div>
+
+    <!-- WATCH AD -->
+    <div class="watch-ad">
+      📺 <b>Watch Ad & Get Coins</b><br />
+      <button onclick="watchAd()">Watch Ad</button>
+    </div>
+
+    <!-- WITHDRAW -->
+    <div class="withdraw">
+      💰 Minimum Withdraw: <b>100 Coins</b><br />
+      <button onclick="alert('Withdraw demo only')">Withdraw</button>
+    </div>
+
   </div>
 
-  <div class="timer">
-    <div id="progress"></div>
+  <!-- BOTTOM BANNER -->
+  <div class="banner">
+    🔥 Banner Ad 320 × 50
   </div>
 
-  <h2 id="question">Loading...</h2>
+  <!-- JS -->
+  <script src="script.js"></script>
 
-  <div id="options"></div>
-
-  <!-- ✅ WATCH AD BOX -->
-  <div class="watch-ad">
-    📺 <b>Watch Ad & Get Coins</b>
-    <button onclick="watchAd()">Watch Ad</button>
-  </div>
-
-  <!-- ✅ WITHDRAW -->
-  <div class="withdraw">
-    💰 Minimum Withdraw: <b>100 Coins</b><br>
-    <button onclick="alert('Withdraw coming soon')">Withdraw</button>
-  </div>
-</div>
-
-<!-- ✅ BOTTOM BANNER -->
-<div class="banner-ad">
-  🔥 Banner Ad 320 × 50
-</div>
-
-<script src="script.js"></script>
 </body>
 </html>
