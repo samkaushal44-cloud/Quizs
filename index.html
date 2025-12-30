@@ -1,48 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Quiz Jeeto</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <title>Quiz Jeeto</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link rel="stylesheet" href="style.css?v=1" />
 </head>
 <body>
 
 <div class="app">
+  <div class="card">
 
-  <h1>Quiz Jeeto</h1>
+    <h1>Quiz Jeeto</h1>
 
-  <div class="top">
-    <div>Coins: <span id="coins">0</span></div>
-    <div>Level: GK</div>
+    <div class="top">
+      <span id="coins">Coins: 0</span>
+      <span id="level">Level: GK</span>
+    </div>
+
+    <div class="timer">
+      <span id="timeText">Time: 10s</span>
+      <div class="bar">
+        <div id="progress"></div>
+      </div>
+    </div>
+
+    <h2 id="question">Loading...</h2>
+
+    <div id="options"></div>
+
+    <div class="actions">
+      <button id="watchAd">📺 Watch Ad & Get Coins</button>
+      <button id="withdraw">💰 Withdraw</button>
+    </div>
+
+    <p class="min">Minimum Withdraw: 100 Coins</p>
+
   </div>
-
-  <div id="timeText">Time: 10s</div>
-
-  <div class="timer">
-    <div class="bar" id="bar"></div>
-  </div>
-
-  <h2 id="question">Loading...</h2>
-
-  <div id="options"></div>
-
-  <!-- WATCH AD -->
-  <button id="watchAdBtn" class="cta-btn watch-ad">
-    📺 Watch Ad & Get Coins
-  </button>
-
-  <!-- WITHDRAW -->
-  <button id="withdrawBtn" class="cta-btn withdraw-btn">
-    💰 Withdraw Coins
-  </button>
-
 </div>
 
 <div class="banner">
   🔥 Banner Ad 320 × 50
 </div>
 
-<script src="script.js"></script>
+<script src="script.js?v=1"></script>
 </body>
 </html>
