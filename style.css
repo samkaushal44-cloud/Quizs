@@ -1,57 +1,54 @@
 * {
-  box-sizing: border-box;
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
 }
 
 body {
   font-family: Arial, sans-serif;
-  min-height: 100vh;
-  background: linear-gradient(to right, #667eea, #764ba2);
-
-  /* FULL SCREEN CENTER */
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  background: linear-gradient(135deg, #667eea, #764ba2);
 }
 
+/* 🔴 FULL SCREEN APP */
 .app {
+  width: 100vw;
+  height: 100vh;
   background: #ffffff;
-
-  /* FULL WIDTH ON MOBILE */
-  width: 100%;
-  max-width: 420px;
-
-  min-height: 90vh;
-  padding: 20px;
-
-  border-radius: 16px;
 
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+
+  padding: 20px;
 }
 
+/* HEADER */
 h1 {
   text-align: center;
-  margin-bottom: 10px;
 }
 
-#coins,
-#level {
+/* TOP INFO */
+.top {
+  display: flex;
+  justify-content: space-between;
   font-weight: bold;
-  text-align: center;
-  margin: 4px 0;
 }
 
+/* QUESTION */
 #question {
   text-align: center;
   margin: 20px 0;
 }
 
-button {
+/* OPTIONS */
+.options button {
   width: 100%;
-  padding: 14px;
+  padding: 16px;
   margin: 6px 0;
   font-size: 16px;
   border: none;
@@ -60,13 +57,13 @@ button {
   color: #fff;
 }
 
-button:active {
+.options button:active {
   opacity: 0.85;
 }
 
+/* AD BOX */
 .ad-box {
-  margin-top: 15px;
-  padding: 10px;
   border: 2px dashed #aaa;
+  padding: 12px;
   text-align: center;
 }
