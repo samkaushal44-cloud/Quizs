@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
   <meta charset="UTF-8">
   <title>Quiz Jeeto</title>
@@ -7,24 +7,24 @@
 </head>
 <body>
 
-<div class="app">
+<div class="container">
   <h1>Quiz Jeeto</h1>
 
-  <div class="top">
-    <span id="coins">0</span> Coins
-    <span id="level">GK</span>
+  <div class="stats">
+    <div>Coins: <span id="coins">0</span></div>
+    <div>Level: <span id="level">GK</span></div>
   </div>
 
   <div class="timer">
-    Time: <span id="time">10s</span>
-    <div class="progress">
-      <div class="progress-bar"></div>
+    Time: <span id="time">10</span>s
+    <div class="bar">
+      <div id="progress"></div>
     </div>
   </div>
 
   <h2 id="question">Loading...</h2>
 
-  <div class="options">
+  <div id="options">
     <button class="option"></button>
     <button class="option"></button>
     <button class="option"></button>
