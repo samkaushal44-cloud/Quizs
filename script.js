@@ -1,45 +1,69 @@
+let coins = 0;
 let index = 0;
-let quiz = [
-  {
-    q: "India ka capital kya hai?",
-    options: { A: "Delhi", B: "Mumbai", C: "Jaipur", D: "Chennai" },
-    ans: "A"
-  }
-];
+let quiz = [];
+
+// 🔴 RAW JSON LINK
+const JSON_URL =
+"https://raw.githubusercontent.com/samkaushal44-cloud/Quizs/main/questions.json";
+
+// Load questions
+fetch(JSON_URL)
+  .then(res => res.json())
+  .then(data => {
+    quiz = data;
+    loadQuestion();
+  })
+  .catch(() => {
+    document.getElementById("question").innerText =
+      "Questions load nahi ho rahe";
+  });
 
 function loadQuestion() {
-  let q = quiz[index];
+  if (index >= quiz.length) {
+    index = 0;
+  }
+
+  const q = quiz[index];
   document.getElementById("question").innerText = q.q;
   document.getElementById("A").innerText = q.options.A;
   document.getElementById("B").innerText = q.options.B;
   document.getElementById("C").innerText = q.options.C;
   document.getElementById("D").innerText = q.options.D;
+  document.getElementById("level").innerText = "Level: " + q.level;
+}
+
+function resetButtons() {
+  ["A","B","C","D"].forEach(id => {
+    document.getElementById(id).classList.remove("correct","wrong");
+  });
 }
 
 function checkAnswer(option) {
-  let btn = document.getElementById(option);
-  let correct = quiz[index].ans;
+  const correct = quiz[index].ans;
+  const btn = document.getElementById(option);
 
-  // 🔥 RESET classes (VERY IMPORTANT)
-  btn.classList.remove("correct", "wrong");
-  void btn.offsetWidth; // 🔥 FORCE REFLOW
+  resetButtons();
+  void btn.offsetWidth; // 🔥 force animation
 
   if (option === correct) {
     btn.classList.add("correct");
 
+    coins += quiz[index].reward;
+    document.getElementById("coins").innerText = "Coins: " + coins;
+
     setTimeout(() => {
-      btn.classList.remove("correct");
-      index = 0;
+      resetButtons();
+      index++;
       loadQuestion();
-    }, 600);
+    }, 700);
 
   } else {
     btn.classList.add("wrong");
-
-    setTimeout(() => {
-      btn.classList.remove("wrong");
-    }, 500);
   }
 }
 
-loadQuestion();
+function watchAd() {
+  coins += 20;
+  document.getElementById("coins").innerText = "Coins: " + coins;
+  alert("📺 +20 Coins");
+}
