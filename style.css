@@ -1,4 +1,6 @@
-/* RESET */
+/* =========================
+   RESET
+========================= */
 * {
   margin: 0;
   padding: 0;
@@ -10,101 +12,148 @@ html, body {
   height: 100%;
 }
 
-/* 🌈 BACKGROUND */
+/* =========================
+   BODY BACKGROUND
+========================= */
 body {
   font-family: Arial, sans-serif;
-  background: linear-gradient(135deg, #667eea, #764ba2);
+
+  /* 🔥 FULL PAGE BACKGROUND COLOUR */
+  background: linear-gradient(135deg, #667eea, #764ba2) !important;
+
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-/* 🟦 APP CARD (SOFT COLOUR) */
+/* =========================
+   APP CARD (NO WHITE)
+========================= */
 .app {
   width: 100%;
   max-width: 420px;
   min-height: 90vh;
 
-  /* 👇 YAHI COLOUR CHAHIYE THA */
-  background: linear-gradient(180deg, #f5f7ff, #e9ecff);
+  /* 🔥 SOFT PREMIUM COLOUR (WHITE REMOVED) */
+  background: linear-gradient(180deg, #eef2ff, #dbe3ff) !important;
 
-  border-radius: 18px;
+  border-radius: 20px;
   padding: 20px;
 
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 
-  box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
 }
 
-/* TITLE */
+/* =========================
+   TITLE
+========================= */
 h1 {
   text-align: center;
+  font-size: 28px;
+  color: #1f2937;
 }
 
-/* TOP BAR */
+/* =========================
+   TOP BAR
+========================= */
 .top {
   display: flex;
   justify-content: space-between;
+  margin-top: 10px;
 }
 
 .top span {
   background: #ffffff;
-  padding: 6px 10px;
-  border-radius: 8px;
+  padding: 6px 12px;
+  border-radius: 10px;
   font-weight: bold;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  color: #1f2937;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
 }
 
-/* QUESTION */
+/* =========================
+   QUESTION
+========================= */
 #question {
   text-align: center;
-  margin: 20px 0;
-  color: #1f2937;
+  margin: 25px 0;
+  font-size: 20px;
   font-weight: 600;
+  color: #111827;
 }
 
-/* OPTIONS */
+/* =========================
+   OPTIONS BUTTONS
+========================= */
 .options button {
   width: 100%;
   padding: 16px;
-  margin: 6px 0;
+  margin: 8px 0;
   font-size: 16px;
   border: none;
-  border-radius: 12px;
-  background: #667eea;
+  border-radius: 14px;
+  cursor: pointer;
+
+  background: linear-gradient(135deg, #6d83f2, #5b6de0);
   color: white;
+
   transition: all 0.3s ease;
 }
 
-/* AD BOX */
+.options button:active {
+  transform: scale(0.97);
+}
+
+/* =========================
+   AD BOX
+========================= */
 .ad-box {
-  border: 2px dashed #aaa;
-  padding: 12px;
+  margin-top: 10px;
+  border: 2px dashed #9aa5ff;
+  padding: 14px;
   text-align: center;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.7);
+}
+
+.ad-box button {
+  margin-top: 8px;
+  padding: 10px;
   border-radius: 10px;
-  background: #ffffffaa;
+  border: none;
+  background: #4f46e5;
+  color: white;
+  font-weight: bold;
 }
 
-/* ✅ CORRECT */
+/* =========================
+   CORRECT ANSWER
+========================= */
 .correct {
-  background: #16a34a !important;
-  transform: scale(1.12);
-  box-shadow: 0 0 25px rgba(22,163,74,0.9);
+  background: linear-gradient(135deg, #22c55e, #16a34a) !important;
+  transform: scale(1.1);
+  box-shadow: 0 0 25px rgba(34,197,94,0.9);
 }
 
-/* ❌ WRONG */
+/* =========================
+   WRONG ANSWER
+========================= */
 .wrong {
-  background: #dc2626 !important;
+  background: linear-gradient(135deg, #ef4444, #b91c1c) !important;
   animation: shake 0.4s;
-  box-shadow: 0 0 25px rgba(220,38,38,0.9);
+  box-shadow: 0 0 25px rgba(239,68,68,0.9);
 }
 
+/* =========================
+   SHAKE ANIMATION
+========================= */
 @keyframes shake {
-  0% { transform: translateX(0); }
-  25% { transform: translateX(-6px); }
-  50% { transform: translateX(6px); }
-  75% { transform: translateX(-6px); }
+  0%   { transform: translateX(0); }
+  25%  { transform: translateX(-6px); }
+  50%  { transform: translateX(6px); }
+  75%  { transform: translateX(-6px); }
   100% { transform: translateX(0); }
 }
