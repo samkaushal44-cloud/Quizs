@@ -59,9 +59,6 @@ function loadFromAPI(){
 
       index = 0;
       loadQuestion();
-    })
-    .catch(()=>{
-      questionEl.innerText="Network error. Reload page.";
     });
 }
 
@@ -70,7 +67,6 @@ function startTimer(){
   stopTimer();
   timeLeft=10;
   timerText.innerText="Time: 10s";
-  timerText.classList.remove("danger");
   timerBar.style.width="100%";
 
   timer=setInterval(()=>{
@@ -78,15 +74,9 @@ function startTimer(){
     timerText.innerText="Time: "+timeLeft+"s";
     timerBar.style.width=(timeLeft/10*100)+"%";
 
-    if(timeLeft<=3){
-      timerText.classList.add("danger");
-      if(navigator.vibrate) navigator.vibrate(200);
-    }
-
     if(timeLeft<=0){
       stopTimer();
-      index++;
-      loadQuestion();
+      showCorrectThenNext();
     }
   },1000);
 }
@@ -112,33 +102,66 @@ function loadQuestion(){
   C.innerText=q.options.C;
   D.innerText=q.options.D;
   levelEl.innerText="Level: "+q.level;
+
   resetButtons();
   startTimer();
 }
 
 /* RESET */
 function resetButtons(){
-  [A,B,C,D].forEach(b=>b.classList.remove("correct","wrong"));
+  [A,B,C,D].forEach(b=>{
+    b.classList.remove("correct","wrong");
+    b.disabled=false;
+  });
+}
+
+/* ❗ SHOW CORRECT ANSWER */
+function showCorrectThenNext(){
+  stopTimer();
+
+  const correctBtn = document.getElementById(quiz[index].ans);
+  correctBtn.classList.add("correct");
+
+  // disable all
+  [A,B,C,D].forEach(b=>b.disabled=true);
+
+  setTimeout(()=>{
+    index++;
+    loadQuestion();
+  },2000);
 }
 
 /* ANSWER */
 function checkAnswer(option){
   stopTimer();
-  resetButtons();
 
-  const btn=document.getElementById(option);
-  if(option===quiz[index].ans){
-    btn.classList.add("correct");
+  // disable all buttons
+  [A,B,C,D].forEach(b=>b.disabled=true);
+
+  const selectedBtn=document.getElementById(option);
+  const correctKey=quiz[index].ans;
+  const correctBtn=document.getElementById(correctKey);
+
+  if(option===correctKey){
+    selectedBtn.classList.add("correct");
     coins+=quiz[index].reward;
     coinsEl.innerText="Coins: "+coins;
-  }else{
-    btn.classList.add("wrong");
-  }
 
-  setTimeout(()=>{
-    index++;
-    loadQuestion();
-  },700);
+    setTimeout(()=>{
+      index++;
+      loadQuestion();
+    },700);
+
+  } else {
+    selectedBtn.classList.add("wrong");
+    correctBtn.classList.add("correct");
+
+    // ❗ 2 sec ruk ke next
+    setTimeout(()=>{
+      index++;
+      loadQuestion();
+    },2000);
+  }
 }
 
 /* AD */
