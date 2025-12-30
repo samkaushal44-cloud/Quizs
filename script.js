@@ -1,123 +1,132 @@
-const questionEl = document.getElementById("question");
-const optionsEl = document.getElementById("options");
-const coinEl = document.getElementById("coins");
-const levelEl = document.getElementById("level");
-const timeText = document.getElementById("time");
-const progressBar = document.getElementById("progress-bar");
-
-let questions = [
-  {
-    q: "In ancient Greece, what was considered a source of wise counsel?",
-    options: ["Weasel", "Titan", "Oracle", "Archon"],
-    answer: "Oracle"
-  },
-  {
-    q: "Who was the first Prime Minister of India?",
-    options: ["Gandhi", "Jawaharlal Nehru", "Patel", "Rajendra Prasad"],
-    answer: "Jawaharlal Nehru"
-  },
+/************* QUESTIONS (INDIA GK – SHORT) *************/
+const questions = [
   {
     q: "Capital of India?",
     options: ["Delhi", "Mumbai", "Chennai", "Kolkata"],
-    answer: "Delhi"
+    answer: 0
+  },
+  {
+    q: "First Prime Minister of India?",
+    options: ["Gandhi", "Jawaharlal Nehru", "Patel", "Rajendra Prasad"],
+    answer: 1
+  },
+  {
+    q: "National Animal of India?",
+    options: ["Lion", "Tiger", "Elephant", "Leopard"],
+    answer: 1
+  },
+  {
+    q: "Who wrote the National Anthem?",
+    options: ["Tagore", "Premchand", "Bankim", "Nehru"],
+    answer: 0
+  },
+  {
+    q: "National Bird of India?",
+    options: ["Peacock", "Eagle", "Sparrow", "Crow"],
+    answer: 0
   }
 ];
 
+/************* STATE *************/
 let index = 0;
-let coins = 0;
 let time = 10;
-let timer;
-let locked = false;
+let timer = null;
+let coins = 0;
+let answered = false;
 
-coinEl.innerText = coins;
-levelEl.innerText = "GK / HISTORY";
+/************* ELEMENTS *************/
+const qEl = document.getElementById("question");
+const optBtns = document.querySelectorAll(".option");
+const timeEl = document.getElementById("time");
+const bar = document.getElementById("progress-bar");
+const coinEl = document.getElementById("coins");
 
+/************* SHUFFLE QUESTIONS *************/
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+}
+shuffle(questions);
+
+/************* LOAD QUESTION *************/
 function loadQuestion() {
-  locked = false;
   clearInterval(timer);
+  answered = false;
   time = 10;
-  timeText.innerText = time + "s";
-  progressBar.style.width = "100%";
+  timeEl.innerText = time;
+  bar.style.width = "100%";
+
+  optBtns.forEach(btn => {
+    btn.className = "option";
+    btn.disabled = false;
+  });
 
   if (index >= questions.length) {
-    index = 0;
     shuffle(questions);
+    index = 0;
   }
 
   const q = questions[index];
-  questionEl.innerText = q.q;
-  optionsEl.innerHTML = "";
+  qEl.innerText = q.q;
 
-  q.options.forEach(opt => {
-    const btn = document.createElement("button");
-    btn.className = "option";
-    btn.innerText = opt;
-
-    btn.onclick = () => selectAnswer(btn, q.answer);
-    optionsEl.appendChild(btn);
+  optBtns.forEach((btn, i) => {
+    btn.innerText = q.options[i];
+    btn.onclick = () => selectAnswer(i);
   });
 
-  startTimer(q.answer);
+  startTimer();
 }
 
-function startTimer(correct) {
+/************* TIMER *************/
+function startTimer() {
   timer = setInterval(() => {
     time--;
-    timeText.innerText = time + "s";
-    progressBar.style.width = (time * 10) + "%";
+    timeEl.innerText = time;
+    bar.style.width = time * 10 + "%";
 
     if (time <= 0) {
       clearInterval(timer);
-      showCorrect(correct);
-      setTimeout(nextQuestion, 1500);
+      showCorrect();
+      setTimeout(nextQuestion, 1200);
     }
   }, 1000);
 }
 
-function selectAnswer(btn, correct) {
-  if (locked) return;
-  locked = true;
+/************* ANSWER CLICK *************/
+function selectAnswer(i) {
+  if (answered) return;
+  answered = true;
   clearInterval(timer);
 
-  const buttons = document.querySelectorAll(".option");
+  const correct = questions[index].answer;
 
-  buttons.forEach(b => {
-    if (b.innerText === correct) {
-      b.style.background = "#2ecc71";
-    }
-    b.disabled = true;
-  });
+  optBtns.forEach(btn => btn.disabled = true);
 
-  if (btn.innerText === correct) {
-    btn.style.background = "#2ecc71";
+  if (i === correct) {
+    optBtns[i].classList.add("correct");
     coins += 10;
-    coinEl.innerText = coins;
+    coinEl.innerText = "Coins: " + coins;
   } else {
-    btn.style.background = "#e74c3c";
+    optBtns[i].classList.add("wrong");
+    optBtns[correct].classList.add("correct");
   }
 
-  setTimeout(nextQuestion, 1500);
+  setTimeout(nextQuestion, 1200);
 }
 
-function showCorrect(correct) {
-  const buttons = document.querySelectorAll(".option");
-  buttons.forEach(b => {
-    if (b.innerText === correct) {
-      b.style.background = "#2ecc71";
-    }
-    b.disabled = true;
-  });
+/************* SHOW CORRECT WHEN TIME UP *************/
+function showCorrect() {
+  const correct = questions[index].answer;
+  optBtns[correct].classList.add("correct");
 }
 
+/************* NEXT *************/
 function nextQuestion() {
   index++;
   loadQuestion();
 }
 
-function shuffle(arr) {
-  arr.sort(() => Math.random() - 0.5);
-}
-
-/* START */
-shuffle(questions);
+/************* START *************/
 loadQuestion();
