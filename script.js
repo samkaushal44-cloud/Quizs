@@ -1,110 +1,93 @@
-let coins = 0;
-let time = 10;
-let timer = null;
-let answered = false;
-let currentCorrect = "";
-
 const questionEl = document.getElementById("question");
 const optionsEl = document.getElementById("options");
-const timeEl = document.getElementById("time");
-const progress = document.getElementById("progress");
 const coinsEl = document.getElementById("coins");
+const progressEl = document.getElementById("progress");
 
-async function loadQuestion() {
-  // RESET
-  answered = false;
+let questions = [];
+let index = 0;
+let coins = 0;
+let timer;
+let timeLeft = 10;
+let answered = false;
+
+// 🔥 LOAD QUESTIONS FROM JSON (API STYLE)
+fetch("questions.json")
+  .then(res => res.json())
+  .then(data => {
+    questions = shuffle(data);
+    loadQuestion();
+  })
+  .catch(() => {
+    questionEl.innerText = "No question found";
+  });
+
+function loadQuestion() {
+  if (!questions.length) return;
+
   clearInterval(timer);
+  answered = false;
+  timeLeft = 10;
+  progressEl.style.width = "100%";
+
+  const q = questions[index];
+  questionEl.innerText = q.question;
   optionsEl.innerHTML = "";
-  questionEl.innerText = "Loading...";
-  time = 10;
-  timeEl.innerText = time;
-  progress.style.width = "100%";
 
-  try {
-    const res = await fetch(
-      "https://opentdb.com/api.php?amount=1&category=9&difficulty=easy&type=multiple"
-    );
-    const data = await res.json();
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement("button");
+    btn.innerText = opt;
+    btn.onclick = () => selectAnswer(i, btn);
+    optionsEl.appendChild(btn);
+  });
 
-    if (!data.results || data.results.length === 0) {
-      questionEl.innerText = "No question found, retrying...";
-      setTimeout(loadQuestion, 1000);
-      return;
-    }
+  timer = setInterval(updateTimer, 1000);
+}
 
-    const q = data.results[0];
-    currentCorrect = q.correct_answer;
+function updateTimer() {
+  timeLeft--;
+  progressEl.style.width = (timeLeft * 10) + "%";
 
-    questionEl.innerHTML = q.question;
-
-    let answers = [...q.incorrect_answers, q.correct_answer];
-    answers = shuffle(answers);
-
-    answers.forEach(ans => {
-      const btn = document.createElement("button");
-      btn.innerHTML = ans;
-      btn.onclick = () => selectAnswer(btn, ans);
-      optionsEl.appendChild(btn);
-    });
-
-    startTimer();
-  } catch (e) {
-    questionEl.innerText = "Network error, retrying...";
-    setTimeout(loadQuestion, 1500);
+  if (timeLeft <= 0) {
+    clearInterval(timer);
+    showCorrect();
+    nextQuestion();
   }
 }
 
-function selectAnswer(btn, selected) {
+function selectAnswer(i, btn) {
   if (answered) return;
   answered = true;
   clearInterval(timer);
 
+  const correct = questions[index].answer;
   const buttons = optionsEl.querySelectorAll("button");
-  buttons.forEach(b => b.disabled = true);
 
-  if (selected === currentCorrect) {
+  if (i === correct) {
     btn.classList.add("correct");
     coins += 10;
     coinsEl.innerText = "Coins: " + coins;
   } else {
     btn.classList.add("wrong");
-    buttons.forEach(b => {
-      if (b.innerHTML === currentCorrect) {
-        b.classList.add("correct");
-      }
-    });
+    buttons[correct].classList.add("correct");
   }
 
-  setTimeout(loadQuestion, 2000);
+  setTimeout(nextQuestion, 1500);
 }
 
-function startTimer() {
-  timer = setInterval(() => {
-    time--;
-    timeEl.innerText = time;
-    progress.style.width = (time * 10) + "%";
+function showCorrect() {
+  const buttons = optionsEl.querySelectorAll("button");
+  buttons[questions[index].answer].classList.add("correct");
+}
 
-    if (time <= 0) {
-      clearInterval(timer);
-      answered = true;
-
-      // show correct answer
-      const buttons = optionsEl.querySelectorAll("button");
-      buttons.forEach(b => {
-        b.disabled = true;
-        if (b.innerHTML === currentCorrect) {
-          b.classList.add("correct");
-        }
-      });
-
-      setTimeout(loadQuestion, 2000);
-    }
-  }, 1000);
+function nextQuestion() {
+  index++;
+  if (index >= questions.length) {
+    index = 0;
+    questions = shuffle(questions);
+  }
+  loadQuestion();
 }
 
 function shuffle(arr) {
   return arr.sort(() => Math.random() - 0.5);
 }
-
-// START
-loadQuestion();
