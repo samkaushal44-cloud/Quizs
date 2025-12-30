@@ -1,72 +1,86 @@
 let coins = 0;
 let index = 0;
 let quiz = [];
+let seenQuestions = new Set(); // 🧠 history
 
-/* 🌐 ONLINE QUESTIONS API (UNLIMITED) */
-const API_URL =
-"https://opentdb.com/api.php?amount=10&type=multiple";
-
-/* 🔄 SHUFFLE OPTIONS */
-function shuffleOptions(options) {
-  const keys = Object.keys(options);
-  for (let i = keys.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [keys[i], keys[j]] = [keys[j], keys[i]];
-  }
-
-  const shuffled = {};
-  keys.forEach(k => shuffled[k] = options[k]);
-  return shuffled;
+/* 🌐 ONLINE API (UNLIMITED) */
+function getAPI() {
+  return (
+    "https://opentdb.com/api.php?amount=10&type=multiple&ts=" +
+    Date.now() // 🔥 cache bust
+  );
 }
 
-/* 📥 LOAD QUESTIONS FROM API */
-function loadFromAPI() {
-  fetch(API_URL)
-    .then(res => res.json())
-    .then(data => {
-      quiz = data.results.map(q => {
-        let options = {
-          A: q.correct_answer,
-          B: q.incorrect_answers[0],
-          C: q.incorrect_answers[1],
-          D: q.incorrect_answers[2]
-        };
-
-        options = shuffleOptions(options);
-
-        let correctKey = Object.keys(options)
-          .find(k => options[k] === q.correct_answer);
-
-        return {
-          q: decodeHTML(q.question),
-          options: {
-            A: decodeHTML(options.A),
-            B: decodeHTML(options.B),
-            C: decodeHTML(options.C),
-            D: decodeHTML(options.D)
-          },
-          ans: correctKey,
-          level: "Online",
-          reward: 10
-        };
-      });
-
-      index = 0;
-      loadQuestion();
-    });
-}
-
-/* 🔤 HTML DECODE (API text clean) */
+/* 🔤 HTML decode */
 function decodeHTML(text) {
   const txt = document.createElement("textarea");
   txt.innerHTML = text;
   return txt.value;
 }
 
+/* 🔀 shuffle helper */
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+}
+
+/* 📥 LOAD QUESTIONS */
+function loadFromAPI() {
+  fetch(getAPI())
+    .then(res => res.json())
+    .then(data => {
+      const fresh = [];
+
+      data.results.forEach(q => {
+        const questionText = decodeHTML(q.question);
+
+        // ❌ skip if already seen
+        if (seenQuestions.has(questionText)) return;
+
+        seenQuestions.add(questionText);
+
+        const optionsArr = [
+          q.correct_answer,
+          ...q.incorrect_answers
+        ].map(decodeHTML);
+
+        shuffle(optionsArr);
+
+        const correctIndex =
+          optionsArr.indexOf(decodeHTML(q.correct_answer));
+
+        fresh.push({
+          q: questionText,
+          options: {
+            A: optionsArr[0],
+            B: optionsArr[1],
+            C: optionsArr[2],
+            D: optionsArr[3]
+          },
+          ans: ["A","B","C","D"][correctIndex],
+          level: "Online",
+          reward: 10
+        });
+      });
+
+      // agar is batch me bhi sab repeat ho gaye
+      if (fresh.length === 0) {
+        loadFromAPI(); // 🔁 try again
+        return;
+      }
+
+      quiz = fresh;
+      index = 0;
+      loadQuestion();
+    });
+}
+
 /* ❓ LOAD QUESTION */
 function loadQuestion() {
   if (index >= quiz.length) {
-    loadFromAPI(); // 🔁 NEW QUESTIONS
+    loadFromAPI(); // 🔁 new batch
     return;
   }
 
@@ -100,7 +114,7 @@ function checkAnswer(option) {
     coins += quiz[index].reward;
     coinsEl.innerText = "Coins: " + coins;
 
-    // 🎉 celebration flash
+    // 🎉 flash
     app.classList.add("celebrate");
     setTimeout(() => app.classList.remove("celebrate"), 500);
 
@@ -109,7 +123,6 @@ function checkAnswer(option) {
       index++;
       loadQuestion();
     }, 700);
-
   } else {
     btn.classList.add("wrong");
   }
