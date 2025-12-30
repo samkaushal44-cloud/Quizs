@@ -10,15 +10,6 @@
 
 <div class="app">
 
-  <!-- BANNER AD -->
-  <div class="banner-ad">
-    <span>🔔 Sponsored</span>
-    <div class="banner-box" onclick="alert('Ad Clicked!')">
-      <p>🔥 Banner Ad</p>
-      <small>320 × 50</small>
-    </div>
-  </div>
-
   <h1>Quiz Jeeto</h1>
 
   <div class="top">
@@ -33,22 +24,30 @@
     </div>
   </div>
 
-  <div id="question">Loading question...</div>
-
-  <div class="options">
-    <button class="option" onclick="checkAnswer(0)" id="opt0"></button>
-    <button class="option" onclick="checkAnswer(1)" id="opt1"></button>
-    <button class="option" onclick="checkAnswer(2)" id="opt2"></button>
-    <button class="option" onclick="checkAnswer(3)" id="opt3"></button>
+  <div id="question">
+    In ancient Greece, what was considered a source of wise counsel?
   </div>
+
+  <button class="option">Weasel</button>
+  <button class="option">Titan</button>
+  <button class="option">Oracle</button>
+  <button class="option">Archon</button>
 
   <div class="ad-box">
     <span>📺 Watch Ad & Get Coins</span>
-    <button onclick="alert('Ad Playing…')">Watch Ad</button>
+    <button onclick="alert('Rewarded Ad Playing')">Watch Ad</button>
   </div>
 
 </div>
 
-<script src="script.js"></script>
+<!-- 🔥 FIXED BOTTOM BANNER AD -->
+<div class="bottom-banner">
+  <span>Sponsored</span>
+  <div class="banner-box" onclick="alert('Banner Ad Clicked')">
+    <strong>🔥 Banner Ad</strong>
+    <small>320 × 50</small>
+  </div>
+</div>
+
 </body>
 </html>
