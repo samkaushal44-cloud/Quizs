@@ -1,81 +1,102 @@
-* {
-  box-sizing: border-box;
+*{
+  box-sizing:border-box;
   font-family: Arial, sans-serif;
 }
 
-body {
-  margin: 0;
-  min-height: 100vh;
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+body{
+  margin:0;
+  min-height:100vh;
+  background:linear-gradient(135deg,#6a77ff,#9b59b6);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
 }
 
-.app {
-  background: #f2f6ff;
-  width: 95%;
-  max-width: 420px;
-  margin-top: 20px;
-  padding: 20px;
-  border-radius: 20px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-  text-align: center;
+.app{
+  background:#f3f6ff;
+  width:95%;
+  max-width:420px;
+  padding:20px;
+  border-radius:16px;
+  text-align:center;
 }
 
-.top {
-  display: flex;
-  justify-content: space-between;
-  font-weight: bold;
-  margin-bottom: 10px;
+.top{
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:10px;
+  font-weight:bold;
 }
 
-.timer {
-  width: 100%;
-  height: 10px;
-  background: #ddd;
-  border-radius: 10px;
-  overflow: hidden;
-  margin: 10px 0;
+#timeText{
+  font-weight:bold;
+  margin-bottom:6px;
 }
 
-#progress {
-  height: 100%;
-  width: 100%;
-  background: linear-gradient(to right, green, yellow, red);
+.timer{
+  width:100%;
+  height:10px;
+  background:#ddd;
+  border-radius:10px;
+  overflow:hidden;
+  margin-bottom:15px;
 }
 
-#options button {
-  width: 100%;
-  padding: 12px;
-  margin: 8px 0;
-  border: none;
-  border-radius: 12px;
-  background: #5a7cff;
-  color: white;
-  font-size: 16px;
+.bar{
+  height:100%;
+  width:100%;
+  background:linear-gradient(to right,green,yellow,red);
 }
 
-#options button.correct {
-  background: #2ecc71;
+#question{
+  margin:15px 0;
 }
 
-#options button.wrong {
-  background: #e74c3c;
+#options button{
+  width:100%;
+  padding:12px;
+  margin:6px 0;
+  border:none;
+  border-radius:10px;
+  background:#5b7cfa;
+  color:#fff;
+  font-size:16px;
+  cursor:pointer;
 }
 
-.watch-ad, .withdraw {
-  margin-top: 15px;
-  padding: 10px;
-  background: #fff;
-  border-radius: 12px;
+#options button.correct{
+  background:#2ecc71;
 }
 
-.banner {
-  margin-top: auto;
-  width: 100%;
-  text-align: center;
-  background: orange;
-  padding: 10px;
-  font-weight: bold;
+#options button.wrong{
+  background:#e74c3c;
+}
+
+#options button:disabled{
+  opacity:0.8;
+}
+
+.ads-box, .withdraw{
+  border:2px dashed #aaa;
+  padding:10px;
+  margin-top:10px;
+  border-radius:10px;
+}
+
+.ads-box button,
+.withdraw button{
+  margin-top:6px;
+  padding:6px 12px;
+}
+
+.banner{
+  margin-top:10px;
+  background:orange;
+  color:#000;
+  width:100%;
+  max-width:420px;
+  text-align:center;
+  padding:10px;
+  border-radius:10px;
 }
