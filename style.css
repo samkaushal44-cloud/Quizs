@@ -9,7 +9,7 @@ html, body {
   height: 100%;
 }
 
-/* 🔥 BACKGROUND GRADIENT */
+/* BACKGROUND */
 body {
   font-family: Arial, sans-serif;
   background: linear-gradient(135deg, #667eea, #764ba2);
@@ -18,12 +18,11 @@ body {
   align-items: center;
 }
 
-/* 🔥 APP CARD (NOT WHITE FULLSCREEN) */
+/* CARD APP */
 .app {
   width: 100%;
   max-width: 420px;
   min-height: 90vh;
-
   background: #ffffff;
   border-radius: 18px;
   padding: 20px;
@@ -35,25 +34,22 @@ body {
   box-shadow: 0 20px 40px rgba(0,0,0,0.25);
 }
 
-/* HEADER */
 h1 {
   text-align: center;
 }
 
-/* TOP BAR */
 .top {
   display: flex;
   justify-content: space-between;
   font-weight: bold;
 }
 
-/* QUESTION */
 #question {
   text-align: center;
   margin: 20px 0;
 }
 
-/* OPTIONS */
+/* BUTTONS */
 .options button {
   width: 100%;
   padding: 16px;
@@ -61,10 +57,8 @@ h1 {
   font-size: 16px;
   border: none;
   border-radius: 12px;
-
   background: #667eea;
-  color: #fff;
-
+  color: white;
   transition: all 0.3s ease;
 }
 
@@ -75,14 +69,13 @@ h1 {
   text-align: center;
 }
 
-/* ✅ CORRECT ANSWER (STRONG) */
+/* ANIMATIONS */
 .correct {
   background: #16a34a !important;
   transform: scale(1.12);
   box-shadow: 0 0 25px rgba(22,163,74,0.9);
 }
 
-/* ❌ WRONG ANSWER (STRONG) */
 .wrong {
   background: #dc2626 !important;
   animation: shake 0.4s;
