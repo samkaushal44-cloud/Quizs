@@ -10,6 +10,14 @@ const coinsEl = document.getElementById("coins");
 const timeText = document.getElementById("timeText");
 const progress = document.getElementById("progress");
 
+/* ---------- UTIL ---------- */
+function decodeHTML(text) {
+  const txt = document.createElement("textarea");
+  txt.innerHTML = text;
+  return txt.value;
+}
+
+/* ---------- BUTTONS ---------- */
 document.getElementById("watchAd").onclick = () => {
   coins += 20;
   updateCoins();
@@ -17,93 +25,125 @@ document.getElementById("watchAd").onclick = () => {
 };
 
 document.getElementById("withdraw").onclick = () => {
-  if(coins < 100){
+  if (coins < 100) {
     alert("❌ Minimum 100 coins required");
-  }else{
+  } else {
     alert("✅ Withdraw request sent!");
     coins = 0;
     updateCoins();
   }
 };
 
-function updateCoins(){
+function updateCoins() {
   coinsEl.innerText = "Coins: " + coins;
 }
 
-async function loadQuestion(){
+/* ---------- QUESTION LOADER ---------- */
+async function loadQuestion() {
   answered = false;
   optionsEl.innerHTML = "";
   questionEl.innerText = "Loading...";
 
-  try{
+  try {
     const res = await fetch(
-      "https://opentdb.com/api.php?amount=1&type=multiple"
+      "https://opentdb.com/api.php?amount=1&category=9&type=multiple"
     );
     const data = await res.json();
-    currentQuestion = data.results[0];
 
-    const answers = [
-      ...currentQuestion.incorrect_answers,
-      currentQuestion.correct_answer
-    ].sort(() => Math.random() - 0.5);
+    if (!data.results || data.results.length === 0) {
+      throw "Empty API";
+    }
 
-    questionEl.innerHTML = currentQuestion.question;
+    const q = data.results[0];
 
-    answers.forEach(ans=>{
-      const btn = document.createElement("button");
-      btn.innerHTML = ans;
-      btn.onclick = ()=>selectAnswer(ans,btn);
-      optionsEl.appendChild(btn);
-    });
+    currentQuestion = {
+      question: decodeHTML(q.question),
+      correct: decodeHTML(q.correct_answer),
+      options: shuffle([
+        ...q.incorrect_answers.map(decodeHTML),
+        decodeHTML(q.correct_answer)
+      ])
+    };
 
-    startTimer();
+    renderQuestion();
+  } catch (e) {
+    console.warn("API failed, using fallback");
 
-  }catch(e){
-    questionEl.innerText = "Error loading question";
+    // 🔁 FALLBACK QUESTION
+    currentQuestion = {
+      question: "Capital of India?",
+      correct: "New Delhi",
+      options: shuffle(["New Delhi", "Mumbai", "Chennai", "Kolkata"])
+    };
+
+    renderQuestion();
   }
 }
 
-function selectAnswer(ans,btn){
-  if(answered) return;
+/* ---------- RENDER ---------- */
+function renderQuestion() {
+  questionEl.innerText = currentQuestion.question;
+  optionsEl.innerHTML = "";
+
+  currentQuestion.options.forEach(opt => {
+    const btn = document.createElement("button");
+    btn.innerText = opt;
+    btn.onclick = () => selectAnswer(opt, btn);
+    optionsEl.appendChild(btn);
+  });
+
+  startTimer();
+}
+
+/* ---------- ANSWER ---------- */
+function selectAnswer(ans, btn) {
+  if (answered) return;
   answered = true;
   clearInterval(timer);
 
   const buttons = document.querySelectorAll("#options button");
-  buttons.forEach(b=>b.disabled=true);
+  buttons.forEach(b => b.disabled = true);
 
-  if(ans === currentQuestion.correct_answer){
+  if (ans === currentQuestion.correct) {
     btn.classList.add("correct");
     coins += 10;
     updateCoins();
-  }else{
+  } else {
     btn.classList.add("wrong");
-    buttons.forEach(b=>{
-      if(b.innerHTML === currentQuestion.correct_answer){
+    buttons.forEach(b => {
+      if (b.innerText === currentQuestion.correct) {
         b.classList.add("correct");
       }
     });
   }
 
-  setTimeout(loadQuestion,2000);
+  setTimeout(loadQuestion, 2000);
 }
 
-function startTimer(){
+/* ---------- TIMER ---------- */
+function startTimer() {
   time = 10;
   progress.style.width = "100%";
   timeText.innerText = "Time: 10s";
 
-  timer = setInterval(()=>{
+  timer = setInterval(() => {
     time--;
     timeText.innerText = "Time: " + time + "s";
-    progress.style.width = (time*10)+"%";
+    progress.style.width = time * 10 + "%";
 
-    if(time<=0){
+    if (time <= 0) {
       clearInterval(timer);
       answered = true;
       loadQuestion();
     }
-  },1000);
+  }, 1000);
 }
 
+/* ---------- HELPERS ---------- */
+function shuffle(arr) {
+  return arr.sort(() => Math.random() - 0.5);
+}
+
+/* ---------- START ---------- */
 updateCoins();
 loadQuestion();
