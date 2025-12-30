@@ -1,3 +1,4 @@
+/******** QUESTIONS ********/
 const allQuestions = [
   {q:"Capital of India?",o:["Delhi","Mumbai","Chennai","Kolkata"],a:0},
   {q:"Father of Nation?",o:["Gandhi","Nehru","Patel","Bose"],a:0},
@@ -6,6 +7,7 @@ const allQuestions = [
   {q:"Taj Mahal is in?",o:["Agra","Delhi","Jaipur","Bhopal"],a:0}
 ];
 
+/******** SHUFFLE ********/
 function shuffle(arr){
   for(let i=arr.length-1;i>0;i--){
     const j=Math.floor(Math.random()*(i+1));
@@ -22,12 +24,16 @@ let time=10;
 let timer;
 let answered=false;
 
+/******** ELEMENTS ********/
 const qEl=document.getElementById("question");
 const optEl=document.getElementById("options");
 const bar=document.getElementById("bar");
 const timeText=document.getElementById("timeText");
 const coinsEl=document.getElementById("coins");
+const watchAdBtn=document.getElementById("watchAdBtn");
+const withdrawBtn=document.getElementById("withdrawBtn");
 
+/******** QUIZ ********/
 loadQ();
 
 function loadQ(){
@@ -101,15 +107,22 @@ function nextQ(){
   loadQ();
 }
 
-function watchAd(){
-  navigator.vibrate?.(80);
-  coins+=20;
-  coinsEl.innerText=coins;
-  alert("🎉 Ad watched! +20 coins");
-}
+/******** WATCH AD ********/
+watchAdBtn.addEventListener("click",()=>{
+  watchAdBtn.disabled=true;
+  watchAdBtn.innerText="⏳ Playing Ad...";
 
-function withdrawCoins(){
-  navigator.vibrate?.([100,50,100]);
+  setTimeout(()=>{
+    coins+=20;
+    coinsEl.innerText=coins;
+    alert("🎉 Ad watched! +20 coins");
+    watchAdBtn.innerText="📺 Watch Ad & Get Coins";
+    watchAdBtn.disabled=false;
+  },3000);
+});
+
+/******** WITHDRAW ********/
+withdrawBtn.addEventListener("click",()=>{
   if(coins<100){
     alert("❌ Minimum 100 coins required");
   }else{
@@ -117,4 +130,4 @@ function withdrawCoins(){
     coins=0;
     coinsEl.innerText=coins;
   }
-}
+});
