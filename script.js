@@ -1,92 +1,104 @@
 let coins = 0;
-let level = "GK / HISTORY";
-let time = 10;
+let timeLeft = 10;
 let timer;
+let answered = false;
 let currentQuestion = null;
-let usedQuestions = new Set();
 
-const API_URL =
-  "https://opentdb.com/api.php?amount=1&category=9&type=multiple";
+const questions = [
+  {
+    q: "Capital of India?",
+    options: ["Mumbai","Delhi","Chennai","Kolkata"],
+    answer: "Delhi",
+    level: "GK"
+  },
+  {
+    q: "Ashoka belonged to which dynasty?",
+    options: ["Maurya","Gupta","Chola","Mughal"],
+    answer: "Maurya",
+    level: "History"
+  },
+  {
+    q: "Father of Indian Constitution?",
+    options: ["Gandhi","Ambedkar","Nehru","Patel"],
+    answer: "Ambedkar",
+    level: "GK"
+  }
+];
 
-document.getElementById("level").innerText = level;
+const qEl = document.getElementById("question");
+const optionBtns = document.querySelectorAll(".option");
+const coinsEl = document.getElementById("coins");
+const levelEl = document.getElementById("level");
+const timeEl = document.getElementById("time");
+const bar = document.querySelector(".progress-bar");
+const withdrawMsg = document.getElementById("withdrawMsg");
+
+let index = 0;
+
+function loadQuestion() {
+  answered = false;
+  clearInterval(timer);
+
+  const q = questions[index % questions.length];
+  currentQuestion = q;
+
+  qEl.innerText = q.q;
+  levelEl.innerText = q.level;
+
+  optionBtns.forEach((btn, i) => {
+    btn.innerText = q.options[i];
+    btn.className = "option";
+    btn.disabled = false;
+  });
+
+  startTimer();
+}
 
 function startTimer() {
-  clearInterval(timer);
-  time = 10;
-  document.getElementById("time").innerText = time;
-  document.getElementById("progress").style.width = "100%";
+  timeLeft = 10;
+  timeEl.innerText = timeLeft + "s";
+  bar.style.width = "100%";
 
   timer = setInterval(() => {
-    time--;
-    document.getElementById("time").innerText = time;
-    document.getElementById("progress").style.width = time * 10 + "%";
+    timeLeft--;
+    timeEl.innerText = timeLeft + "s";
+    bar.style.width = (timeLeft * 10) + "%";
 
-    if (time <= 0) {
+    if (timeLeft <= 0) {
       clearInterval(timer);
       showCorrect();
-      setTimeout(loadQuestion, 1500);
+      nextQuestion();
     }
   }, 1000);
 }
 
-async function loadQuestion() {
-  startTimer();
+optionBtns.forEach((btn) => {
+  btn.onclick = () => {
+    if (answered) return;
+    answered = true;
+    clearInterval(timer);
 
-  document.getElementById("question").innerText = "Loading...";
-  document.getElementById("options").innerHTML = "";
+    optionBtns.forEach(b => {
+      b.disabled = true;
+      if (b.innerText === currentQuestion.answer) {
+        b.classList.add("correct");
+      }
+      if (b === btn && b.innerText !== currentQuestion.answer) {
+        b.classList.add("wrong");
+      }
+    });
 
-  let data, qText;
+    if (btn.innerText === currentQuestion.answer) {
+      coins += 10;
+      coinsEl.innerText = coins;
+    }
 
-  do {
-    const res = await fetch(API_URL);
-    data = await res.json();
-    qText = decode(data.results[0].question);
-  } while (usedQuestions.has(qText));
-
-  usedQuestions.add(qText);
-
-  currentQuestion = {
-    q: qText,
-    answer: decode(data.results[0].correct_answer),
-    options: shuffle([
-      ...data.results[0].incorrect_answers.map(decode),
-      decode(data.results[0].correct_answer)
-    ])
+    nextQuestion();
   };
-
-  document.getElementById("question").innerText = currentQuestion.q;
-
-  currentQuestion.options.forEach(opt => {
-    const btn = document.createElement("button");
-    btn.innerText = opt;
-    btn.onclick = () => checkAnswer(btn, opt);
-    document.getElementById("options").appendChild(btn);
-  });
-}
-
-function checkAnswer(btn, selected) {
-  clearInterval(timer);
-
-  document.querySelectorAll("#options button").forEach(b => {
-    if (b.innerText === currentQuestion.answer) {
-      b.classList.add("correct");
-    }
-    if (b.innerText === selected && selected !== currentQuestion.answer) {
-      b.classList.add("wrong");
-    }
-    b.disabled = true;
-  });
-
-  if (selected === currentQuestion.answer) {
-    coins += 10;
-    document.getElementById("coins").innerText = coins;
-  }
-
-  setTimeout(loadQuestion, 1500);
-}
+});
 
 function showCorrect() {
-  document.querySelectorAll("#options button").forEach(b => {
+  optionBtns.forEach(b => {
     if (b.innerText === currentQuestion.answer) {
       b.classList.add("correct");
     }
@@ -94,15 +106,26 @@ function showCorrect() {
   });
 }
 
-function shuffle(arr) {
-  return arr.sort(() => Math.random() - 0.5);
+function nextQuestion() {
+  setTimeout(() => {
+    index++;
+    loadQuestion();
+  }, 1500);
 }
 
-function decode(text) {
-  const t = document.createElement("textarea");
-  t.innerHTML = text;
-  return t.value;
-}
+/* 💰 WITHDRAW LOGIC */
+document.getElementById("withdrawBtn").onclick = () => {
+  if (coins < 100) {
+    withdrawMsg.innerText = "❌ Minimum 100 coins required";
+    withdrawMsg.style.color = "red";
+    return;
+  }
 
-// START
+  withdrawMsg.innerText = "✅ Withdraw Request Submitted (Demo)";
+  withdrawMsg.style.color = "green";
+
+  coins = 0;
+  coinsEl.innerText = coins;
+};
+
 loadQuestion();
