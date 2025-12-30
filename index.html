@@ -1,51 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Quiz Jeeto</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <title>Quiz Jeeto</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" href="style.css" />
 </head>
-
 <body>
 
 <div class="app">
-
   <h1>Quiz Jeeto</h1>
 
   <div class="top">
     <div class="pill">Coins: <span id="coins">0</span></div>
-    <div class="pill">Level: <span id="level">GK / HISTORY</span></div>
+    <div class="pill">Level: <span id="level">Easy</span></div>
   </div>
 
   <div class="timer">
-    Time: <span id="time">10s</span>
-    <div class="progress">
-      <div class="progress-bar"></div>
+    <span>Time: <span id="time">10</span>s</span>
+    <div class="bar">
+      <div id="progress"></div>
     </div>
   </div>
 
   <h2 id="question">Loading...</h2>
 
-  <!-- 🔥 IMPORTANT: option class MUST be here -->
-  <div class="options">
-    <button class="option"></button>
-    <button class="option"></button>
-    <button class="option"></button>
-    <button class="option"></button>
-  </div>
+  <div id="options"></div>
 
-  <div class="reward-box">
-    📺 Watch Ad & Get Coins
-    <button class="watch">Watch Ad</button>
+  <div class="ad-box">
+    📺 Watch Ad & Get Coins  
+    <button>Watch Ad</button>
   </div>
-
 </div>
 
-<!-- BANNER AD -->
-<div class="banner">
-  🔥 Banner Ad 320 × 50
-</div>
+<div class="banner">🔥 Banner Ad 320×50</div>
 
 <script src="script.js"></script>
 </body>
