@@ -16,50 +16,56 @@ const levelEl = document.getElementById("level");
 const timerText = document.getElementById("timerText");
 const timerBar = document.getElementById("timerBar");
 
-/* API */
+/* 🇮🇳 INDIAN GK + HISTORY API */
 function apiURL(){
-  return "https://opentdb.com/api.php?amount=10&type=multiple&ts="+Date.now();
+  return "https://the-trivia-api.com/v2/questions?categories=general_knowledge,history&regions=IN&limit=10&ts=" + Date.now();
 }
 
-function decodeHTML(t){
-  const e=document.createElement("textarea");
-  e.innerHTML=t;
-  return e.value;
-}
-
-function shuffle(a){
-  for(let i=a.length-1;i>0;i--){
+/* Helpers */
+function shuffle(arr){
+  for(let i=arr.length-1;i>0;i--){
     const j=Math.floor(Math.random()*(i+1));
-    [a[i],a[j]]=[a[j],a[i]];
+    [arr[i],arr[j]]=[arr[j],arr[i]];
   }
 }
 
-/* LOAD */
+/* LOAD QUESTIONS */
 function loadFromAPI(){
-  fetch(apiURL()).then(r=>r.json()).then(d=>{
-    quiz=[];
-    d.results.forEach(q=>{
-      const qt=decodeHTML(q.question);
-      if(seenQuestions.has(qt)) return;
-      seenQuestions.add(qt);
+  fetch(apiURL())
+    .then(res=>res.json())
+    .then(data=>{
+      quiz=[];
 
-      const opts=[decodeHTML(q.correct_answer),...q.incorrect_answers.map(decodeHTML)];
-      shuffle(opts);
+      data.forEach(q=>{
+        if(seenQuestions.has(q.question.text)) return;
+        seenQuestions.add(q.question.text);
 
-      quiz.push({
-        q:qt,
-        options:{A:opts[0],B:opts[1],C:opts[2],D:opts[3]},
-        ans:["A","B","C","D"][opts.indexOf(decodeHTML(q.correct_answer))],
-        reward:10,
-        level:"Online"
+        const options=[q.correctAnswer,...q.incorrectAnswers];
+        shuffle(options);
+
+        quiz.push({
+          q: q.question.text,
+          options:{
+            A: options[0],
+            B: options[1],
+            C: options[2],
+            D: options[3]
+          },
+          ans: ["A","B","C","D"][options.indexOf(q.correctAnswer)],
+          reward: 10,
+          level: q.category.replace("_"," ").toUpperCase()
+        });
       });
+
+      index = 0;
+      loadQuestion();
+    })
+    .catch(()=>{
+      questionEl.innerText="Network error. Reload page.";
     });
-    index=0;
-    loadQuestion();
-  });
 }
 
-/* ⏱️ TIMER WITH DANGER MODE */
+/* ⏱️ TIMER */
 function startTimer(){
   stopTimer();
   timeLeft=10;
@@ -72,12 +78,9 @@ function startTimer(){
     timerText.innerText="Time: "+timeLeft+"s";
     timerBar.style.width=(timeLeft/10*100)+"%";
 
-    /* 🔴 LAST 3 SEC ALERT */
     if(timeLeft<=3){
       timerText.classList.add("danger");
-      if(navigator.vibrate){
-        navigator.vibrate(200);
-      }
+      if(navigator.vibrate) navigator.vibrate(200);
     }
 
     if(timeLeft<=0){
@@ -101,6 +104,7 @@ function loadQuestion(){
     loadFromAPI();
     return;
   }
+
   const q=quiz[index];
   questionEl.innerText=q.q;
   A.innerText=q.options.A;
@@ -112,17 +116,18 @@ function loadQuestion(){
   startTimer();
 }
 
+/* RESET */
 function resetButtons(){
   [A,B,C,D].forEach(b=>b.classList.remove("correct","wrong"));
 }
 
 /* ANSWER */
-function checkAnswer(o){
+function checkAnswer(option){
   stopTimer();
   resetButtons();
-  const btn=document.getElementById(o);
 
-  if(o===quiz[index].ans){
+  const btn=document.getElementById(option);
+  if(option===quiz[index].ans){
     btn.classList.add("correct");
     coins+=quiz[index].reward;
     coinsEl.innerText="Coins: "+coins;
@@ -143,4 +148,5 @@ function watchAd(){
   alert("+20 Coins");
 }
 
+/* START */
 loadFromAPI();
