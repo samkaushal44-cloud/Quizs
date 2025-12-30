@@ -1,141 +1,134 @@
 let coins = 0;
 let index = 0;
 let quiz = [];
-let seenQuestions = new Set(); // 🧠 history
+let timer = null;
+let timeLeft = 10; // ⏱️ seconds
+let seenQuestions = new Set();
 
-/* 🌐 ONLINE API (UNLIMITED) */
-function getAPI() {
-  return (
-    "https://opentdb.com/api.php?amount=10&type=multiple&ts=" +
-    Date.now() // 🔥 cache bust
+/* ===== API with cache-bust ===== */
+function apiURL(){
+  return "https://opentdb.com/api.php?amount=10&type=multiple&ts=" + Date.now();
+}
+
+/* ===== helpers ===== */
+function decodeHTML(t){
+  const e=document.createElement("textarea"); e.innerHTML=t; return e.value;
+}
+function shuffle(a){
+  for(let i=a.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [a[i],a[j]]=[a[j],a[i]];
+  }
+}
+
+/* ===== fetch questions ===== */
+function loadFromAPI(){
+  fetch(apiURL()).then(r=>r.json()).then(d=>{
+    const fresh=[];
+    d.results.forEach(q=>{
+      const text=decodeHTML(q.question);
+      if(seenQuestions.has(text)) return;
+      seenQuestions.add(text);
+
+      const opts=[q.correct_answer,...q.incorrect_answers].map(decodeHTML);
+      shuffle(opts);
+      const correctKey=["A","B","C","D"][opts.indexOf(decodeHTML(q.correct_answer))];
+
+      fresh.push({
+        q:text,
+        options:{A:opts[0],B:opts[1],C:opts[2],D:opts[3]},
+        ans:correctKey,
+        level:"Online",
+        reward:10
+      });
+    });
+    if(!fresh.length){ loadFromAPI(); return; }
+    quiz=fresh; index=0; loadQuestion();
+  });
+}
+
+/* ===== timer UI ===== */
+function ensureTimerUI(){
+  if(document.querySelector(".timer-wrap")) return;
+  const wrap=document.createElement("div");
+  wrap.className="timer-wrap";
+  wrap.innerHTML='<div class="timer-bar" id="timerBar"></div>';
+  document.querySelector(".app").insertBefore(
+    wrap, document.getElementById("question")
   );
 }
 
-/* 🔤 HTML decode */
-function decodeHTML(text) {
-  const txt = document.createElement("textarea");
-  txt.innerHTML = text;
-  return txt.value;
+function startTimer(){
+  stopTimer();
+  timeLeft=10;
+  const bar=document.getElementById("timerBar");
+  bar.style.width="100%";
+  timer=setInterval(()=>{
+    timeLeft--;
+    bar.style.width=(timeLeft/10*100)+"%";
+    if(timeLeft<=0){
+      stopTimer();
+      timeUp();
+    }
+  },1000);
+}
+function stopTimer(){
+  if(timer){ clearInterval(timer); timer=null; }
 }
 
-/* 🔀 shuffle helper */
-function shuffle(arr) {
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [arr[i], arr[j]] = [arr[j], arr[i]];
-  }
+/* ===== load question ===== */
+function loadQuestion(){
+  if(index>=quiz.length){ loadFromAPI(); return; }
+  ensureTimerUI();
+  const q=quiz[index];
+  question.innerText=q.q;
+  A.innerText=q.options.A;
+  B.innerText=q.options.B;
+  C.innerText=q.options.C;
+  D.innerText=q.options.D;
+  level.innerText="Level: "+q.level;
+  resetButtons();
+  startTimer();
 }
 
-/* 📥 LOAD QUESTIONS */
-function loadFromAPI() {
-  fetch(getAPI())
-    .then(res => res.json())
-    .then(data => {
-      const fresh = [];
-
-      data.results.forEach(q => {
-        const questionText = decodeHTML(q.question);
-
-        // ❌ skip if already seen
-        if (seenQuestions.has(questionText)) return;
-
-        seenQuestions.add(questionText);
-
-        const optionsArr = [
-          q.correct_answer,
-          ...q.incorrect_answers
-        ].map(decodeHTML);
-
-        shuffle(optionsArr);
-
-        const correctIndex =
-          optionsArr.indexOf(decodeHTML(q.correct_answer));
-
-        fresh.push({
-          q: questionText,
-          options: {
-            A: optionsArr[0],
-            B: optionsArr[1],
-            C: optionsArr[2],
-            D: optionsArr[3]
-          },
-          ans: ["A","B","C","D"][correctIndex],
-          level: "Online",
-          reward: 10
-        });
-      });
-
-      // agar is batch me bhi sab repeat ho gaye
-      if (fresh.length === 0) {
-        loadFromAPI(); // 🔁 try again
-        return;
-      }
-
-      quiz = fresh;
-      index = 0;
-      loadQuestion();
-    });
-}
-
-/* ❓ LOAD QUESTION */
-function loadQuestion() {
-  if (index >= quiz.length) {
-    loadFromAPI(); // 🔁 new batch
-    return;
-  }
-
-  const q = quiz[index];
-  question.innerText = q.q;
-  A.innerText = q.options.A;
-  B.innerText = q.options.B;
-  C.innerText = q.options.C;
-  D.innerText = q.options.D;
-  level.innerText = "Level: " + q.level;
-}
-
-/* 🔄 RESET BUTTONS */
-function resetButtons() {
-  ["A","B","C","D"].forEach(id => {
+function resetButtons(){
+  ["A","B","C","D"].forEach(id=>{
     document.getElementById(id).classList.remove("correct","wrong");
   });
 }
 
-/* ✅ CHECK ANSWER */
-function checkAnswer(option) {
-  const btn = document.getElementById(option);
-  const app = document.querySelector(".app");
+/* ===== answer ===== */
+function checkAnswer(option){
+  stopTimer();
+  const btn=document.getElementById(option);
+  const app=document.querySelector(".app");
+  resetButtons(); void btn.offsetWidth;
 
-  resetButtons();
-  void btn.offsetWidth;
-
-  if (option === quiz[index].ans) {
+  if(option===quiz[index].ans){
     btn.classList.add("correct");
-
-    coins += quiz[index].reward;
-    coinsEl.innerText = "Coins: " + coins;
-
-    // 🎉 flash
+    coins+=quiz[index].reward;
+    coinsEl.innerText="Coins: "+coins;
     app.classList.add("celebrate");
-    setTimeout(() => app.classList.remove("celebrate"), 500);
-
-    setTimeout(() => {
-      resetButtons();
-      index++;
-      loadQuestion();
-    }, 700);
-  } else {
+    setTimeout(()=>app.classList.remove("celebrate"),500);
+  }else{
     btn.classList.add("wrong");
   }
+  setTimeout(()=>{ index++; loadQuestion(); },700);
 }
 
-/* 📺 AD */
-function watchAd() {
-  coins += 20;
-  coinsEl.innerText = "Coins: " + coins;
-  alert("+20 Coins");
+/* ===== time up ===== */
+function timeUp(){
+  const app=document.querySelector(".app");
+  app.classList.add("celebrate");
+  setTimeout(()=>app.classList.remove("celebrate"),400);
+  index++;
+  loadQuestion();
 }
 
-const coinsEl = document.getElementById("coins");
+/* ===== ad ===== */
+function watchAd(){
+  coins+=20; coinsEl.innerText="Coins: "+coins; alert("+20 Coins");
+}
 
-/* 🚀 START */
+const coinsEl=document.getElementById("coins");
 loadFromAPI();
