@@ -1,36 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Quiz Jeeto</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <link rel="stylesheet" href="style.css" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz Jeeto</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <div class="app">
+
   <h1>Quiz Jeeto</h1>
 
   <div class="top">
     <div class="pill">Coins: <span id="coins">0</span></div>
-    <div class="pill">Level: <span id="level">Easy</span></div>
+    <div class="pill">Level: <span id="level">GK / HISTORY</span></div>
   </div>
 
   <div class="timer">
-    <span>Time: <span id="time">10</span>s</span>
-    <div class="bar">
-      <div id="progress"></div>
+    Time: <span id="time">10s</span>
+    <div class="progress">
+      <div class="progress-bar"></div>
     </div>
   </div>
 
   <h2 id="question">Loading...</h2>
 
-  <div id="options"></div>
-
-  <div class="ad-box">
-    📺 Watch Ad & Get Coins  
-    <button>Watch Ad</button>
+  <div class="options">
+    <button class="option"></button>
+    <button class="option"></button>
+    <button class="option"></button>
+    <button class="option"></button>
   </div>
+
+  <!-- 💰 WITHDRAW SECTION -->
+  <div class="withdraw-box">
+    <p>💰 Minimum Withdraw: <b>100 Coins</b></p>
+    <button id="withdrawBtn">Withdraw Coins</button>
+    <p id="withdrawMsg"></p>
+  </div>
+
 </div>
 
 <div class="banner">🔥 Banner Ad 320×50</div>
