@@ -2,48 +2,48 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Quiz Jeeto</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <link rel="stylesheet" href="style.css?v=1" />
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <div class="app">
-  <div class="card">
+  <h1>Quiz Jeeto</h1>
 
-    <h1>Quiz Jeeto</h1>
+  <div class="top">
+    <span id="coins">Coins: 0</span>
+    <span id="level">Level: GK</span>
+  </div>
 
-    <div class="top">
-      <span id="coins">Coins: 0</span>
-      <span id="level">Level: GK</span>
-    </div>
+  <div class="timer">
+    <div id="progress"></div>
+  </div>
 
-    <div class="timer">
-      <span id="timeText">Time: 10s</span>
-      <div class="bar">
-        <div id="progress"></div>
-      </div>
-    </div>
+  <h2 id="question">Loading...</h2>
 
-    <h2 id="question">Loading...</h2>
+  <div id="options"></div>
 
-    <div id="options"></div>
+  <div class="actions">
+    <button id="watchAd">📺 Watch Ad & Get Coins</button>
+    <button id="withdrawBtn">💰 Withdraw</button>
+  </div>
 
-    <div class="actions">
-      <button id="watchAd">📺 Watch Ad & Get Coins</button>
-      <button id="withdraw">💰 Withdraw</button>
-    </div>
+  <p class="min">Minimum Withdraw: 100 Coins</p>
+</div>
 
-    <p class="min">Minimum Withdraw: 100 Coins</p>
-
+<!-- Withdraw Modal -->
+<div id="withdrawModal" class="modal">
+  <div class="modal-box">
+    <h3>Withdraw Coins</h3>
+    <input type="text" id="upi" placeholder="Enter UPI ID">
+    <button onclick="confirmWithdraw()">Submit</button>
+    <button onclick="closeModal()">Cancel</button>
   </div>
 </div>
 
-<div class="banner">
-  🔥 Banner Ad 320 × 50
-</div>
+<div class="banner">🔥 Banner Ad 320 × 50</div>
 
-<script src="script.js?v=1"></script>
+<script src="script.js"></script>
 </body>
 </html>
