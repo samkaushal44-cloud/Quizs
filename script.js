@@ -1,93 +1,113 @@
-const questionEl = document.getElementById("question");
-const optionsEl = document.getElementById("options");
-const coinsEl = document.getElementById("coins");
-const progressEl = document.getElementById("progress");
+const questions = [
+  {
+    q: "Capital of India?",
+    o: ["Delhi","Mumbai","Chennai","Kolkata"],
+    a: 0
+  },
+  {
+    q: "Who wrote the National Anthem?",
+    o: ["Tagore","Premchand","Bankim","Nehru"],
+    a: 0
+  },
+  {
+    q: "Taj Mahal is in which city?",
+    o: ["Delhi","Agra","Jaipur","Bhopal"],
+    a: 1
+  }
+];
 
-let questions = [];
 let index = 0;
 let coins = 0;
+let time = 10;
 let timer;
-let timeLeft = 10;
 let answered = false;
 
-// 🔥 LOAD QUESTIONS FROM JSON (API STYLE)
-fetch("questions.json")
-  .then(res => res.json())
-  .then(data => {
-    questions = shuffle(data);
-    loadQuestion();
-  })
-  .catch(() => {
-    questionEl.innerText = "No question found";
-  });
+const qEl = document.getElementById("question");
+const optEl = document.getElementById("options");
+const bar = document.getElementById("bar");
+const timeText = document.getElementById("timeText");
+const coinsEl = document.getElementById("coins");
 
-function loadQuestion() {
-  if (!questions.length) return;
+loadQ();
 
+function loadQ(){
   clearInterval(timer);
   answered = false;
-  timeLeft = 10;
-  progressEl.style.width = "100%";
 
-  const q = questions[index];
-  questionEl.innerText = q.question;
-  optionsEl.innerHTML = "";
+  if(index >= questions.length){
+    index = 0;
+  }
 
-  q.options.forEach((opt, i) => {
-    const btn = document.createElement("button");
-    btn.innerText = opt;
-    btn.onclick = () => selectAnswer(i, btn);
-    optionsEl.appendChild(btn);
+  let q = questions[index];
+  qEl.innerText = q.q;
+  optEl.innerHTML = "";
+
+  q.o.forEach((text,i)=>{
+    let btn = document.createElement("button");
+    btn.innerText = text;
+    btn.onclick = ()=>selectAnswer(i);
+    optEl.appendChild(btn);
   });
 
-  timer = setInterval(updateTimer, 1000);
+  time = 10;
+  bar.style.width = "100%";
+  timeText.innerText = "Time: 10s";
+
+  timer = setInterval(()=>{
+    time--;
+    bar.style.width = (time*10)+"%";
+    timeText.innerText = "Time: "+time+"s";
+
+    if(time<=0){
+      clearInterval(timer);
+      showCorrect();
+      setTimeout(nextQ,1200);
+    }
+  },1000);
 }
 
-function updateTimer() {
-  timeLeft--;
-  progressEl.style.width = (timeLeft * 10) + "%";
-
-  if (timeLeft <= 0) {
-    clearInterval(timer);
-    showCorrect();
-    nextQuestion();
-  }
-}
-
-function selectAnswer(i, btn) {
-  if (answered) return;
+function selectAnswer(i){
+  if(answered) return;
   answered = true;
   clearInterval(timer);
 
-  const correct = questions[index].answer;
-  const buttons = optionsEl.querySelectorAll("button");
+  let q = questions[index];
+  let btns = optEl.children;
 
-  if (i === correct) {
-    btn.classList.add("correct");
+  btns[q.a].classList.add("correct");
+
+  if(i === q.a){
     coins += 10;
-    coinsEl.innerText = "Coins: " + coins;
-  } else {
-    btn.classList.add("wrong");
-    buttons[correct].classList.add("correct");
+    coinsEl.innerText = coins;
+  }else{
+    btns[i].classList.add("wrong");
   }
 
-  setTimeout(nextQuestion, 1500);
+  setTimeout(nextQ,1200);
 }
 
-function showCorrect() {
-  const buttons = optionsEl.querySelectorAll("button");
-  buttons[questions[index].answer].classList.add("correct");
+function showCorrect(){
+  let q = questions[index];
+  optEl.children[q.a].classList.add("correct");
 }
 
-function nextQuestion() {
+function nextQ(){
   index++;
-  if (index >= questions.length) {
-    index = 0;
-    questions = shuffle(questions);
-  }
-  loadQuestion();
+  loadQ();
 }
 
-function shuffle(arr) {
-  return arr.sort(() => Math.random() - 0.5);
+function watchAd(){
+  coins += 20;
+  coinsEl.innerText = coins;
+  alert("Ad watched! +20 coins");
+}
+
+function withdraw(){
+  if(coins < 100){
+    alert("Minimum 100 coins required");
+  }else{
+    alert("Withdraw request sent");
+    coins = 0;
+    coinsEl.innerText = coins;
+  }
 }
