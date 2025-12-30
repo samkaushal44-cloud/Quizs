@@ -1,101 +1,99 @@
+let coins = 0;
+let level = "Easy";
+let time = 10;
+let timer;
+let currentQuestion = null;
+
 const questions = [
   {
     q: "Who was the first Prime Minister of India?",
-    options: ["Gandhi", "Jawaharlal Nehru", "Patel", "Rajendra Prasad"],
-    answer: 1,
-    level: "GK / HISTORY"
+    options: ["Gandhi","Jawaharlal Nehru","Patel","Rajendra Prasad"],
+    answer: "Jawaharlal Nehru"
+  },
+  {
+    q: "In ancient Greece, source of wise counsel?",
+    options: ["Weasel","Titan","Oracle","Archon"],
+    answer: "Oracle"
   },
   {
     q: "Capital of India?",
-    options: ["Mumbai", "Delhi", "Kolkata", "Chennai"],
-    answer: 1,
-    level: "GK"
-  },
-  {
-    q: "Ashoka belonged to which dynasty?",
-    options: ["Maurya", "Gupta", "Chola", "Mughal"],
-    answer: 0,
-    level: "HISTORY"
+    options: ["Mumbai","Delhi","Chennai","Kolkata"],
+    answer: "Delhi"
   }
 ];
 
-let index = 0;
-let coins = 0;
-let timeLeft = 10;
-let timerInterval;
-let answered = false;
-
-const qEl = document.getElementById("question");
-const optionBtns = document.querySelectorAll(".option");
-const coinsEl = document.getElementById("coins");
-const levelEl = document.getElementById("level");
-const timeEl = document.getElementById("time");
-const bar = document.querySelector(".progress-bar");
-
-function loadQuestion() {
-  answered = false;
-  clearInterval(timerInterval);
-
-  const q = questions[index % questions.length];
-
-  qEl.innerText = q.q;
-  levelEl.innerText = q.level;
-  coinsEl.innerText = coins;
-
-  optionBtns.forEach((btn, i) => {
-    btn.innerText = q.options[i];
-    btn.className = "option";
-    btn.disabled = false;
-  });
-
-  timeLeft = 10;
-  timeEl.innerText = timeLeft + "s";
-  bar.style.width = "100%";
-
-  startTimer();
+function setLevel() {
+  if (coins >= 100) level = "Hard";
+  else if (coins >= 50) level = "Medium";
+  else level = "Easy";
+  document.getElementById("level").innerText = level;
 }
 
 function startTimer() {
-  timerInterval = setInterval(() => {
-    timeLeft--;
-    timeEl.innerText = timeLeft + "s";
-    bar.style.width = (timeLeft * 10) + "%";
+  clearInterval(timer);
+  time = 10;
+  document.getElementById("time").innerText = time;
+  document.getElementById("progress").style.width = "100%";
 
-    if (timeLeft <= 0) {
-      clearInterval(timerInterval);
-      showAnswer(-1); // time up
+  timer = setInterval(() => {
+    time--;
+    document.getElementById("time").innerText = time;
+    document.getElementById("progress").style.width = (time*10) + "%";
+
+    if (time <= 0) {
+      clearInterval(timer);
+      showCorrect();
+      setTimeout(loadQuestion, 2000);
     }
   }, 1000);
 }
 
-optionBtns.forEach((btn, i) => {
-  btn.onclick = () => {
-    if (answered) return;
-    showAnswer(i);
-  };
-});
+function loadQuestion() {
+  startTimer();
+  currentQuestion = questions[Math.floor(Math.random()*questions.length)];
 
-function showAnswer(selectedIndex) {
-  answered = true;
-  clearInterval(timerInterval);
+  document.getElementById("question").innerText = currentQuestion.q;
+  const box = document.getElementById("options");
+  box.innerHTML = "";
 
-  const correctIndex = questions[index % questions.length].answer;
+  currentQuestion.options.forEach(opt => {
+    const btn = document.createElement("button");
+    btn.innerText = opt;
+    btn.onclick = () => checkAnswer(btn, opt);
+    box.appendChild(btn);
+  });
+}
 
-  optionBtns.forEach((btn, i) => {
-    btn.disabled = true;
-    if (i === correctIndex) btn.classList.add("correct");
-    if (i === selectedIndex && i !== correctIndex) btn.classList.add("wrong");
+function checkAnswer(btn, selected) {
+  clearInterval(timer);
+  const buttons = document.querySelectorAll("#options button");
+
+  buttons.forEach(b => {
+    if (b.innerText === currentQuestion.answer) {
+      b.classList.add("correct");
+    }
+    if (b.innerText === selected && selected !== currentQuestion.answer) {
+      b.classList.add("wrong");
+    }
+    b.disabled = true;
   });
 
-  if (selectedIndex === correctIndex) {
+  if (selected === currentQuestion.answer) {
     coins += 10;
-    coinsEl.innerText = coins;
+    document.getElementById("coins").innerText = coins;
+    setLevel();
   }
 
-  setTimeout(() => {
-    index++;
-    loadQuestion();
-  }, 1200);
+  setTimeout(loadQuestion, 2000);
+}
+
+function showCorrect() {
+  document.querySelectorAll("#options button").forEach(b => {
+    if (b.innerText === currentQuestion.answer) {
+      b.classList.add("correct");
+    }
+    b.disabled = true;
+  });
 }
 
 loadQuestion();
