@@ -1,46 +1,40 @@
 const questions = [
   {
-    q: "India ki rajdhani kya hai?",
-    options: ["Delhi", "Mumbai", "Kolkata", "Chennai"],
+    q: "Who was the first Prime Minister of India?",
+    options: ["Gandhi", "Jawaharlal Nehru", "Patel", "Rajendra Prasad"],
+    answer: 1,
+    level: "GK / HISTORY"
+  },
+  {
+    q: "Ashoka belonged to which dynasty?",
+    options: ["Maurya", "Gupta", "Chola", "Mughal"],
     answer: 0,
+    level: "HISTORY"
+  },
+  {
+    q: "Capital of India?",
+    options: ["Mumbai", "Delhi", "Kolkata", "Chennai"],
+    answer: 1,
     level: "GK"
-  },
-  {
-    q: "Ashoka kis vansh se tha?",
-    options: ["Maurya", "Gupta", "Kushan", "Chola"],
-    answer: 0,
-    level: "History"
-  },
-  {
-    q: "UNO ka headquarters kahan hai?",
-    options: ["Paris", "London", "New York", "Geneva"],
-    answer: 2,
-    level: "GK"
-  },
-  {
-    q: "Harappa sabhyata kis nadi ke kinare thi?",
-    options: ["Ganga", "Yamuna", "Indus", "Godavari"],
-    answer: 2,
-    level: "History"
   }
 ];
 
 let index = 0;
 let coins = 0;
-let timer = 10;
-let interval;
-let locked = false;
+let timeLeft = 10;
+let timerInterval = null;
+let answered = false;
 
 const qEl = document.getElementById("question");
-const opts = document.querySelectorAll(".option");
+const options = document.querySelectorAll(".option");
 const coinsEl = document.getElementById("coins");
 const levelEl = document.getElementById("level");
 const timeEl = document.getElementById("time");
 const bar = document.querySelector(".progress-bar");
 
 function loadQuestion() {
-  locked = false;
-  clearInterval(interval);
+  answered = false;
+  clearInterval(timerInterval);
 
   const q = questions[index % questions.length];
 
@@ -48,57 +42,63 @@ function loadQuestion() {
   levelEl.innerText = q.level;
   coinsEl.innerText = coins;
 
-  opts.forEach((btn, i) => {
+  options.forEach((btn, i) => {
     btn.innerText = q.options[i];
     btn.className = "option";
     btn.disabled = false;
   });
 
-  timer = 10;
-  timeEl.innerText = timer + "s";
+  timeLeft = 10;
+  timeEl.innerText = timeLeft + "s";
   bar.style.width = "100%";
 
   startTimer();
 }
 
 function startTimer() {
-  interval = setInterval(() => {
-    timer--;
-    timeEl.innerText = timer + "s";
-    bar.style.width = (timer * 10) + "%";
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    timeEl.innerText = timeLeft + "s";
+    bar.style.width = (timeLeft * 10) + "%";
 
-    if (timer <= 0) {
-      clearInterval(interval);
-      showAnswer(-1);
+    if (timeLeft <= 0) {
+      clearInterval(timerInterval);
+      showAnswer(-1); // time up
     }
   }, 1000);
 }
 
-opts.forEach((btn, i) => {
+options.forEach((btn, i) => {
   btn.onclick = () => {
-    if (locked) return;
+    if (answered) return;
     showAnswer(i);
   };
 });
 
-function showAnswer(selected) {
-  locked = true;
-  clearInterval(interval);
+function showAnswer(selectedIndex) {
+  answered = true;
+  clearInterval(timerInterval);
 
-  const correct = questions[index % questions.length].answer;
+  const correctIndex = questions[index % questions.length].answer;
 
-  opts.forEach((btn, i) => {
+  options.forEach((btn, i) => {
     btn.disabled = true;
-    if (i === correct) btn.classList.add("correct");
-    if (i === selected && i !== correct) btn.classList.add("wrong");
+
+    if (i === correctIndex) {
+      btn.classList.add("correct");
+    }
+
+    if (i === selectedIndex && i !== correctIndex) {
+      btn.classList.add("wrong");
+    }
   });
 
-  if (selected === correct) coins += 10;
+  if (selectedIndex === correctIndex) {
+    coins += 10;
+    coinsEl.innerText = coins;
+  }
 
+  // 🔥 VERY IMPORTANT — ALWAYS GO NEXT
   setTimeout(() => {
     index++;
     loadQuestion();
-  }, 1200);
-}
-
-loadQuestion();
