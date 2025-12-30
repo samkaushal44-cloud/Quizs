@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Quiz Jeeto</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Quiz Jeeto</title>
+<link rel="stylesheet" href="style.css"/>
 </head>
+
 <body>
 
 <div class="app">
@@ -13,37 +14,38 @@
   <h1>Quiz Jeeto</h1>
 
   <div class="top">
-    <div class="badge" id="coins">Coins: 0</div>
-    <div class="badge">Level: GK / HISTORY</div>
+    <div class="pill">Coins: <span id="coins">0</span></div>
+    <div class="pill">Level: <span id="level">GK / HISTORY</span></div>
   </div>
 
   <div class="timer">
-    Time: <span id="time">10</span>s
+    Time: <span id="time">10s</span>
     <div class="progress">
-      <div class="progress-bar" id="progress"></div>
+      <div class="progress-bar"></div>
     </div>
   </div>
 
-  <div id="question">Loading...</div>
+  <h2 id="question">Loading...</h2>
 
-  <button class="option"></button>
-  <button class="option"></button>
-  <button class="option"></button>
-  <button class="option"></button>
+  <div class="options">
+    <button class="option"></button>
+    <button class="option"></button>
+    <button class="option"></button>
+    <button class="option"></button>
+  </div>
 
-  <div class="ad-box">
-    <span>📺 Watch Ad & Get Coins</span><br>
-    <button>Watch Ad</button>
+  <div class="reward-box">
+    📺 Watch Ad & Get Coins
+    <button class="watch">Watch Ad</button>
   </div>
 
 </div>
 
-<!-- 🔻 FIXED BOTTOM BANNER -->
-<div class="bottom-banner">
-  <span>Sponsored</span>
-  <div class="banner-box">🔥 Banner Ad 320×50</div>
+<!-- BANNER AD -->
+<div class="banner">
+  🔥 Banner Ad 320 × 50
 </div>
 
-<script src="script.js"></script>
+<script src="./script.js"></script>
 </body>
 </html>
