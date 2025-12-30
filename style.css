@@ -14,17 +14,16 @@ body {
   background: linear-gradient(135deg, #667eea, #764ba2);
 }
 
-/* 🔴 FULL SCREEN APP */
+/* FULL SCREEN APP */
 .app {
   width: 100vw;
   height: 100vh;
   background: #ffffff;
+  padding: 20px;
 
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-
-  padding: 20px;
 }
 
 /* HEADER */
@@ -57,13 +56,37 @@ h1 {
   color: #fff;
 }
 
-.options button:active {
-  opacity: 0.85;
-}
-
 /* AD BOX */
 .ad-box {
   border: 2px dashed #aaa;
   padding: 12px;
   text-align: center;
+}
+
+/* ===== ANIMATIONS ===== */
+
+/* Correct (green pop) */
+.correct {
+  background: #38a169 !important;
+  animation: correctPop 0.5s ease;
+}
+
+/* Wrong (red shake) */
+.wrong {
+  background: #e53e3e !important;
+  animation: shake 0.4s;
+}
+
+@keyframes correctPop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  50% { transform: translateX(5px); }
+  75% { transform: translateX(-5px); }
+  100% { transform: translateX(0); }
 }
