@@ -11,7 +11,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding-bottom: 80px;
+  padding-bottom: 90px;
 }
 
 .app {
@@ -20,7 +20,7 @@ body {
   background: #eef2ff;
   border-radius: 22px;
   padding: 20px;
-  box-shadow: 0 25px 45px rgba(0,0,0,0.3);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
 }
 
 h1 {
@@ -74,7 +74,7 @@ h1 {
   border-radius: 14px;
   font-size: 16px;
   color: white;
-  background: linear-gradient(135deg, #6366f1, #3b82f6);
+  background: #4f46e5;
   cursor: pointer;
 }
 
@@ -95,6 +95,7 @@ h1 {
   background: #ffffffaa;
 }
 
+/* 🔻 Bottom Banner */
 .bottom-banner {
   position: fixed;
   bottom: 0;
@@ -106,12 +107,14 @@ h1 {
   padding: 6px;
   text-align: center;
   box-shadow: 0 -6px 18px rgba(0,0,0,0.3);
-  z-index: 9999;
 }
 
 .banner-box {
   height: 50px;
-  background: linear-gradient(135deg, #facc15, #f97316);
+  background: orange;
   border-radius: 12px;
   font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
