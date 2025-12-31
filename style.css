@@ -5,20 +5,23 @@
 
 body {
   margin: 0;
-  min-height: 100vh;
-  background: linear-gradient(135deg,#6a6ff5,#8a63d2);
+  height: 100vh;
+  background: linear-gradient(135deg,#6f7bf7,#8b5cf6);
   display: flex;
-  flex-direction: column;
+  justify-content: center;
   align-items: center;
 }
 
 .app {
-  width: 95%;
+  width: 100%;
   max-width: 420px;
-  background: #f3f6ff;
-  margin-top: 20px;
-  padding: 20px;
+  padding: 10px;
+}
+
+.card {
+  background: #f4f7ff;
   border-radius: 18px;
+  padding: 20px;
   text-align: center;
 }
 
@@ -30,85 +33,61 @@ body {
 
 .timer {
   margin: 10px 0;
+}
+
+.bar {
+  width: 100%;
+  height: 8px;
   background: #ddd;
-  border-radius: 20px;
+  border-radius: 10px;
   overflow: hidden;
-  height: 10px;
 }
 
 #progress {
   height: 100%;
   width: 100%;
-  background: linear-gradient(90deg,green,yellow,red);
+  background: linear-gradient(to right,green,yellow,red);
 }
 
 #options button {
   width: 100%;
-  margin: 8px 0;
   padding: 12px;
-  border: none;
+  margin: 6px 0;
   border-radius: 12px;
-  background: #5f7cff;
+  border: none;
+  background: #5b7cfa;
   color: white;
   font-size: 16px;
-  cursor: pointer;
 }
 
-#options button.correct { background: #2ecc71; }
-#options button.wrong { background: #e74c3c; }
+.correct { background: #22c55e !important; }
+.wrong { background: #ef4444 !important; }
 
 .actions button {
-  margin: 10px 5px;
-  padding: 10px 14px;
-  border-radius: 10px;
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 12px;
   border: none;
-  cursor: pointer;
+  font-size: 15px;
+  background: orange;
 }
 
-#watchAd {
-  background: #ff9800;
-  animation: pulse 1.5s infinite;
-}
-
-#withdrawBtn {
-  background: #4caf50;
-}
-
-@keyframes pulse {
-  0%{transform:scale(1)}
-  50%{transform:scale(1.05)}
-  100%{transform:scale(1)}
+.actions button:last-child {
+  background: #22c55e;
+  color: white;
 }
 
 .min {
   font-size: 12px;
-  margin-top: 5px;
+  margin-top: 6px;
 }
 
 .banner {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  text-align: center;
+  margin-top: 10px;
   background: orange;
+  text-align: center;
   padding: 10px;
+  border-radius: 12px;
   font-weight: bold;
-}
-
-/* Modal */
-.modal {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.5);
-  justify-content: center;
-  align-items: center;
-}
-
-.modal-box {
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
-  width: 90%;
-  max-width: 300px;
 }
