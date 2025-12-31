@@ -4,6 +4,10 @@ let coins = 0;
 let timer;
 let timeLeft = 10;
 let answered = false;
+let questionCount = 0;
+
+// 👉 कितने questions बाद Ad आए
+const AD_AFTER = 5; // 5 या 10 कर सकते हो
 
 const qEl = document.getElementById("question");
 const optBox = document.getElementById("options");
@@ -11,10 +15,10 @@ const coinEl = document.getElementById("coins");
 const timeEl = document.getElementById("time");
 const progress = document.getElementById("progress");
 
-loadFromAPI();
+loadQuestions();
 
-/* ---------------- API LOAD ---------------- */
-function loadFromAPI(){
+/* ---------------- LOAD QUESTIONS FROM API ---------------- */
+function loadQuestions(){
   qEl.innerText = "Loading...";
   optBox.innerHTML = "";
 
@@ -25,9 +29,10 @@ function loadFromAPI(){
         let options = [...q.incorrect_answers];
         let correctIndex = Math.floor(Math.random() * 4);
         options.splice(correctIndex, 0, q.correct_answer);
+
         return {
-          question: decode(q.question),
-          options: options.map(decode),
+          question: decodeHTML(q.question),
+          options: options.map(decodeHTML),
           answer: correctIndex
         };
       });
@@ -35,14 +40,14 @@ function loadFromAPI(){
       showQuestion();
     })
     .catch(() => {
-      qEl.innerText = "Error loading question";
+      qEl.innerText = "Error loading questions";
     });
 }
 
 /* ---------------- SHOW QUESTION ---------------- */
 function showQuestion(){
   if(index >= questions.length){
-    quizFinished();
+    loadQuestions();
     return;
   }
 
@@ -55,13 +60,14 @@ function showQuestion(){
 
   q.options.forEach((opt, i) => {
     let btn = document.createElement("button");
+    btn.className = "option-btn";
     btn.innerText = opt;
     btn.onclick = () => selectAnswer(i, btn);
     optBox.appendChild(btn);
   });
 }
 
-/* ---------------- ANSWER ---------------- */
+/* ---------------- ANSWER CLICK ---------------- */
 function selectAnswer(i, btn){
   if(answered) return;
   answered = true;
@@ -70,6 +76,7 @@ function selectAnswer(i, btn){
   let correct = questions[index].answer;
   let buttons = optBox.children;
 
+  // सही / गलत highlight
   if(i === correct){
     btn.classList.add("correct");
     coins += 10;
@@ -79,10 +86,16 @@ function selectAnswer(i, btn){
   }
 
   coinEl.innerText = coins;
+  questionCount++;
 
   setTimeout(() => {
-    index++;
-    showQuestion();
+    // 👉 AD condition (सही/गलत कोई फर्क नहीं)
+    if(questionCount >= AD_AFTER){
+      showAdScreen();
+    } else {
+      index++;
+      showQuestion();
+    }
   }, 1500);
 }
 
@@ -101,24 +114,30 @@ function resetTimer(){
     if(timeLeft <= 0){
       clearInterval(timer);
       answered = true;
+
       let correct = questions[index].answer;
       optBox.children[correct].classList.add("correct");
+      questionCount++;
 
       setTimeout(() => {
-        index++;
-        showQuestion();
+        if(questionCount >= AD_AFTER){
+          showAdScreen();
+        } else {
+          index++;
+          showQuestion();
+        }
       }, 1500);
     }
   }, 1000);
 }
 
-/* ---------------- QUIZ FINISHED ---------------- */
-function quizFinished(){
+/* ---------------- AD SCREEN ---------------- */
+function showAdScreen(){
   clearInterval(timer);
-  qEl.innerText = "Questions Finished!";
+
+  qEl.innerText = "📺 Watch Ad to Continue";
   optBox.innerHTML = `
-    <button class="ad-btn" onclick="watchAd()">📺 Watch Ad & Get Coins</button>
-    <button class="withdraw-btn" onclick="withdraw()">💰 Withdraw</button>
+    <button class="ad-btn" onclick="watchAd()">Watch Ad & Continue</button>
   `;
 }
 
@@ -127,8 +146,9 @@ function watchAd(){
   coins += 20;
   coinEl.innerText = coins;
 
-  // Ad ke baad NEW QUESTIONS
-  loadFromAPI();
+  // reset counter & reload quiz
+  questionCount = 0;
+  loadQuestions();
 }
 
 /* ---------------- WITHDRAW ---------------- */
@@ -136,12 +156,12 @@ function withdraw(){
   if(coins < 100){
     alert("Minimum 100 coins required");
   } else {
-    alert("Withdraw request submitted (Demo)");
+    alert("Withdraw request sent (Demo)");
   }
 }
 
 /* ---------------- HTML DECODE ---------------- */
-function decode(str){
+function decodeHTML(str){
   let txt = document.createElement("textarea");
   txt.innerHTML = str;
   return txt.value;
