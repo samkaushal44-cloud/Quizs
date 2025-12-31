@@ -3,33 +3,63 @@ let index = 0;
 let time = 10;
 let timer;
 let answered = false;
+let questions = [];
 
-const questions = [
-  {q:"Capital of India?", o:["Delhi","Mumbai","Chennai","Kolkata"], a:0},
-  {q:"Who wrote National Anthem?", o:["Tagore","Premchand","Bankim","Nehru"], a:0},
-  {q:"Taj Mahal is in?", o:["Agra","Delhi","Jaipur","Bhopal"], a:0},
-  {q:"Father of Nation?", o:["Gandhi","Nehru","Patel","Bose"], a:0},
-  {q:"Largest state of India?", o:["Rajasthan","UP","MP","Bihar"], a:0}
-];
+const qEl = document.getElementById("question");
+const optBox = document.getElementById("options");
+const timeEl = document.getElementById("time");
+const progress = document.getElementById("progress");
+const coinEl = document.getElementById("coins");
 
-questions.sort(()=>Math.random()-0.5);
+/* =========================
+   LOAD QUESTIONS FROM API
+========================= */
+
+async function loadFromAPI(){
+  qEl.innerText = "Loading questions...";
+  try{
+    const res = await fetch("https://opentdb.com/api.php?amount=10&type=multiple");
+    const data = await res.json();
+
+    questions = data.results.map(q => {
+      const options = [...q.incorrect_answers];
+      const correctIndex = Math.floor(Math.random()*4);
+      options.splice(correctIndex,0,q.correct_answer);
+
+      return {
+        q: decodeHTML(q.question),
+        o: options.map(decodeHTML),
+        a: correctIndex
+      };
+    });
+
+    index = 0;
+    loadQuestion();
+
+  }catch(err){
+    qEl.innerText = "Error loading question";
+    console.log(err);
+  }
+}
+
+/* =========================
+   LOAD SINGLE QUESTION
+========================= */
 
 function loadQuestion(){
   if(index >= questions.length){
-    document.getElementById("question").innerText = "Quiz Completed!";
-    document.getElementById("options").innerHTML = "";
+    qEl.innerText = "Questions Finished!";
+    optBox.innerHTML = "";
     return;
   }
 
   answered = false;
   time = 10;
-  document.getElementById("time").innerText = "10s";
-  document.getElementById("progress").style.width = "100%";
+  timeEl.innerText = "10s";
+  progress.style.width = "100%";
 
   const q = questions[index];
-  document.getElementById("question").innerText = q.q;
-
-  const optBox = document.getElementById("options");
+  qEl.innerText = q.q;
   optBox.innerHTML = "";
 
   q.o.forEach((opt,i)=>{
@@ -42,18 +72,27 @@ function loadQuestion(){
   startTimer();
 }
 
+/* =========================
+   TIMER
+========================= */
+
 function startTimer(){
   clearInterval(timer);
   timer = setInterval(()=>{
     time--;
-    document.getElementById("time").innerText = time+"s";
-    document.getElementById("progress").style.width = (time*10)+"%";
+    timeEl.innerText = time+"s";
+    progress.style.width = (time*10)+"%";
+
     if(time<=0){
       clearInterval(timer);
       showCorrect();
     }
   },1000);
 }
+
+/* =========================
+   ANSWER LOGIC
+========================= */
 
 function selectAnswer(btn,i){
   if(answered) return;
@@ -66,8 +105,8 @@ function selectAnswer(btn,i){
   if(i===correct){
     btn.classList.add("correct");
     coins+=10;
-    document.getElementById("coins").innerText = coins;
-  } else {
+    coinEl.innerText = coins;
+  }else{
     btn.classList.add("wrong");
     buttons[correct].classList.add("correct");
   }
@@ -81,32 +120,51 @@ function selectAnswer(btn,i){
 function showCorrect(){
   const buttons = document.querySelectorAll("#options button");
   buttons[questions[index].a].classList.add("correct");
+
   setTimeout(()=>{
     index++;
     loadQuestion();
   },2000);
 }
 
+/* =========================
+   ADS + WITHDRAW (DEMO)
+========================= */
+
 function watchAd(){
   alert("Watching Ad...");
   setTimeout(()=>{
     coins+=20;
-    document.getElementById("coins").innerText = coins;
-    alert("You earned 20 coins!");
+    coinEl.innerText = coins;
+    alert("20 Coins Added");
   },2000);
 }
 
 function withdraw(){
-  if(coins<100){
+  if(coins < 100){
     alert("Minimum 100 coins required");
     return;
   }
-  const upi = prompt("Enter UPI ID:");
+  const upi = prompt("Enter UPI ID");
   if(upi){
-    alert("Withdrawal request sent!\n( Demo only )");
+    alert("Withdraw request sent (Demo)");
     coins = 0;
-    document.getElementById("coins").innerText = coins;
+    coinEl.innerText = coins;
   }
 }
 
-loadQuestion();
+/* =========================
+   HTML DECODE FIX
+========================= */
+
+function decodeHTML(str){
+  const txt = document.createElement("textarea");
+  txt.innerHTML = str;
+  return txt.value;
+}
+
+/* =========================
+   START APP
+========================= */
+
+loadFromAPI();
