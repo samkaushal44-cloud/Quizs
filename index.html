@@ -4,205 +4,125 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Quiz Jeeto</title>
-
 <style>
 body{
-  margin:0;
-  font-family:Arial, sans-serif;
+  margin:0;font-family:Arial,sans-serif;
   background:linear-gradient(135deg,#6366f1,#8b5cf6);
-  min-height:100vh;
-  display:flex;
-  justify-content:center;
-  align-items:center;
+  min-height:100vh;display:flex;justify-content:center;align-items:center;
 }
-.card{
-  background:#f8fafc;
-  width:92%;
-  max-width:420px;
-  padding:20px;
-  border-radius:16px;
-  box-shadow:0 10px 30px rgba(0,0,0,.2);
-}
-h1{text-align:center;margin-top:0;}
-.top{display:flex;justify-content:space-between;margin-bottom:10px;}
-.badge{background:#fff;padding:6px 12px;border-radius:20px;font-weight:bold;}
-.progress{height:8px;background:#ddd;border-radius:10px;overflow:hidden;margin:10px 0;}
-.bar{height:100%;width:100%;background:linear-gradient(to right,green,yellow,red);}
-.question{font-size:18px;font-weight:bold;margin:10px 0;}
-.option{
-  background:#6366f1;color:#fff;padding:12px;border-radius:10px;
-  margin:8px 0;text-align:center;cursor:pointer;
-}
-.option.correct{background:#22c55e;}
-.option.wrong{background:#ef4444;}
-.option.disabled{pointer-events:none;opacity:.7;}
-.box{border:2px dashed #c7d2fe;padding:10px;border-radius:12px;margin-top:10px;text-align:center;}
-.btn{padding:10px;width:100%;margin-top:8px;border:none;border-radius:10px;font-size:16px;cursor:pointer;}
-.ad{background:#f59e0b;color:#fff;}
-.withdraw{background:#22c55e;color:#fff;}
-.banner{margin-top:12px;background:#f59e0b;color:#fff;padding:10px;border-radius:10px;text-align:center;}
-/* Withdraw modal */
-.modal{
-  position:fixed;inset:0;background:rgba(0,0,0,.5);
-  display:none;justify-content:center;align-items:center;
-}
-.modal-box{
-  background:#fff;width:90%;max-width:320px;padding:20px;border-radius:14px;text-align:center;
-}
-.modal-box input{width:100%;padding:10px;margin:10px 0;}
+.card{background:#f8fafc;width:92%;max-width:420px;padding:20px;border-radius:16px}
+.option{background:#6366f1;color:#fff;padding:12px;border-radius:10px;margin:8px 0;cursor:pointer}
+.correct{background:#22c55e!important}
+.wrong{background:#ef4444!important}
+.progress{height:8px;background:#ddd;border-radius:10px;overflow:hidden}
+.bar{height:100%;width:100%;background:linear-gradient(to right,green,yellow,red)}
+.btn{width:100%;padding:10px;margin-top:8px;border:none;border-radius:10px}
+.ad{background:#f59e0b;color:#fff}
+.withdraw{background:#22c55e;color:#fff}
 </style>
 </head>
-
 <body>
 
 <div class="card">
-  <h1>Quiz Jeeto</h1>
-
-  <div class="top">
-    <div class="badge">Coins: <span id="coins">0</span></div>
-    <div class="badge">GK / HISTORY</div>
-  </div>
-
+  <h2 id="question">Loading...</h2>
   <div class="progress"><div class="bar" id="bar"></div></div>
-
-  <div class="question" id="question">Loading...</div>
   <div id="options"></div>
-
-  <div class="box">
-    <button class="btn ad" onclick="watchAd()">📺 Watch Ad & Get Coins</button>
-    <button class="btn withdraw" onclick="openWithdraw()">💰 Withdraw</button>
-    <p>Minimum Withdraw: 100 Coins</p>
-  </div>
-
-  <div class="banner">🔥 Banner Ad 320 × 50</div>
-</div>
-
-<!-- Withdraw Modal -->
-<div class="modal" id="withdrawModal">
-  <div class="modal-box">
-    <h3>Withdraw Coins</h3>
-    <input id="upi" placeholder="Enter UPI ID (name@upi)">
-    <button class="btn withdraw" onclick="submitWithdraw()">Submit</button>
-    <button class="btn" onclick="closeWithdraw()">Cancel</button>
-    <p id="msg"></p>
-  </div>
+  <button class="btn ad" onclick="watchAd()">📺 Watch Ad</button>
 </div>
 
 <script>
-/* ===== QUESTIONS (API + BACKUP) ===== */
-const backup = [
+/* ================= CONFIG ================= */
+const API_URL =
+ "https://opentdb.com/api.php?amount=5&category=9&type=multiple";
+
+/* ================= STATE ================= */
+let questions=[], index=0, time=10, timer;
+let coins=0;
+
+/* ================= BACKUP ================= */
+const backup=[
  {q:"Capital of India?",o:["Delhi","Mumbai","Chennai","Kolkata"],a:"Delhi"},
- {q:"Who wrote National Anthem?",o:["Tagore","Bankim","Premchand","Nehru"],a:"Tagore"},
  {q:"Taj Mahal is in?",o:["Agra","Delhi","Jaipur","Bhopal"],a:"Agra"},
- {q:"First PM of India?",o:["Nehru","Gandhi","Patel","Bose"],a:"Nehru"}
+ {q:"Father of Nation?",o:["Gandhi","Nehru","Patel","Bose"],a:"Gandhi"}
 ];
 
-let questions=[], used=[], current, coins=0, timer, timeLeft=10;
-
-/* ===== HELPERS ===== */
+/* ================= HELPERS ================= */
 const qEl=document.getElementById("question");
-const optEl=document.getElementById("options");
+const oEl=document.getElementById("options");
 const bar=document.getElementById("bar");
-const coinEl=document.getElementById("coins");
-
 function decode(t){const x=document.createElement("textarea");x.innerHTML=t;return x.value;}
 function shuffle(a){return a.sort(()=>Math.random()-0.5);}
 
-/* ===== LOAD FROM API ===== */
-async function loadFromAPI(){
+/* ================= LOAD ================= */
+async function load(){
   try{
-    const r=await fetch("https://opentdb.com/api.php?amount=10&category=9&type=multiple");
+    const r=await fetch(API_URL,{cache:"no-store"});
     const d=await r.json();
     if(!d.results || d.results.length===0) throw 0;
+
     questions=d.results.map(q=>({
       q:decode(q.question),
-      o:shuffle([...q.incorrect_answers.map(decode), decode(q.correct_answer)]),
-      a:decode(q.correct_answer)
+      a:decode(q.correct_answer),
+      o:shuffle([...q.incorrect_answers.map(decode),decode(q.correct_answer)])
     }));
   }catch{
+    console.warn("API failed → using backup");
     questions=backup;
   }
-  used=[];
-  nextQuestion();
+  index=0;
+  show();
 }
 
-/* ===== QUIZ FLOW ===== */
-function nextQuestion(){
-  if(used.length===questions.length) used=[];
-  do{ current=Math.floor(Math.random()*questions.length); }
-  while(used.includes(current));
-  used.push(current);
-
-  const q=questions[current];
+/* ================= SHOW ================= */
+function show(){
+  clearInterval(timer);
+  time=10; bar.style.width="100%";
+  const q=questions[index];
   qEl.innerText=q.q;
-  optEl.innerHTML="";
+  oEl.innerHTML="";
   q.o.forEach(t=>{
     const d=document.createElement("div");
-    d.className="option";
-    d.innerText=t;
-    d.onclick=()=>select(t,d);
-    optEl.appendChild(d);
+    d.className="option"; d.innerText=t;
+    d.onclick=()=>select(d,t);
+    oEl.appendChild(d);
   });
-  startTimer();
-}
-
-function startTimer(){
-  clearInterval(timer);
-  timeLeft=10;
-  bar.style.width="100%";
   timer=setInterval(()=>{
-    timeLeft--;
-    bar.style.width=(timeLeft*10)+"%";
-    if(timeLeft<=0){ clearInterval(timer); reveal(); }
+    time--; bar.style.width=(time*10)+"%";
+    if(time<=0){ clearInterval(timer); reveal(); }
   },1000);
 }
 
-function select(ans,el){
+/* ================= ANSWER ================= */
+function select(el,ans){
   clearInterval(timer);
-  document.querySelectorAll(".option").forEach(o=>o.classList.add("disabled"));
-  const correct=questions[current].a;
-  if(ans===correct){
-    el.classList.add("correct");
-    coins+=10; coinEl.innerText=coins;
-  }else{
-    el.classList.add("wrong");
-    document.querySelectorAll(".option").forEach(o=>{
-      if(o.innerText===correct) o.classList.add("correct");
-    });
-  }
-  setTimeout(nextQuestion,2000);
+  const q=questions[index];
+  document.querySelectorAll(".option").forEach(o=>{
+    o.onclick=null;
+    if(o.innerText===q.a) o.classList.add("correct");
+  });
+  if(ans!==q.a) el.classList.add("wrong");
+  setTimeout(next,1500);
 }
-
 function reveal(){
   document.querySelectorAll(".option").forEach(o=>{
-    if(o.innerText===questions[current].a) o.classList.add("correct");
+    if(o.innerText===questions[index].a) o.classList.add("correct");
   });
-  setTimeout(nextQuestion,2000);
+  setTimeout(next,1500);
+}
+function next(){
+  index++;
+  if(index>=questions.length) load();
+  else show();
 }
 
-/* ===== ADS & WITHDRAW ===== */
+/* ================= AD ================= */
 function watchAd(){
-  coins+=20; coinEl.innerText=coins;
+  coins+=20;
   alert("Ad watched! +20 coins");
 }
-function openWithdraw(){
-  if(coins<100){alert("Minimum 100 coins required");return;}
-  document.getElementById("withdrawModal").style.display="flex";
-}
-function closeWithdraw(){
-  document.getElementById("withdrawModal").style.display="none";
-}
-function submitWithdraw(){
-  const upi=document.getElementById("upi").value.trim();
-  if(!upi.includes("@")){document.getElementById("msg").innerText="Invalid UPI";return;}
-  document.getElementById("msg").innerText="Request submitted!";
-  coins=0; coinEl.innerText=0;
-  setTimeout(closeWithdraw,1500);
-}
 
-/* ===== START ===== */
-loadFromAPI();
+/* ================= START ================= */
+load();
 </script>
-
 </body>
 </html>
