@@ -1,115 +1,163 @@
+<script>
+/* ================== CONFIG ================== */
+const API_BASE = "https://opentdb.com/api.php";
+const TOKEN_URL = "https://opentdb.com/api_token.php?command=request";
+const BATCH_SIZE = 10; // ek batch me kitne questions
+const CATEGORY = 9;    // General Knowledge
+const TYPE = "multiple";
+const TIME_LIMIT = 10;
+
+/* ================== STATE ================== */
+let token = "";
+let questions = [];
+let usedSet = new Set(); // safety net
+let currentIndex = 0;
 let coins = 0;
-let time = 10;
-let timer;
-let answered = false;
-let usedQuestions = [];
+let timer = null;
+let timeLeft = TIME_LIMIT;
 
-const apiURL = "https://opentdb.com/api.php?amount=50&category=9&type=multiple";
+/* ================== DOM ================== */
+const qEl = document.getElementById("question");
+const optEl = document.getElementById("options");
+const bar = document.getElementById("bar");
+const coinEl = document.getElementById("coins");
 
-async function fetchQuestion() {
-  document.getElementById("question").innerText = "Loading...";
-  document.getElementById("options").innerHTML = "";
+/* ================== HELPERS ================== */
+function decode(t){ const x=document.createElement("textarea"); x.innerHTML=t; return x.value; }
+function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
 
-  try {
-    const res = await fetch(apiURL);
-    const data = await res.json();
-    let q = data.results.find(q => !usedQuestions.includes(q.question));
+/* ================== TOKEN ================== */
+async function getToken(){
+  const r = await fetch(TOKEN_URL);
+  const d = await r.json();
+  token = d.token;
+}
 
-    if (!q) {
-      usedQuestions = [];
-      q = data.results[0];
-    }
+/* ================== LOAD BATCH ================== */
+async function loadBatch(){
+  if(!token) await getToken();
 
-    usedQuestions.push(q.question);
-    showQuestion(q);
+  const url = `${API_BASE}?amount=${BATCH_SIZE}&category=${CATEGORY}&type=${TYPE}&token=${token}`;
+  const r = await fetch(url);
+  const d = await r.json();
 
-  } catch {
-    document.getElementById("question").innerText = "Error loading question";
+  // token exhausted → reset
+  if(d.response_code === 4){
+    await getToken();
+    return loadBatch();
   }
+
+  // map + de-dup (extra safety)
+  const mapped = d.results.map(q=>{
+    const opts = shuffle([...q.incorrect_answers, q.correct_answer].map(decode));
+    return {
+      q: decode(q.question),
+      o: opts,
+      a: decode(q.correct_answer),
+      key: decode(q.question) // unique key
+    };
+  }).filter(q => !usedSet.has(q.key));
+
+  // mark used
+  mapped.forEach(q => usedSet.add(q.key));
+
+  questions = mapped;
+  currentIndex = 0;
+
+  // agar batch me kuch nahi bacha → next batch
+  if(questions.length === 0){
+    return loadBatch();
+  }
+
+  showQuestion();
 }
 
-function showQuestion(q) {
-  answered = false;
-  time = 10;
-  startTimer();
-
-  document.getElementById("question").innerHTML = q.question;
-
-  const opts = [...q.incorrect_answers, q.correct_answer].sort(() => Math.random() - 0.5);
-  const box = document.getElementById("options");
-
-  opts.forEach(opt => {
-    const btn = document.createElement("button");
-    btn.innerHTML = opt;
-    btn.onclick = () => selectAnswer(btn, opt === q.correct_answer);
-    box.appendChild(btn);
-  });
-}
-
-function selectAnswer(btn, correct) {
-  if (answered) return;
-  answered = true;
+/* ================== SHOW QUESTION ================== */
+function showQuestion(){
   clearInterval(timer);
+  timeLeft = TIME_LIMIT;
+  bar.style.width = "100%";
 
-  if (correct) {
-    btn.classList.add("correct");
+  const q = questions[currentIndex];
+  qEl.innerText = q.q;
+  optEl.innerHTML = "";
+
+  q.o.forEach(txt=>{
+    const d = document.createElement("div");
+    d.className = "option";
+    d.innerText = txt;
+    d.onclick = ()=>selectAnswer(txt, d);
+    optEl.appendChild(d);
+  });
+
+  timer = setInterval(()=>{
+    timeLeft--;
+    bar.style.width = (timeLeft * 10) + "%";
+    if(timeLeft <= 0){
+      clearInterval(timer);
+      revealCorrect();
+    }
+  },1000);
+}
+
+/* ================== ANSWER ================== */
+function selectAnswer(ans, el){
+  clearInterval(timer);
+  document.querySelectorAll(".option").forEach(o=>o.classList.add("disabled"));
+  const correct = questions[currentIndex].a;
+
+  if(ans === correct){
+    el.classList.add("correct");
     coins += 10;
-  } else {
-    btn.classList.add("wrong");
-    document.querySelectorAll("#options button").forEach(b => {
-      if (b.innerHTML === btn.parentNode.querySelector(".correct")?.innerHTML) {
-        b.classList.add("correct");
-      }
+    coinEl.innerText = coins;
+  }else{
+    el.classList.add("wrong");
+    document.querySelectorAll(".option").forEach(o=>{
+      if(o.innerText === correct) o.classList.add("correct");
     });
   }
-
-  document.getElementById("coins").innerText = "Coins: " + coins;
-
-  setTimeout(fetchQuestion, 2000);
+  setTimeout(nextQuestion, 2000);
 }
 
-function startTimer() {
-  clearInterval(timer);
-  document.getElementById("progress").style.width = "100%";
-
-  timer = setInterval(() => {
-    time--;
-    document.getElementById("progress").style.width = (time * 10) + "%";
-
-    if (time <= 0) {
-      clearInterval(timer);
-      fetchQuestion();
-    }
-  }, 1000);
+function revealCorrect(){
+  document.querySelectorAll(".option").forEach(o=>{
+    if(o.innerText === questions[currentIndex].a) o.classList.add("correct");
+  });
+  setTimeout(nextQuestion, 2000);
 }
 
-// Ads & Withdraw
-document.getElementById("watchAd").onclick = () => {
-  coins += 5;
-  document.getElementById("coins").innerText = "Coins: " + coins;
-  alert("Ad watched! +5 coins");
-};
-
-document.getElementById("withdrawBtn").onclick = () => {
-  if (coins < 100) {
-    alert("Minimum 100 coins required");
-    return;
+/* ================== NEXT ================== */
+function nextQuestion(){
+  currentIndex++;
+  if(currentIndex >= questions.length){
+    // batch khatam → next batch (still no repeat)
+    loadBatch();
+  }else{
+    showQuestion();
   }
-  document.getElementById("withdrawModal").style.display = "flex";
-};
-
-function closeModal() {
-  document.getElementById("withdrawModal").style.display = "none";
 }
 
-function confirmWithdraw() {
-  const upi = document.getElementById("upi").value;
-  if (!upi) return alert("Enter UPI ID");
-  alert("Withdraw request sent!");
-  coins = 0;
-  document.getElementById("coins").innerText = "Coins: 0";
-  closeModal();
+/* ================== ADS & WITHDRAW (same as before) ================== */
+function watchAd(){
+  coins += 20;
+  coinEl.innerText = coins;
+  alert("Ad watched! +20 coins");
+}
+function openWithdraw(){
+  if(coins < 100){ alert("Minimum 100 coins required"); return; }
+  document.getElementById("withdrawModal").style.display="flex";
+}
+function closeWithdraw(){
+  document.getElementById("withdrawModal").style.display="none";
+}
+function submitWithdraw(){
+  const upi = document.getElementById("upi").value.trim();
+  if(!upi.includes("@")){ document.getElementById("msg").innerText="Invalid UPI"; return; }
+  document.getElementById("msg").innerText="Request submitted!";
+  coins = 0; coinEl.innerText = 0;
+  setTimeout(closeWithdraw,1500);
 }
 
-// Start
-fetchQuestion();
+/* ================== START ================== */
+loadBatch();
+</script>
