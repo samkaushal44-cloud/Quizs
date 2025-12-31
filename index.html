@@ -1,15 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Quiz Jeeto</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Quiz Jeeto</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <div class="app">
-
   <div class="card">
 
     <h1>Quiz Jeeto</h1>
@@ -20,7 +19,7 @@
     </div>
 
     <div class="timer">
-      Time: <span id="time">10s</span>
+      <span id="time">10</span>s
       <div class="bar">
         <div id="progress"></div>
       </div>
@@ -30,18 +29,15 @@
 
     <div id="options"></div>
 
-    <div class="actions">
-      <button onclick="watchAd()">📺 Watch Ad & Get Coins</button>
-      <button onclick="withdraw()">💰 Withdraw</button>
-    </div>
+    <button class="ad-btn" onclick="watchAd()">📺 Watch Ad & Get Coins</button>
 
+    <button class="withdraw-btn" onclick="withdraw()">💰 Withdraw</button>
     <p class="min">Minimum Withdraw: 100 Coins</p>
 
   </div>
-
-  <div class="banner">🔥 Banner Ad 320 × 50</div>
-
 </div>
+
+<div class="banner">🔥 Banner Ad 320 × 50</div>
 
 <script src="script.js"></script>
 </body>
