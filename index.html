@@ -1,33 +1,39 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>Quiz Jeeto</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <div class="app">
-  <h1>Quiz Jeeto</h1>
+  <div class="card">
 
-  <div class="top">
-    <span>Coins: <b id="coins">0</b></span>
-    <span>Level: GK</span>
+    <h1>Quiz Jeeto</h1>
+
+    <div class="top">
+      <span>Coins: <b id="coins">0</b></span>
+      <span>Level: GK</span>
+    </div>
+
+    <div class="timer">
+      Time: <span id="time">10</span>s
+      <div class="bar">
+        <div class="fill" id="bar"></div>
+      </div>
+    </div>
+
+    <h2 id="question">Loading...</h2>
+
+    <div id="options"></div>
+
+    <div id="action"></div>
+
   </div>
 
-  <div class="timer">
-    <div id="progress"></div>
-    <span id="time">10</span>s
-  </div>
-
-  <h2 id="question">Loading...</h2>
-
-  <div id="options"></div>
-
-  <!-- 👇 ONLY ONE ACTION AREA -->
-  <div id="actionArea"></div>
-
-  <p class="min">Minimum Withdraw: 100 Coins</p>
+  <div class="banner">🔥 Banner Ad 320 × 50</div>
 </div>
 
 <script src="script.js"></script>
