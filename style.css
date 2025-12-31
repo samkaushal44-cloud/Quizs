@@ -6,41 +6,53 @@
 body {
   margin: 0;
   min-height: 100vh;
-  background: linear-gradient(135deg, #6a7cff, #8f6cff);
+  background: linear-gradient(135deg, #02007a, #3a00ff);
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
+/* FULL MOBILE WIDTH FIX */
 .app {
   width: 100%;
   max-width: 420px;
-  padding: 10px;
+  padding: 12px;
 }
 
+/* CENTER CARD */
 .card {
-  background: #f4f6ff;
+  background: #111827;
+  color: #fff;
   border-radius: 20px;
   padding: 20px;
+  width: 100%;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+}
+
+/* HEADER */
+h1 {
+  margin-top: 0;
   text-align: center;
 }
 
 .top {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 10px;
+  font-size: 14px;
+  opacity: 0.9;
 }
 
+/* TIMER */
 .timer {
+  margin: 10px 0;
   font-size: 14px;
 }
 
 .bar {
   height: 6px;
-  background: #ddd;
-  border-radius: 5px;
+  background: #333;
+  border-radius: 6px;
   overflow: hidden;
-  margin-top: 4px;
 }
 
 .fill {
@@ -49,45 +61,63 @@ body {
   background: linear-gradient(to right, green, yellow, red);
 }
 
+/* QUESTION */
+#question {
+  margin: 15px 0;
+  font-size: 20px;
+  line-height: 1.4;
+}
+
+/* OPTIONS */
 .option {
   width: 100%;
-  padding: 12px;
+  padding: 14px;
   margin: 8px 0;
   border: none;
-  border-radius: 10px;
-  background: #5d7cff;
+  border-radius: 12px;
+  background: #1d4ed8;
   color: #fff;
   font-size: 16px;
 }
 
-.option.correct { background: #2ecc71; }
-.option.wrong { background: #e74c3c; }
+.option.correct { background: #16a34a; }
+.option.wrong { background: #dc2626; }
 
+/* BUTTONS */
 .ad-btn {
-  background: orange;
-  color: #fff;
-  padding: 12px;
+  background: #f59e0b;
+  color: #000;
+  padding: 14px;
   border: none;
-  border-radius: 10px;
+  border-radius: 12px;
   width: 100%;
-  margin-top: 10px;
+  margin-top: 12px;
+  font-size: 16px;
 }
 
 .withdraw-btn {
-  background: green;
-  color: #fff;
-  padding: 12px;
+  background: #22c55e;
+  color: #000;
+  padding: 14px;
   border: none;
-  border-radius: 10px;
+  border-radius: 12px;
   width: 100%;
   margin-top: 10px;
+  font-size: 16px;
 }
 
+/* BANNER – FIXED BOTTOM, NO OVERLAP */
 .banner {
-  margin-top: 10px;
-  background: orange;
-  padding: 10px;
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 420px;
+  background: #b91c1c;
+  color: #fff;
   text-align: center;
-  border-radius: 10px;
+  padding: 10px;
   font-weight: bold;
+  border-radius: 12px 12px 0 0;
 }
