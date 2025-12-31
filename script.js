@@ -1,42 +1,43 @@
 let questions = [];
 let index = 0;
 let coins = 0;
+let answered = false;
 let timer;
 let timeLeft = 10;
-let answered = false;
-let questionCount = 0;
+let solvedCount = 0;
 
-// 👉 कितने questions बाद Ad आए
-const AD_AFTER = 5; // 5 या 10 कर सकते हो
+const LIMIT = 5; // 5 questions per round
 
 const qEl = document.getElementById("question");
-const optBox = document.getElementById("options");
+const optEl = document.getElementById("options");
 const coinEl = document.getElementById("coins");
 const timeEl = document.getElementById("time");
 const progress = document.getElementById("progress");
+const action = document.getElementById("actionArea");
 
 loadQuestions();
 
-/* ---------------- LOAD QUESTIONS FROM API ---------------- */
+/* ---------------- LOAD QUESTIONS ---------------- */
 function loadQuestions(){
   qEl.innerText = "Loading...";
-  optBox.innerHTML = "";
+  optEl.innerHTML = "";
+  action.innerHTML = "";
 
   fetch("https://opentdb.com/api.php?amount=10&category=9&type=multiple")
     .then(res => res.json())
     .then(data => {
       questions = data.results.map(q => {
-        let options = [...q.incorrect_answers];
-        let correctIndex = Math.floor(Math.random() * 4);
-        options.splice(correctIndex, 0, q.correct_answer);
-
+        let opts = [...q.incorrect_answers];
+        let ans = Math.floor(Math.random() * 4);
+        opts.splice(ans, 0, q.correct_answer);
         return {
-          question: decodeHTML(q.question),
-          options: options.map(decodeHTML),
-          answer: correctIndex
+          q: decode(q.question),
+          o: opts.map(decode),
+          a: ans
         };
       });
       index = 0;
+      solvedCount = 0;
       showQuestion();
     })
     .catch(() => {
@@ -46,8 +47,8 @@ function loadQuestions(){
 
 /* ---------------- SHOW QUESTION ---------------- */
 function showQuestion(){
-  if(index >= questions.length){
-    loadQuestions();
+  if(solvedCount >= LIMIT){
+    showFinish();
     return;
   }
 
@@ -55,48 +56,41 @@ function showQuestion(){
   resetTimer();
 
   let q = questions[index];
-  qEl.innerText = q.question;
-  optBox.innerHTML = "";
+  qEl.innerText = q.q;
+  optEl.innerHTML = "";
+  action.innerHTML = "";
 
-  q.options.forEach((opt, i) => {
-    let btn = document.createElement("button");
-    btn.className = "option-btn";
-    btn.innerText = opt;
-    btn.onclick = () => selectAnswer(i, btn);
-    optBox.appendChild(btn);
+  q.o.forEach((opt,i)=>{
+    let b = document.createElement("button");
+    b.className = "option";
+    b.innerText = opt;
+    b.onclick = ()=>checkAnswer(i,b);
+    optEl.appendChild(b);
   });
 }
 
-/* ---------------- ANSWER CLICK ---------------- */
-function selectAnswer(i, btn){
+/* ---------------- CHECK ANSWER ---------------- */
+function checkAnswer(i,btn){
   if(answered) return;
   answered = true;
   clearInterval(timer);
 
-  let correct = questions[index].answer;
-  let buttons = optBox.children;
+  let correct = questions[index].a;
+  let btns = optEl.children;
 
-  // सही / गलत highlight
   if(i === correct){
     btn.classList.add("correct");
     coins += 10;
   } else {
     btn.classList.add("wrong");
-    buttons[correct].classList.add("correct");
+    btns[correct].classList.add("correct");
   }
 
   coinEl.innerText = coins;
-  questionCount++;
+  solvedCount++;
+  index++;
 
-  setTimeout(() => {
-    // 👉 AD condition (सही/गलत कोई फर्क नहीं)
-    if(questionCount >= AD_AFTER){
-      showAdScreen();
-    } else {
-      index++;
-      showQuestion();
-    }
-  }, 1500);
+  setTimeout(showQuestion, 1200);
 }
 
 /* ---------------- TIMER ---------------- */
@@ -106,38 +100,29 @@ function resetTimer(){
   timeEl.innerText = timeLeft;
   progress.style.width = "100%";
 
-  timer = setInterval(() => {
+  timer = setInterval(()=>{
     timeLeft--;
     timeEl.innerText = timeLeft;
-    progress.style.width = (timeLeft * 10) + "%";
+    progress.style.width = (timeLeft*10)+"%";
 
-    if(timeLeft <= 0){
+    if(timeLeft<=0){
       clearInterval(timer);
       answered = true;
-
-      let correct = questions[index].answer;
-      optBox.children[correct].classList.add("correct");
-      questionCount++;
-
-      setTimeout(() => {
-        if(questionCount >= AD_AFTER){
-          showAdScreen();
-        } else {
-          index++;
-          showQuestion();
-        }
-      }, 1500);
+      solvedCount++;
+      index++;
+      setTimeout(showQuestion,800);
     }
-  }, 1000);
+  },1000);
 }
 
-/* ---------------- AD SCREEN ---------------- */
-function showAdScreen(){
-  clearInterval(timer);
+/* ---------------- FINISH + ADS ---------------- */
+function showFinish(){
+  qEl.innerText = "Questions Finished!";
+  optEl.innerHTML = "";
 
-  qEl.innerText = "📺 Watch Ad to Continue";
-  optBox.innerHTML = `
-    <button class="ad-btn" onclick="watchAd()">Watch Ad & Continue</button>
+  action.innerHTML = `
+    <button class="ad" onclick="watchAd()">📺 Watch Ad & Get Coins</button>
+    <button class="withdraw" onclick="withdraw()">💰 Withdraw</button>
   `;
 }
 
@@ -145,10 +130,7 @@ function showAdScreen(){
 function watchAd(){
   coins += 20;
   coinEl.innerText = coins;
-
-  // reset counter & reload quiz
-  questionCount = 0;
-  loadQuestions();
+  loadQuestions(); // 👈 next questions start
 }
 
 /* ---------------- WITHDRAW ---------------- */
@@ -160,9 +142,8 @@ function withdraw(){
   }
 }
 
-/* ---------------- HTML DECODE ---------------- */
-function decodeHTML(str){
-  let txt = document.createElement("textarea");
-  txt.innerHTML = str;
-  return txt.value;
+function decode(t){
+  let x=document.createElement("textarea");
+  x.innerHTML=t;
+  return x.value;
 }
