@@ -1,41 +1,260 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Quiz Jeeto</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Quiz Jeeto</title>
+
+<style>
+body{
+  margin:0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: linear-gradient(135deg,#6a5cff,#8f7cff);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  min-height:100vh;
+}
+
+.card{
+  width:92%;
+  max-width:420px;
+  background:#f4f6ff;
+  border-radius:20px;
+  padding:20px;
+  box-shadow:0 15px 40px rgba(0,0,0,.2);
+}
+
+h1{text-align:center;margin:5px 0 15px}
+
+.top{
+  display:flex;
+  justify-content:space-between;
+  font-weight:bold;
+}
+
+.progress{
+  height:8px;
+  background:#ddd;
+  border-radius:10px;
+  overflow:hidden;
+  margin:10px 0 15px;
+}
+.fill{
+  height:100%;
+  width:100%;
+  background:linear-gradient(90deg,green,yellow,red);
+  transition:width 1s linear;
+}
+
+#question{
+  font-size:18px;
+  font-weight:bold;
+  margin-bottom:15px;
+}
+
+.option{
+  width:100%;
+  padding:12px;
+  margin:8px 0;
+  border:none;
+  border-radius:10px;
+  background:#5c7cff;
+  color:white;
+  font-size:16px;
+  cursor:pointer;
+}
+.option:active{transform:scale(.97)}
+.correct{background:#2ecc71!important}
+.wrong{background:#e74c3c!important}
+
+.btn{
+  width:100%;
+  padding:14px;
+  margin-top:10px;
+  border:none;
+  border-radius:12px;
+  font-size:16px;
+  font-weight:bold;
+  cursor:pointer;
+}
+.ad{background:#f5a623;color:#000}
+.withdraw{background:#2ecc71;color:#000}
+
+#adScreen{text-align:center;display:none}
+#adScreen h2{margin-bottom:15px}
+
+.banner{
+  margin-top:12px;
+  background:#ff9800;
+  text-align:center;
+  padding:8px;
+  border-radius:10px;
+  font-weight:bold;
+}
+</style>
 </head>
+
 <body>
 
-<div class="app">
-  <div class="card">
+<div class="card">
 
-    <h1>Quiz Jeeto</h1>
+<h1>Quiz Jeeto</h1>
 
-    <div class="top">
-      <span>Coins: <b id="coins">0</b></span>
-      <span>Level: GK</span>
-    </div>
-
-    <div class="timer">
-      Time: <span id="time">10</span>s
-      <div class="bar">
-        <div class="fill" id="bar"></div>
-      </div>
-    </div>
-
-    <h2 id="question">Loading...</h2>
-
-    <div id="options"></div>
-
-    <div id="action"></div>
-
-  </div>
-
-  <div class="banner">🔥 Banner Ad 320 × 50</div>
+<div class="top">
+  <div>Coins: <span id="coins">0</span></div>
+  <div>Level: GK</div>
 </div>
 
-<script src="script.js"></script>
+<div>Time: <span id="time">10</span>s</div>
+<div class="progress"><div class="fill"></div></div>
+
+<div id="quizScreen">
+  <div id="question">Loading...</div>
+  <div id="options"></div>
+</div>
+
+<div id="adScreen">
+  <h2>🎬 Watch Ad to Continue</h2>
+  <button class="btn ad" onclick="watchAd()">Watch Ad & Get Coins</button>
+</div>
+
+<button class="btn withdraw" onclick="withdraw()">💰 Withdraw</button>
+<div style="text-align:center;font-size:13px;margin-top:5px">
+  Minimum Withdraw: 100 Coins
+</div>
+
+<div class="banner">🔥 Banner Ad 320 × 50</div>
+
+</div>
+
+<script>
+let questions=[];
+let index=0;
+let coins=0;
+let timer;
+let timeLeft=10;
+let answered=false;
+
+const qEl=document.getElementById("question");
+const optEl=document.getElementById("options");
+const coinsEl=document.getElementById("coins");
+const timeEl=document.getElementById("time");
+const fill=document.querySelector(".fill");
+const quizScreen=document.getElementById("quizScreen");
+const adScreen=document.getElementById("adScreen");
+
+/* FETCH QUESTIONS */
+async function loadQuiz(){
+  quizScreen.style.display="block";
+  adScreen.style.display="none";
+  qEl.innerText="Loading...";
+  optEl.innerHTML="";
+  const res=await fetch("https://opentdb.com/api.php?amount=10&type=multiple");
+  const data=await res.json();
+  questions=data.results;
+  index=0;
+  showQuestion();
+}
+
+/* SHOW QUESTION */
+function showQuestion(){
+  if(index>=questions.length){
+    quizScreen.style.display="none";
+    adScreen.style.display="block";
+    return;
+  }
+
+  answered=false;
+  resetTimer();
+
+  let q=questions[index];
+  qEl.innerHTML=decode(q.question);
+
+  let answers=[...q.incorrect_answers,q.correct_answer];
+  answers.sort(()=>Math.random()-.5);
+
+  optEl.innerHTML="";
+  answers.forEach(a=>{
+    let b=document.createElement("button");
+    b.className="option";
+    b.innerHTML=decode(a);
+    b.onclick=()=>selectAnswer(a,q.correct_answer,b);
+    optEl.appendChild(b);
+  });
+
+  startTimer();
+}
+
+/* ANSWER */
+function selectAnswer(sel,correct,btn){
+  if(answered) return;
+  answered=true;
+  clearInterval(timer);
+
+  document.querySelectorAll(".option").forEach(b=>{
+    b.disabled=true;
+    if(b.innerHTML===decode(correct)) b.classList.add("correct");
+  });
+
+  if(sel===correct){
+    coins+=10;
+    coinsEl.innerText=coins;
+  }else{
+    btn.classList.add("wrong");
+  }
+
+  setTimeout(()=>{
+    index++;
+    showQuestion();
+  },1200);
+}
+
+/* TIMER */
+function startTimer(){
+  timeLeft=10;
+  timeEl.innerText=timeLeft;
+  fill.style.width="100%";
+
+  timer=setInterval(()=>{
+    timeLeft--;
+    timeEl.innerText=timeLeft;
+    fill.style.width=timeLeft*10+"%";
+    if(timeLeft<=0){
+      clearInterval(timer);
+      index++;
+      showQuestion();
+    }
+  },1000);
+}
+function resetTimer(){clearInterval(timer);}
+
+/* WATCH AD */
+function watchAd(){
+  coins+=20;
+  coinsEl.innerText=coins;
+  loadQuiz();
+}
+
+/* WITHDRAW */
+function withdraw(){
+  if(coins<100){
+    alert("Minimum 100 coins required");
+    return;
+  }
+  alert("Withdraw request sent (Demo)");
+}
+
+/* UTIL */
+function decode(t){
+  let e=document.createElement("textarea");
+  e.innerHTML=t;
+  return e.value;
+}
+
+/* START */
+loadQuiz();
+</script>
+
 </body>
 </html>
