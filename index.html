@@ -4,125 +4,45 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Quiz Jeeto</title>
-<style>
-body{
-  margin:0;font-family:Arial,sans-serif;
-  background:linear-gradient(135deg,#6366f1,#8b5cf6);
-  min-height:100vh;display:flex;justify-content:center;align-items:center;
-}
-.card{background:#f8fafc;width:92%;max-width:420px;padding:20px;border-radius:16px}
-.option{background:#6366f1;color:#fff;padding:12px;border-radius:10px;margin:8px 0;cursor:pointer}
-.correct{background:#22c55e!important}
-.wrong{background:#ef4444!important}
-.progress{height:8px;background:#ddd;border-radius:10px;overflow:hidden}
-.bar{height:100%;width:100%;background:linear-gradient(to right,green,yellow,red)}
-.btn{width:100%;padding:10px;margin-top:8px;border:none;border-radius:10px}
-.ad{background:#f59e0b;color:#fff}
-.withdraw{background:#22c55e;color:#fff}
-</style>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="card">
-  <h2 id="question">Loading...</h2>
-  <div class="progress"><div class="bar" id="bar"></div></div>
-  <div id="options"></div>
-  <button class="btn ad" onclick="watchAd()">📺 Watch Ad</button>
+<div class="app">
+
+  <div class="card">
+
+    <h1>Quiz Jeeto</h1>
+
+    <div class="top">
+      <div>Coins: <span id="coins">0</span></div>
+      <div>Level: GK</div>
+    </div>
+
+    <div class="timer">
+      Time: <span id="time">10s</span>
+      <div class="bar">
+        <div id="progress"></div>
+      </div>
+    </div>
+
+    <h2 id="question">Loading...</h2>
+
+    <div id="options"></div>
+
+    <div class="actions">
+      <button onclick="watchAd()">📺 Watch Ad & Get Coins</button>
+      <button onclick="withdraw()">💰 Withdraw</button>
+    </div>
+
+    <p class="min">Minimum Withdraw: 100 Coins</p>
+
+  </div>
+
+  <div class="banner">🔥 Banner Ad 320 × 50</div>
+
 </div>
 
-<script>
-/* ================= CONFIG ================= */
-const API_URL =
- "https://opentdb.com/api.php?amount=5&category=9&type=multiple";
-
-/* ================= STATE ================= */
-let questions=[], index=0, time=10, timer;
-let coins=0;
-
-/* ================= BACKUP ================= */
-const backup=[
- {q:"Capital of India?",o:["Delhi","Mumbai","Chennai","Kolkata"],a:"Delhi"},
- {q:"Taj Mahal is in?",o:["Agra","Delhi","Jaipur","Bhopal"],a:"Agra"},
- {q:"Father of Nation?",o:["Gandhi","Nehru","Patel","Bose"],a:"Gandhi"}
-];
-
-/* ================= HELPERS ================= */
-const qEl=document.getElementById("question");
-const oEl=document.getElementById("options");
-const bar=document.getElementById("bar");
-function decode(t){const x=document.createElement("textarea");x.innerHTML=t;return x.value;}
-function shuffle(a){return a.sort(()=>Math.random()-0.5);}
-
-/* ================= LOAD ================= */
-async function load(){
-  try{
-    const r=await fetch(API_URL,{cache:"no-store"});
-    const d=await r.json();
-    if(!d.results || d.results.length===0) throw 0;
-
-    questions=d.results.map(q=>({
-      q:decode(q.question),
-      a:decode(q.correct_answer),
-      o:shuffle([...q.incorrect_answers.map(decode),decode(q.correct_answer)])
-    }));
-  }catch{
-    console.warn("API failed → using backup");
-    questions=backup;
-  }
-  index=0;
-  show();
-}
-
-/* ================= SHOW ================= */
-function show(){
-  clearInterval(timer);
-  time=10; bar.style.width="100%";
-  const q=questions[index];
-  qEl.innerText=q.q;
-  oEl.innerHTML="";
-  q.o.forEach(t=>{
-    const d=document.createElement("div");
-    d.className="option"; d.innerText=t;
-    d.onclick=()=>select(d,t);
-    oEl.appendChild(d);
-  });
-  timer=setInterval(()=>{
-    time--; bar.style.width=(time*10)+"%";
-    if(time<=0){ clearInterval(timer); reveal(); }
-  },1000);
-}
-
-/* ================= ANSWER ================= */
-function select(el,ans){
-  clearInterval(timer);
-  const q=questions[index];
-  document.querySelectorAll(".option").forEach(o=>{
-    o.onclick=null;
-    if(o.innerText===q.a) o.classList.add("correct");
-  });
-  if(ans!==q.a) el.classList.add("wrong");
-  setTimeout(next,1500);
-}
-function reveal(){
-  document.querySelectorAll(".option").forEach(o=>{
-    if(o.innerText===questions[index].a) o.classList.add("correct");
-  });
-  setTimeout(next,1500);
-}
-function next(){
-  index++;
-  if(index>=questions.length) load();
-  else show();
-}
-
-/* ================= AD ================= */
-function watchAd(){
-  coins+=20;
-  alert("Ad watched! +20 coins");
-}
-
-/* ================= START ================= */
-load();
-</script>
+<script src="script.js"></script>
 </body>
 </html>
