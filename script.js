@@ -1,60 +1,101 @@
-const questions = [
-  {q:"India capital?", o:["Delhi","Mumbai","Kolkata","Chennai"], a:0},
-  {q:"2 + 2 = ?", o:["3","4","5","6"], a:1},
-  {q:"Sun rises from?", o:["North","South","East","West"], a:2},
-  {q:"HTML use for?", o:["Design","Structure","DB","Server"], a:1},
-  {q:"CSS full form?", o:["Style","Sheet","Cascading Style Sheets","Code"], a:2}
-];
-
-let index = 0;
-let coins = 0;
-
-const qBox = document.getElementById("question");
-const optBox = document.getElementById("options");
-const nextBtn = document.getElementById("nextBtn");
-const coinBox = document.getElementById("coins");
-
-function loadQuestion(){
-  const q = questions[index];
-  qBox.innerText = q.q;
-  optBox.innerHTML = "";
-  nextBtn.style.display = "none";
-
-  q.o.forEach((text,i)=>{
-    const div = document.createElement("div");
-    div.className = "option";
-    div.innerText = text;
-    div.onclick = ()=>checkAnswer(div,i);
-    optBox.appendChild(div);
-  });
+*{
+  box-sizing:border-box;
+  font-family:system-ui, Arial;
 }
 
-function checkAnswer(el,i){
-  const q = questions[index];
-  const options = document.querySelectorAll(".option");
-  options.forEach(o=>o.onclick=null);
-
-  if(i === q.a){
-    el.classList.add("correct");
-    coins += 10;
-  }else{
-    el.classList.add("wrong");
-    options[q.a].classList.add("correct");
-  }
-
-  coinBox.innerText = coins;
-  nextBtn.style.display = "block";
+body{
+  margin:0;
+  background:linear-gradient(180deg,#5a67d8,#8b8cf7);
+  min-height:100vh;
 }
 
-nextBtn.onclick = ()=>{
-  index++;
-  if(index >= questions.length){
-    alert("Quiz Finished! Coins: " + coins);
-    index = 0;
-    coins = 0;
-    coinBox.innerText = coins;
-  }
-  loadQuestion();
-};
+.app{
+  max-width:420px;
+  margin:20px auto;
+  background:#274c9c;
+  border-radius:24px;
+  padding:20px;
+  color:#fff;
+}
 
-loadQuestion();
+h1{
+  text-align:center;
+  margin:10px 0 20px;
+}
+
+.info-row{
+  display:flex;
+  gap:10px;
+  margin-bottom:12px;
+}
+
+.pill{
+  flex:1;
+  background:rgba(255,255,255,0.15);
+  padding:10px;
+  border-radius:20px;
+  text-align:center;
+  font-size:14px;
+}
+
+.time-box{
+  background:rgba(255,255,255,0.15);
+  padding:10px;
+  border-radius:20px;
+  text-align:center;
+  margin-bottom:12px;
+}
+
+.progress{
+  height:8px;
+  background:#1e3a8a;
+  border-radius:10px;
+  overflow:hidden;
+  margin-bottom:20px;
+}
+
+.bar{
+  width:100%;
+  height:100%;
+  background:linear-gradient(90deg,#22c55e,#facc15,#ef4444);
+}
+
+.card{
+  background:rgba(255,255,255,0.15);
+  border-radius:20px;
+  padding:20px;
+  margin-bottom:15px;
+  text-align:center;
+}
+
+.reward-btn{
+  background:#f59e0b;
+  border:none;
+  border-radius:16px;
+  padding:14px;
+  width:100%;
+  font-size:16px;
+  font-weight:600;
+  color:#000;
+}
+
+.min{
+  margin-bottom:10px;
+}
+
+.withdraw{
+  background:#fff;
+  border:none;
+  padding:12px 20px;
+  border-radius:14px;
+  font-size:16px;
+}
+
+.banner{
+  margin-top:10px;
+  background:#f59e0b;
+  padding:14px;
+  border-radius:18px;
+  text-align:center;
+  font-weight:600;
+}
