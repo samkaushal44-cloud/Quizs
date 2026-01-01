@@ -12,9 +12,23 @@ const questions = [
   {q:"India PM?", o:["Modi","Rahul","Kejriwal","Amit"], a:0}
 ];
 
+// ===== STATE =====
 let index = 0;
 let coins = Number(localStorage.getItem("coins") || 50);
 let timer, time = 10;
+
+// DAILY AD LIMIT
+const MAX_ADS = 5;
+const today = new Date().toDateString();
+let lastDay = localStorage.getItem("lastDay");
+let dailyAds = Number(localStorage.getItem("dailyAds") || 0);
+
+// Reset daily limit
+if(lastDay !== today){
+  dailyAds = 0;
+  localStorage.setItem("dailyAds", 0);
+  localStorage.setItem("lastDay", today);
+}
 
 // ===== ELEMENTS =====
 const card = document.getElementById("card");
@@ -78,20 +92,44 @@ function next(){
   }
 }
 
+// ===== FINISH =====
 function finish(){
+  let disabled = dailyAds >= MAX_ADS ? "disabled" : "";
   card.innerHTML = `
     <h2>Questions Finished!</h2>
-    <button class="reward-btn" onclick="watchAd()">🎥 Watch Ad & Get +20 Coins</button>
+    <p>🎥 Ads Today: ${dailyAds}/${MAX_ADS}</p>
+    <button class="reward-btn" ${disabled} onclick="watchAd()">
+      Watch Ad & Get +20 Coins
+    </button>
   `;
 }
 
-// ===== ADS / COINS =====
+// ===== AD FLOW =====
 function watchAd(){
-  alert("Ad Playing...");
-  coins += 20;
-  saveCoins();
+  if(dailyAds >= MAX_ADS){
+    alert("Daily ad limit reached. Try tomorrow.");
+    return;
+  }
+
+  dailyAds++;
+  localStorage.setItem("dailyAds", dailyAds);
+
+  let sec = 5;
+  card.innerHTML = `<h2>Ad Playing...</h2><p>Please wait ${sec}s</p>`;
+
+  const fakeAd = setInterval(()=>{
+    sec--;
+    card.innerHTML = `<h2>Ad Playing...</h2><p>Please wait ${sec}s</p>`;
+    if(sec<=0){
+      clearInterval(fakeAd);
+      coins += 20;
+      saveCoins();
+      finish();
+    }
+  },1000);
 }
 
+// ===== COINS =====
 function saveCoins(){
   localStorage.setItem("coins", coins);
   coinBox.innerText = coins;
