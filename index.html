@@ -13,183 +13,49 @@ crossorigin="anonymous"></script>
 
 <title>Premium Quiz</title>
 
-<style>
-body{
-  font-family:Poppins,sans-serif;
-  background:linear-gradient(135deg,#1a237e,#0d47a1,#311b92);
-  min-height:100vh;
-  margin:0;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  color:#fff;
-}
-.container{
-  width:94%;
-  max-width:420px;
-  background:rgba(255,255,255,.12);
-  backdrop-filter:blur(18px);
-  border-radius:22px;
-  padding:20px;
-  box-shadow:0 25px 45px rgba(0,0,0,.4);
-}
-.top{
-  display:flex;
-  justify-content:space-between;
-  font-size:14px;
-  margin-bottom:10px;
-}
-.progress{
-  height:7px;
-  background:rgba(255,255,255,.25);
-  border-radius:10px;
-  overflow:hidden;
-  margin:10px 0 18px;
-}
-.progress-bar{
-  height:100%;
-  width:0%;
-  background:linear-gradient(90deg,#00e5ff,#1de9b6);
-  transition:.4s;
-}
-.option{
-  padding:14px;
-  margin:12px 0;
-  border-radius:14px;
-  background:rgba(255,255,255,.15);
-  border:1px solid rgba(255,255,255,.25);
-  cursor:pointer;
-}
-.option.correct{background:linear-gradient(135deg,#00c853,#2e7d32);}
-.option.wrong{background:linear-gradient(135deg,#d50000,#b71c1c);}
-#adBanner{
-  margin-top:15px;
-}
-#withdraw{
-  display:none;
-  text-align:center;
-}
-button{
-  width:100%;
-  padding:14px;
-  background:linear-gradient(135deg,#ff9800,#f57c00);
-  border:none;
-  border-radius:16px;
-  color:#fff;
-  font-size:16px;
-  margin-top:15px;
-}
-</style>
+<link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
 <div class="container">
 
-<!-- TOP INFO -->
-<div class="top">
-  <div>⏱ <span id="timer">15</span>s</div>
-  <div>💰 Coins: <span id="coins">0</span></div>
+  <!-- Top bar -->
+  <div class="top">
+    <div>⏱ <span id="timer">15</span>s</div>
+    <div>💰 Coins: <span id="coins">0</span></div>
+  </div>
+
+  <!-- Banner Ad -->
+  <div class="banner-ad">
+    <ins class="adsbygoogle"
+      style="display:block"
+      data-ad-client="ca-pub-7784279882105891"
+      data-ad-slot="1111111111"
+      data-ad-format="auto"
+      data-full-width-responsive="true"></ins>
+    <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
+  </div>
+
+  <!-- Progress -->
+  <div class="progress">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
+
+  <!-- Quiz -->
+  <h2 id="question">Loading...</h2>
+  <div id="options"></div>
+
+  <!-- Withdraw -->
+  <div id="withdraw">
+    <h2>Withdraw</h2>
+    <p>Total Coins: <span id="finalCoins">0</span></p>
+    <p>Minimum Withdraw: 50 Coins</p>
+    <button onclick="alert('Withdraw request sent')">Withdraw Now</button>
+  </div>
+
 </div>
 
-<!-- BANNER AD -->
-<div id="adBanner">
-  <ins class="adsbygoogle"
-    style="display:block"
-    data-ad-client="ca-pub-7784279882105891"
-    data-ad-slot="1111111111"
-    data-ad-format="auto"
-    data-full-width-responsive="true"></ins>
-  <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
-</div>
-
-<div class="progress">
-  <div class="progress-bar" id="progressBar"></div>
-</div>
-
-<h2 id="question">Loading…</h2>
-<div id="options"></div>
-
-<!-- WITHDRAW PAGE -->
-<div id="withdraw">
-  <h2>Withdraw</h2>
-  <p>Total Coins: <span id="finalCoins"></span></p>
-  <p>Minimum Withdraw: 50 Coins</p>
-  <button onclick="alert('Withdraw request sent')">Withdraw Now</button>
-</div>
-
-</div>
-
-<script>
-let questions=[],index=0,coins=0,timer,lock=false;
-const qEl=document.getElementById("question");
-const oEl=document.getElementById("options");
-const tEl=document.getElementById("timer");
-const pBar=document.getElementById("progressBar");
-const cEl=document.getElementById("coins");
-
-async function loadAPI(){
- const res=await fetch("https://opentdb.com/api.php?amount=10&type=multiple");
- const data=await res.json();
- questions=data.results.map(q=>{
-  const opts=[...q.incorrect_answers,q.correct_answer].sort();
-  return{q:q.question,a:opts,c:opts.indexOf(q.correct_answer)};
- });
- loadQuestion();
-}
-
-function startTimer(){
- let t=15;
- tEl.innerText=t;
- timer=setInterval(()=>{
-  t--;
-  tEl.innerText=t;
-  if(t<=0){
-    clearInterval(timer);
-    nextAuto();
-  }
- },1000);
-}
-
-function loadQuestion(){
- lock=false;
- clearInterval(timer);
- if(index>=questions.length){
-  document.getElementById("withdraw").style.display="block";
-  document.getElementById("finalCoins").innerText=coins;
-  qEl.style.display=oEl.style.display="none";
-  return;
- }
- const q=questions[index];
- qEl.innerHTML=q.q;
- oEl.innerHTML="";
- pBar.style.width=((index+1)/questions.length*100)+"%";
- q.a.forEach((opt,i)=>{
-  const d=document.createElement("div");
-  d.className="option";
-  d.innerHTML=opt;
-  d.onclick=()=>{
-    if(lock) return;
-    lock=true;
-    if(i===q.c){
-      d.classList.add("correct");
-      coins+=10;
-      cEl.innerText=coins;
-    }else d.classList.add("wrong");
-    setTimeout(nextAuto,800);
-  };
-  oEl.appendChild(d);
- });
- startTimer();
-}
-
-function nextAuto(){
- index++;
- loadQuestion();
-}
-
-loadAPI();
-</script>
-
+<script src="script.js"></script>
 </body>
 </html>
