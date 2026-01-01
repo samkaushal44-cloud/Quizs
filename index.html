@@ -5,8 +5,7 @@
 <title>Quiz Jeeto</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- CSS -->
-<link rel="stylesheet" href="style.css?v=10">
+<link rel="stylesheet" href="style.css?v=100">
 </head>
 
 <body>
@@ -17,32 +16,32 @@
 
   <div class="info-row">
     <div class="pill">Coins: <span id="coins">50</span></div>
-    <div class="pill">Level: GK / HISTORY</div>
+    <div class="pill">Level: GK</div>
   </div>
 
-  <div class="time-box">Time: 10s</div>
+  <div class="time-box">Time: <span id="time">10</span>s</div>
 
   <div class="progress">
     <div class="bar"></div>
   </div>
 
-  <div class="card">
-    <h2>Questions Finished!</h2>
-    <button class="reward-btn" onclick="watchAd()">
-      🎥 Watch Ad & Get +20 Coins
-    </button>
+  <!-- QUIZ CARD -->
+  <div class="card" id="card">
+    Loading...
   </div>
 
+  <!-- WITHDRAW -->
   <div class="card">
     <p>💰 Minimum Withdraw: 100 Coins</p>
     <button class="withdraw">Withdraw</button>
   </div>
 
+  <!-- BANNER PLACE -->
   <div class="banner">🔥 Banner Ad 320 × 50</div>
 
 </div>
 
-<!-- Adsterra Social Bar -->
+<!-- SOCIAL BAR AD -->
 <script type="text/javascript">
 atOptions = {
   'key' : '28277074',
@@ -52,7 +51,6 @@ atOptions = {
 </script>
 <script src="//www.topcreativeformat.com/28277074/invoke.js"></script>
 
-<!-- JS -->
-<script src="script.js?v=10"></script>
+<script src="script.js?v=100"></script>
 </body>
 </html>
