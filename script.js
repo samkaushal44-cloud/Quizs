@@ -112,17 +112,17 @@ function finishQuiz(){
   `;
 }
 
-// WATCH AD (REAL OPEN)
+// ✅ SAFE WATCH AD (NO REDIRECT)
 function watchAd(){
-  window.open("https://www.topcreativeformat.com/28277074","_blank");
+  card.innerHTML = `<h3>Loading Ad...</h3><p>Please wait</p>`;
 
   setTimeout(()=>{
-    coins+=20;
+    coins += 20;
     saveCoins();
-    index=0;
-    catCard.style.display="block";
-    card.innerHTML="Select category & start quiz";
-  },3000);
+    index = 0;
+    catCard.style.display = "block";
+    card.innerHTML = "Select category & start quiz";
+  }, 3000);
 }
 
 // SAVE
