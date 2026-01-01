@@ -7,6 +7,7 @@
 
 <style>
 *{box-sizing:border-box}
+
 body{
   margin:0;
   font-family:Poppins,Arial,sans-serif;
@@ -18,14 +19,15 @@ body{
   padding:12px;
 }
 
-/* MAIN CARD */
+/* FULL BLUE CARD (no white) */
 .card{
   width:100%;
   max-width:420px;
-  background:#f2f5ff;
-  border-radius:22px;
-  padding:14px;
-  box-shadow:0 18px 35px rgba(0,0,0,.3);
+  background:linear-gradient(135deg,#1f3c88,#2f5bd3);
+  border-radius:24px;
+  padding:16px;
+  box-shadow:0 22px 45px rgba(0,0,0,.4);
+  color:#fff;
 }
 
 /* TITLE */
@@ -33,18 +35,18 @@ body{
   text-align:center;
   font-size:26px;
   font-weight:700;
-  margin-bottom:10px;
+  margin-bottom:12px;
 }
 
-/* INFO */
+/* INFO BAR */
 .info{
   display:flex;
   justify-content:space-between;
-  margin-bottom:6px;
+  margin-bottom:8px;
 }
 .badge{
-  background:#fff;
-  padding:6px 14px;
+  background:rgba(255,255,255,0.18);
+  padding:6px 16px;
   border-radius:20px;
   font-size:14px;
   font-weight:600;
@@ -55,16 +57,16 @@ body{
   text-align:center;
   font-size:16px;
   font-weight:600;
-  margin:6px 0;
+  margin:6px 0 8px;
 }
 
 /* PROGRESS */
 .progress{
   height:8px;
-  background:#ddd;
+  background:rgba(255,255,255,0.25);
   border-radius:10px;
   overflow:hidden;
-  margin-bottom:12px;
+  margin-bottom:14px;
 }
 .progress-bar{
   height:100%;
@@ -73,28 +75,17 @@ body{
   transition:.3s;
 }
 
-/* BLUE BOX (Question + Options + Withdraw) */
-.blue-box{
-  background:linear-gradient(135deg,#1f3c88,#2f5bd3);
-  border-radius:22px;
-  padding:20px 16px;
-  margin:12px 0;
-  box-shadow:0 20px 40px rgba(0,0,0,.35);
-}
-
 /* QUESTION */
 .question{
   font-size:20px;
   font-weight:600;
-  color:#fff;
-  margin-bottom:16px;
   line-height:1.4;
+  margin-bottom:16px;
 }
 
 /* OPTIONS */
 .option{
-  background:rgba(255,255,255,0.15);
-  color:#fff;
+  background:rgba(255,255,255,0.18);
   padding:14px;
   margin:12px 0;
   border-radius:16px;
@@ -110,13 +101,16 @@ body{
   background:linear-gradient(135deg,#d50000,#b71c1c);
 }
 
-/* WITHDRAW (same blue box) */
-.withdraw-text{
-  color:#fff;
-  font-size:15px;
-  margin-bottom:10px;
+/* WITHDRAW (same blue theme) */
+.withdraw{
+  margin-top:16px;
+  background:rgba(255,255,255,0.18);
+  border-radius:16px;
+  padding:14px;
+  text-align:center;
 }
-.withdraw-btn{
+.withdraw button{
+  margin-top:8px;
   padding:10px 22px;
   border:none;
   border-radius:12px;
@@ -127,7 +121,7 @@ body{
 
 /* BANNER */
 .banner{
-  margin-top:14px;
+  margin-top:16px;
   background:#ff9800;
   color:#000;
   padding:12px;
@@ -155,19 +149,12 @@ body{
     <div class="progress-bar" id="bar"></div>
   </div>
 
-  <!-- BLUE BOX -->
-  <div class="blue-box">
+  <div class="question" id="question">Loading...</div>
+  <div id="options"></div>
 
-    <div class="question" id="question">Loading...</div>
-    <div id="options"></div>
-
-    <div class="withdraw-text">
-      💰 Minimum Withdraw: <b>100 Coins</b>
-    </div>
-    <button class="withdraw-btn" onclick="alert('Withdraw clicked')">
-      Withdraw
-    </button>
-
+  <div class="withdraw">
+    💰 Minimum Withdraw: <b>100 Coins</b><br>
+    <button onclick="alert('Withdraw clicked')">Withdraw</button>
   </div>
 
   <div class="banner">🔥 Banner Ad 320 × 50</div>
