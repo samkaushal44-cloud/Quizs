@@ -1,58 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Quiz Jeeto</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <!-- CSS -->
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<title>Quiz Jeeto</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-  <!-- Top Bar -->
-  <div class="topbar">
-    <div class="logo">Quiz Jeeto</div>
-    <div class="coins">Coins: <span id="coins">0</span></div>
+<div class="app">
+
+  <h1>Quiz Jeeto</h1>
+
+  <div class="info-row">
+    <div class="pill">Coins: <span id="coins">50</span></div>
+    <div class="pill">Level: GK / HISTORY</div>
   </div>
 
-  <div class="container">
+  <div class="time-box">Time: <span id="time">10</span>s</div>
 
-    <!-- Banner Ad -->
-    <div class="adBox">
-      <script type="text/javascript">
-        atOptions = {
-          'key' : '28277001',
-          'format' : 'iframe',
-          'height' : 50,
-          'width' : 320,
-          'params' : {}
-        };
-      </script>
-      <script type="text/javascript" src="//www.topcreativeformat.com/28277001/invoke.js"></script>
-    </div>
-
-    <!-- Quiz Card -->
-    <div class="card">
-      <div id="question" class="question"></div>
-      <div id="options"></div>
-      <button id="nextBtn">Next Question</button>
-    </div>
-
+  <div class="progress">
+    <div class="bar"></div>
   </div>
 
-  <!-- Social Bar Ad -->
-  <script type="text/javascript">
-    atOptions = {
-      'key' : '28277074',
-      'format' : 'socialbar',
-      'params' : {}
-    };
-  </script>
-  <script type="text/javascript" src="//www.topcreativeformat.com/28277074/invoke.js"></script>
+  <!-- FINISH SCREEN -->
+  <div class="card">
+    <h2>Questions Finished!</h2>
 
-  <!-- JS -->
-  <script src="script.js"></script>
+    <button class="reward-btn" onclick="watchAd()">
+      🎥 Watch Ad & Get +20 Coins
+    </button>
+  </div>
+
+  <div class="card">
+    <p class="min">💰 Minimum Withdraw: 100 Coins</p>
+    <button class="withdraw">Withdraw</button>
+  </div>
+
+  <!-- Banner -->
+  <div class="banner">
+    🔥 Banner Ad 320 × 50
+  </div>
+
+</div>
+
+<!-- Adsterra Social Bar -->
+<script type="text/javascript">
+atOptions = {
+  'key' : '28277074',
+  'format' : 'socialbar',
+  'params' : {}
+};
+</script>
+<script src="//www.topcreativeformat.com/28277074/invoke.js"></script>
+
+<script src="script.js"></script>
 </body>
 </html>
