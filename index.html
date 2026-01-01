@@ -19,7 +19,7 @@ body{
   padding:12px;
 }
 
-/* FULL BLUE CARD (no white) */
+/* FULL BLUE CARD */
 .card{
   width:100%;
   max-width:420px;
@@ -101,7 +101,7 @@ body{
   background:linear-gradient(135deg,#d50000,#b71c1c);
 }
 
-/* WITHDRAW (same blue theme) */
+/* WITHDRAW */
 .withdraw{
   margin-top:16px;
   background:rgba(255,255,255,0.18);
@@ -162,7 +162,7 @@ body{
 </div>
 
 <script>
-let questions=[],i=0,coins=0,timer;
+let questions=[],i=0,coins=0,timer,locked=false;
 
 function decode(t){
   let x=document.createElement("textarea");
@@ -174,12 +174,17 @@ async function load(){
   let d=await r.json();
   questions=d.results.map(q=>{
     let a=[...q.incorrect_answers,q.correct_answer].sort();
-    return{q:decode(q.question),a:a.map(decode),c:a.indexOf(q.correct_answer)};
+    return{
+      q:decode(q.question),
+      a:a.map(decode),
+      c:a.indexOf(q.correct_answer)
+    };
   });
   show();
 }
 
 function start(){
+  clearInterval(timer);
   let t=10;
   time.innerText=t;
   bar.style.width="0%";
@@ -187,41 +192,56 @@ function start(){
     t--;
     time.innerText=t;
     bar.style.width=((10-t)*10)+"%";
-    if(t<=0){clearInterval(timer); next();}
+    if(t<=0){
+      clearInterval(timer);
+      revealCorrect();
+      setTimeout(next,800);
+    }
   },1000);
 }
 
 function show(){
+  locked=false;
   if(i>=questions.length){
     question.innerText="Questions Finished!";
     options.innerHTML="";
     return;
   }
+
   let q=questions[i];
   question.innerText=q.q;
   options.innerHTML="";
+
   q.a.forEach((o,idx)=>{
     let d=document.createElement("div");
     d.className="option";
     d.innerText=o;
+
     d.onclick=()=>{
+      if(locked) return;
+      locked=true;
       clearInterval(timer);
+
       if(idx===q.c){
         d.classList.add("correct");
         coins+=10;
         document.getElementById("coins").innerText=coins;
-      }else d.classList.add("wrong");
-      setTimeout(next,600);
+      }else{
+        d.classList.add("wrong");
+        revealCorrect();   // ✅ show correct answer
+      }
+
+      setTimeout(next,800);
     };
+
     options.appendChild(d);
   });
+
   start();
 }
 
-function next(){ i++; show(); }
-
-load();
-</script>
-
-</body>
-</html>
+function revealCorrect(){
+  let opts=document.querySelectorAll(".option");
+  let correctIndex=questions[i].c;
+  opts[correctIndex].classList.add("correct");
+}
