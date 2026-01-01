@@ -4,25 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- AdSense verification -->
-<meta name="google-adsense-account" content="ca-pub-7784279882105891">
-
-<!-- AdSense main script -->
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7784279882105891"
-crossorigin="anonymous"></script>
-
 <title>Quiz Jeeto</title>
 
 <style>
-*{
-  box-sizing:border-box;
-  -webkit-tap-highlight-color:transparent;
-}
-
+*{box-sizing:border-box}
 body{
   margin:0;
   font-family:Poppins,Arial,sans-serif;
-  background:linear-gradient(135deg,#5f6cff,#6a7bff);
+  background:linear-gradient(135deg,#6a6ff5,#7b7ff7);
   min-height:100vh;
   display:flex;
   justify-content:center;
@@ -31,254 +20,198 @@ body{
 }
 
 /* MAIN CARD */
-.container{
+.card{
   width:100%;
   max-width:420px;
-  background:#fff;
+  background:#f2f5ff;
   border-radius:18px;
-  padding:16px;
-  margin-top:10px;
-  box-shadow:0 15px 35px rgba(0,0,0,.25);
+  padding:14px;
+  box-shadow:0 15px 30px rgba(0,0,0,.25);
 }
 
-/* TOP BAR */
-.top{
+/* HEADER */
+.title{
+  text-align:center;
+  font-size:24px;
+  font-weight:700;
+  margin-bottom:10px;
+}
+
+/* INFO BAR */
+.info{
   display:flex;
   justify-content:space-between;
-  font-size:14px;
-  color:#333;
   margin-bottom:6px;
 }
+.badge{
+  background:#fff;
+  padding:6px 14px;
+  border-radius:20px;
+  font-size:14px;
+  font-weight:600;
+}
 
-/* PROGRESS BAR */
+/* TIME */
+.time{
+  text-align:center;
+  font-size:16px;
+  font-weight:600;
+  margin:6px 0;
+}
+
+/* PROGRESS */
 .progress{
   height:8px;
-  background:#e0e0e0;
+  background:#ddd;
   border-radius:10px;
   overflow:hidden;
-  margin:10px 0 16px;
+  margin-bottom:12px;
 }
 .progress-bar{
   height:100%;
   width:0%;
   background:linear-gradient(90deg,#00c853,#ffeb3b,#ff5252);
-  transition:.4s;
+  transition:.3s;
 }
 
 /* QUESTION */
-h2{
+.question{
   font-size:18px;
-  line-height:1.4;
-  color:#222;
-  margin-bottom:14px;
+  font-weight:600;
+  margin-bottom:12px;
 }
 
 /* OPTIONS */
 .option{
-  background:#f3f5ff;
-  border:2px solid #d6dbff;
+  background:#6583f5;
+  color:#fff;
   padding:14px;
-  margin:10px 0;
-  border-radius:12px;
-  font-size:15px;
-  cursor:pointer;
-}
-
-.option:active{
-  transform:scale(.97);
-}
-
-.option.correct{
-  background:#c8f7d4;
-  border-color:#00c853;
-}
-
-.option.wrong{
-  background:#ffd6d6;
-  border-color:#ff5252;
-}
-
-/* BANNER AD */
-.banner-ad{
-  margin:14px 0;
-}
-
-/* BUTTONS */
-button{
-  width:100%;
-  padding:14px;
-  margin-top:14px;
-  border:none;
   border-radius:14px;
+  text-align:center;
+  margin:10px 0;
   font-size:16px;
-  font-weight:600;
   cursor:pointer;
 }
-
-.watch-btn{
-  background:#ffc107;
-  color:#000;
-}
-
-.withdraw-btn{
-  background:#2e7d32;
-  color:#fff;
-}
-
-.default-btn{
-  background:#ff9800;
-  color:#fff;
-}
+.option.correct{background:#2e7d32}
+.option.wrong{background:#c62828}
 
 /* WITHDRAW */
-#withdraw{
-  display:none;
+.withdraw{
+  background:#fff;
+  border-radius:14px;
+  padding:12px;
+  margin-top:12px;
   text-align:center;
 }
+.withdraw button{
+  margin-top:6px;
+  padding:8px 18px;
+  font-size:15px;
+}
 
-#withdraw p{
-  font-size:14px;
-  color:#333;
+/* BANNER */
+.banner{
+  margin-top:14px;
+  background:#ff9800;
+  color:#000;
+  padding:12px;
+  border-radius:12px;
+  text-align:center;
+  font-weight:700;
 }
 </style>
 </head>
 
 <body>
 
-<div class="container">
+<div class="card">
 
-  <!-- TOP -->
-  <div class="top">
-    <div>⏱ <span id="timer">15</span>s</div>
-    <div>💰 Coins: <span id="coins">0</span></div>
+  <div class="title">Quiz Jeeto</div>
+
+  <div class="info">
+    <div class="badge">Coins: <span id="coins">0</span></div>
+    <div class="badge">Level: GK / HISTORY</div>
   </div>
 
-  <!-- BANNER AD -->
-  <div class="banner-ad">
-    <ins class="adsbygoogle"
-      style="display:block"
-      data-ad-client="ca-pub-7784279882105891"
-      data-ad-slot="1111111111"
-      data-ad-format="auto"
-      data-full-width-responsive="true"></ins>
-    <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
-  </div>
+  <div class="time">Time: <span id="time">10</span>s</div>
 
-  <!-- PROGRESS -->
   <div class="progress">
-    <div class="progress-bar" id="progressBar"></div>
+    <div class="progress-bar" id="bar"></div>
   </div>
 
-  <!-- QUIZ -->
-  <h2 id="question">Loading…</h2>
+  <div class="question" id="question">Loading...</div>
+
   <div id="options"></div>
 
-  <!-- WITHDRAW -->
-  <div id="withdraw">
-    <h2>Questions Finished!</h2>
-    <p>Total Coins: <b><span id="finalCoins">0</span></b></p>
-    <p>Minimum Withdraw: 100 Coins</p>
-
-    <button class="watch-btn" onclick="alert('Rewarded Ad Here')">
-      📺 Watch Ad & Get Coins
-    </button>
-
-    <button class="withdraw-btn" onclick="alert('Withdraw Request Sent')">
-      💰 Withdraw
-    </button>
+  <div class="withdraw">
+    💰 Minimum Withdraw: <b>100 Coins</b><br>
+    <button onclick="alert('Withdraw clicked')">Withdraw</button>
   </div>
+
+  <div class="banner">🔥 Banner Ad 320 × 50</div>
 
 </div>
 
 <script>
-let questions=[],index=0,coins=0,timer,lock=false;
+let questions=[],i=0,coins=0,timer;
 
-const qEl=document.getElementById("question");
-const oEl=document.getElementById("options");
-const tEl=document.getElementById("timer");
-const cEl=document.getElementById("coins");
-const pBar=document.getElementById("progressBar");
-const withdrawBox=document.getElementById("withdraw");
-const finalCoins=document.getElementById("finalCoins");
-
-function decodeHTML(str){
-  const txt=document.createElement("textarea");
-  txt.innerHTML=str;
-  return txt.value;
+function decode(t){
+  let x=document.createElement("textarea");
+  x.innerHTML=t; return x.value;
 }
 
-async function loadAPI(){
-  const res=await fetch("https://opentdb.com/api.php?amount=10&type=multiple");
-  const data=await res.json();
-  questions=data.results.map(q=>{
-    const opts=[...q.incorrect_answers,q.correct_answer].sort();
-    return{
-      q:decodeHTML(q.question),
-      a:opts.map(o=>decodeHTML(o)),
-      c:opts.indexOf(q.correct_answer)
-    };
+async function load(){
+  let r=await fetch("https://opentdb.com/api.php?amount=5&type=multiple");
+  let d=await r.json();
+  questions=d.results.map(q=>{
+    let a=[...q.incorrect_answers,q.correct_answer].sort();
+    return{q:decode(q.question),a:a.map(decode),c:a.indexOf(q.correct_answer)};
   });
-  loadQuestion();
+  show();
 }
 
-function startTimer(){
-  clearInterval(timer);
-  let t=15;
-  tEl.innerText=t;
+function start(){
+  let t=10;
+  time.innerText=t;
+  bar.style.width="0%";
   timer=setInterval(()=>{
     t--;
-    tEl.innerText=t;
-    if(t<=0){
-      clearInterval(timer);
-      nextQuestion();
-    }
+    time.innerText=t;
+    bar.style.width=((10-t)*10)+"%";
+    if(t<=0){clearInterval(timer); next();}
   },1000);
 }
 
-function loadQuestion(){
-  lock=false;
-
-  if(index>=questions.length){
-    qEl.style.display="none";
-    oEl.style.display="none";
-    withdrawBox.style.display="block";
-    finalCoins.innerText=coins;
+function show(){
+  if(i>=questions.length){
+    question.innerText="Questions Finished!";
+    options.innerHTML="";
     return;
   }
-
-  const q=questions[index];
-  qEl.innerText=q.q;
-  oEl.innerHTML="";
-  pBar.style.width=((index+1)/questions.length*100)+"%";
-
-  q.a.forEach((opt,i)=>{
-    const d=document.createElement("div");
+  let q=questions[i];
+  question.innerText=q.q;
+  options.innerHTML="";
+  q.a.forEach((o,idx)=>{
+    let d=document.createElement("div");
     d.className="option";
-    d.innerText=opt;
+    d.innerText=o;
     d.onclick=()=>{
-      if(lock) return;
-      lock=true;
-      if(i===q.c){
+      clearInterval(timer);
+      if(idx===q.c){
         d.classList.add("correct");
         coins+=10;
-        cEl.innerText=coins;
-      }else{
-        d.classList.add("wrong");
-      }
-      setTimeout(nextQuestion,800);
+        document.getElementById("coins").innerText=coins;
+      }else d.classList.add("wrong");
+      setTimeout(next,600);
     };
-    oEl.appendChild(d);
+    options.appendChild(d);
   });
-
-  startTimer();
+  start();
 }
 
-function nextQuestion(){
-  index++;
-  loadQuestion();
-}
+function next(){ i++; show(); }
 
-loadAPI();
+load();
 </script>
 
 </body>
