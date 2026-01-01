@@ -1,61 +1,90 @@
 body{
-  font-family: 'Segoe UI', Arial, sans-serif;
-  background: linear-gradient(135deg,#e3f2fd,#fce4ec);
+  font-family:Poppins,Arial,sans-serif;
+  background:linear-gradient(135deg,#1a237e,#0d47a1,#311b92);
+  min-height:100vh;
   margin:0;
-  padding:0;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  color:#fff;
 }
 
 .container{
+  width:94%;
   max-width:420px;
-  margin:40px auto;
-  background:#ffffff;
-  padding:22px;
-  border-radius:14px;
-  box-shadow:0 10px 30px rgba(0,0,0,0.15);
+  background:rgba(255,255,255,.12);
+  backdrop-filter:blur(18px);
+  border-radius:22px;
+  padding:20px;
+  box-shadow:0 25px 45px rgba(0,0,0,.4);
+}
+
+.top{
+  display:flex;
+  justify-content:space-between;
+  font-size:14px;
+}
+
+.banner-ad{
+  margin:12px 0;
+}
+
+.progress{
+  height:7px;
+  background:rgba(255,255,255,.25);
+  border-radius:10px;
+  overflow:hidden;
+  margin:10px 0 18px;
+}
+
+.progress-bar{
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg,#00e5ff,#1de9b6);
+  transition:.4s;
 }
 
 h2{
-  text-align:center;
   font-size:20px;
-  margin-bottom:20px;
+  margin-bottom:16px;
 }
 
 .option{
   padding:14px;
   margin:12px 0;
-  background:#f5f7fa;
-  border-radius:10px;
+  border-radius:14px;
+  background:rgba(255,255,255,.15);
+  border:1px solid rgba(255,255,255,.25);
   cursor:pointer;
-  font-size:15px;
-  border:2px solid transparent;
-  transition:0.3s;
+  transition:.25s;
 }
 
 .option:hover{
-  background:#e3f2fd;
-  border-color:#2196f3;
-  transform:scale(1.02);
+  transform:scale(1.03);
+  background:rgba(255,255,255,.3);
+}
+
+.option.correct{
+  background:linear-gradient(135deg,#00c853,#2e7d32);
+}
+
+.option.wrong{
+  background:linear-gradient(135deg,#d50000,#b71c1c);
 }
 
 button{
   width:100%;
   padding:14px;
-  background:linear-gradient(135deg,#2196f3,#1e88e5);
-  color:#fff;
+  background:linear-gradient(135deg,#ff9800,#f57c00);
   border:none;
-  border-radius:12px;
+  border-radius:16px;
+  color:#fff;
   font-size:16px;
+  margin-top:15px;
   cursor:pointer;
-  margin-top:10px;
-  box-shadow:0 5px 15px rgba(33,150,243,0.4);
 }
 
-button:hover{
-  background:linear-gradient(135deg,#1e88e5,#1565c0);
-}
-
-#adBox{
+#withdraw{
   display:none;
-  margin-top:25px;
   text-align:center;
 }
