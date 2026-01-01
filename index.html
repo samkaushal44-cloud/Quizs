@@ -110,11 +110,14 @@ const questionEl = document.getElementById("question");
 const optionsEl = document.getElementById("options");
 const finishEl = document.getElementById("finish");
 
-// Backup questions (API optional)
+// 🔹 QUESTIONS (backup/local – always work)
 const questions = [
- {q:"HTML ka full form kya hai?", a:["Hyper Text Markup Language","High Text Machine Language","Hyper Tool Multi Language","None"], c:0},
- {q:"Who wrote the National Anthem of India?", a:["Rabindranath Tagore","Premchand","Bankim","Nehru"], c:0},
- {q:"Which bank collapsed in 2008 financial crisis?", a:["Barclays","HSBC","Lehman Brothers","Lloyds"], c:2}
+ {q:"HTML ka full form kya hai?",
+  a:["Hyper Text Markup Language","High Text Machine Language","Hyper Tool Multi Language","None"], c:0},
+ {q:"Who wrote the National Anthem of India?",
+  a:["Rabindranath Tagore","Premchand","Bankim","Nehru"], c:0},
+ {q:"Which bank collapsed in 2008 financial crisis?",
+  a:["Barclays","HSBC","Lehman Brothers","Lloyds"], c:2}
 ];
 
 function startTimer(){
@@ -143,6 +146,7 @@ function show(){
     return;
   }
   const q = questions[i];
+  questionEl.classList.remove("hidden");
   questionEl.innerText = q.q;
   optionsEl.innerHTML="";
   q.a.forEach((opt,idx)=>{
@@ -169,24 +173,37 @@ function show(){
 function revealCorrect(){
   const q = questions[i];
   const opts = document.querySelectorAll(".option");
-  opts[q.c].classList.add("correct");
+  if(opts[q.c]) opts[q.c].classList.add("correct");
 }
 
 function next(){ i++; show(); }
 
-// 🎥 Rewarded Ad (Adsterra Social Bar / Direct Link)
+// 🎥 REWARDED AD → COINS → NEW QUESTIONS
 function watchAd(){
+  // Adsterra Social Bar / Direct Link
   window.open("https://www.highperformanceformat.com/28277074","_blank");
+
   const btn = document.getElementById("rewardBtn");
   btn.disabled = true;
   btn.innerText = "Watching Ad...";
+
+  // ⏳ wait 15 sec then reward + restart quiz
   setTimeout(()=>{
     coins += 20;
     coinsEl.innerText = coins;
-    btn.innerText = "Reward Added ✔ (+20)";
-  },15000); // 15 sec reward
+
+    // 🔁 RESET QUIZ
+    i = 0;
+    finishEl.classList.add("hidden");
+    btn.disabled = false;
+    btn.innerText = "🎥 Watch Ad & Get +20 Coins";
+
+    show(); // ✅ NEW QUESTIONS START
+
+  },15000);
 }
 
+// start first round
 show();
 </script>
 
