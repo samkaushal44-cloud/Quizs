@@ -11,22 +11,149 @@
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7784279882105891"
 crossorigin="anonymous"></script>
 
-<title>Premium Quiz</title>
+<title>Quiz Jeeto</title>
 
-<link rel="stylesheet" href="style.css">
+<style>
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+}
+
+body{
+  margin:0;
+  font-family:Poppins,Arial,sans-serif;
+  background:linear-gradient(135deg,#5f6cff,#6a7bff);
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:flex-start;
+  padding:12px;
+}
+
+/* MAIN CARD */
+.container{
+  width:100%;
+  max-width:420px;
+  background:#fff;
+  border-radius:18px;
+  padding:16px;
+  margin-top:10px;
+  box-shadow:0 15px 35px rgba(0,0,0,.25);
+}
+
+/* TOP BAR */
+.top{
+  display:flex;
+  justify-content:space-between;
+  font-size:14px;
+  color:#333;
+  margin-bottom:6px;
+}
+
+/* PROGRESS BAR */
+.progress{
+  height:8px;
+  background:#e0e0e0;
+  border-radius:10px;
+  overflow:hidden;
+  margin:10px 0 16px;
+}
+.progress-bar{
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg,#00c853,#ffeb3b,#ff5252);
+  transition:.4s;
+}
+
+/* QUESTION */
+h2{
+  font-size:18px;
+  line-height:1.4;
+  color:#222;
+  margin-bottom:14px;
+}
+
+/* OPTIONS */
+.option{
+  background:#f3f5ff;
+  border:2px solid #d6dbff;
+  padding:14px;
+  margin:10px 0;
+  border-radius:12px;
+  font-size:15px;
+  cursor:pointer;
+}
+
+.option:active{
+  transform:scale(.97);
+}
+
+.option.correct{
+  background:#c8f7d4;
+  border-color:#00c853;
+}
+
+.option.wrong{
+  background:#ffd6d6;
+  border-color:#ff5252;
+}
+
+/* BANNER AD */
+.banner-ad{
+  margin:14px 0;
+}
+
+/* BUTTONS */
+button{
+  width:100%;
+  padding:14px;
+  margin-top:14px;
+  border:none;
+  border-radius:14px;
+  font-size:16px;
+  font-weight:600;
+  cursor:pointer;
+}
+
+.watch-btn{
+  background:#ffc107;
+  color:#000;
+}
+
+.withdraw-btn{
+  background:#2e7d32;
+  color:#fff;
+}
+
+.default-btn{
+  background:#ff9800;
+  color:#fff;
+}
+
+/* WITHDRAW */
+#withdraw{
+  display:none;
+  text-align:center;
+}
+
+#withdraw p{
+  font-size:14px;
+  color:#333;
+}
+</style>
 </head>
 
 <body>
 
 <div class="container">
 
-  <!-- Top bar -->
+  <!-- TOP -->
   <div class="top">
     <div>⏱ <span id="timer">15</span>s</div>
     <div>💰 Coins: <span id="coins">0</span></div>
   </div>
 
-  <!-- Banner Ad -->
+  <!-- BANNER AD -->
   <div class="banner-ad">
     <ins class="adsbygoogle"
       style="display:block"
@@ -37,25 +164,122 @@ crossorigin="anonymous"></script>
     <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
   </div>
 
-  <!-- Progress -->
+  <!-- PROGRESS -->
   <div class="progress">
     <div class="progress-bar" id="progressBar"></div>
   </div>
 
-  <!-- Quiz -->
-  <h2 id="question">Loading...</h2>
+  <!-- QUIZ -->
+  <h2 id="question">Loading…</h2>
   <div id="options"></div>
 
-  <!-- Withdraw -->
+  <!-- WITHDRAW -->
   <div id="withdraw">
-    <h2>Withdraw</h2>
-    <p>Total Coins: <span id="finalCoins">0</span></p>
-    <p>Minimum Withdraw: 50 Coins</p>
-    <button onclick="alert('Withdraw request sent')">Withdraw Now</button>
+    <h2>Questions Finished!</h2>
+    <p>Total Coins: <b><span id="finalCoins">0</span></b></p>
+    <p>Minimum Withdraw: 100 Coins</p>
+
+    <button class="watch-btn" onclick="alert('Rewarded Ad Here')">
+      📺 Watch Ad & Get Coins
+    </button>
+
+    <button class="withdraw-btn" onclick="alert('Withdraw Request Sent')">
+      💰 Withdraw
+    </button>
   </div>
 
 </div>
 
-<script src="script.js"></script>
+<script>
+let questions=[],index=0,coins=0,timer,lock=false;
+
+const qEl=document.getElementById("question");
+const oEl=document.getElementById("options");
+const tEl=document.getElementById("timer");
+const cEl=document.getElementById("coins");
+const pBar=document.getElementById("progressBar");
+const withdrawBox=document.getElementById("withdraw");
+const finalCoins=document.getElementById("finalCoins");
+
+function decodeHTML(str){
+  const txt=document.createElement("textarea");
+  txt.innerHTML=str;
+  return txt.value;
+}
+
+async function loadAPI(){
+  const res=await fetch("https://opentdb.com/api.php?amount=10&type=multiple");
+  const data=await res.json();
+  questions=data.results.map(q=>{
+    const opts=[...q.incorrect_answers,q.correct_answer].sort();
+    return{
+      q:decodeHTML(q.question),
+      a:opts.map(o=>decodeHTML(o)),
+      c:opts.indexOf(q.correct_answer)
+    };
+  });
+  loadQuestion();
+}
+
+function startTimer(){
+  clearInterval(timer);
+  let t=15;
+  tEl.innerText=t;
+  timer=setInterval(()=>{
+    t--;
+    tEl.innerText=t;
+    if(t<=0){
+      clearInterval(timer);
+      nextQuestion();
+    }
+  },1000);
+}
+
+function loadQuestion(){
+  lock=false;
+
+  if(index>=questions.length){
+    qEl.style.display="none";
+    oEl.style.display="none";
+    withdrawBox.style.display="block";
+    finalCoins.innerText=coins;
+    return;
+  }
+
+  const q=questions[index];
+  qEl.innerText=q.q;
+  oEl.innerHTML="";
+  pBar.style.width=((index+1)/questions.length*100)+"%";
+
+  q.a.forEach((opt,i)=>{
+    const d=document.createElement("div");
+    d.className="option";
+    d.innerText=opt;
+    d.onclick=()=>{
+      if(lock) return;
+      lock=true;
+      if(i===q.c){
+        d.classList.add("correct");
+        coins+=10;
+        cEl.innerText=coins;
+      }else{
+        d.classList.add("wrong");
+      }
+      setTimeout(nextQuestion,800);
+    };
+    oEl.appendChild(d);
+  });
+
+  startTimer();
+}
+
+function nextQuestion(){
+  index++;
+  loadQuestion();
+}
+
+loadAPI();
+</script>
+
 </body>
 </html>
