@@ -1,3 +1,7 @@
+/************** CONFIG **************/
+const SCRIPT_URL =
+  "https://script.google.com/macros/s/AKfycbwaaB5OyovUC8bdQt-tD_fww7UWr7lQ9Gug055swn3p9nmD2driHl5FfrbO9UNjaePS/exec";
+
 /************** QUESTIONS **************/
 const questions = [
   { q: "India capital?", o: ["Delhi","Mumbai","Kolkata","Chennai"], a: "Delhi" },
@@ -19,19 +23,18 @@ const timeBox = document.getElementById("time");
 const bar = document.querySelector(".bar");
 const card = document.getElementById("card");
 const catCard = document.getElementById("catCard");
-const categoryPill = document.getElementById("category");
 const withdrawBtn = document.querySelector(".withdraw");
+const upiInput = document.getElementById("upi");
 
 coinBox.innerText = coins;
 
-/************** START QUIZ **************/
+/************** QUIZ **************/
 function startQuiz(){
   catCard.style.display = "none";
   index = 0;
   loadQuestion();
 }
 
-/************** LOAD QUESTION **************/
 function loadQuestion(){
   clearInterval(timer);
   time = 10;
@@ -54,7 +57,6 @@ function loadQuestion(){
   }, 1000);
 }
 
-/************** ANSWER **************/
 function answer(val){
   clearInterval(timer);
   const q = questions[index];
@@ -70,17 +72,15 @@ function answer(val){
     saveCoins();
   }
 
-  setTimeout(nextQuestion, 800);
+  setTimeout(nextQuestion, 700);
 }
 
-/************** NEXT **************/
 function nextQuestion(){
   index++;
   if (index >= questions.length) finishQuiz();
   else loadQuestion();
 }
 
-/************** FINISH **************/
 function finishQuiz(){
   card.innerHTML = `
     <h3>Questions Finished!</h3>
@@ -88,7 +88,7 @@ function finishQuiz(){
   `;
 }
 
-/************** WATCH AD (SAFE) **************/
+/************** AD (FAKE TIMER SAFE) **************/
 function watchAd(){
   card.innerHTML = "<h3>Loading Ad...</h3>";
   setTimeout(() => {
@@ -99,15 +99,15 @@ function watchAd(){
   }, 3000);
 }
 
-/************** SAVE COINS **************/
+/************** COINS **************/
 function saveCoins(){
   localStorage.setItem("coins", coins);
   coinBox.innerText = coins;
 }
 
-/************** WITHDRAW (FINAL FIX – NO CORS) **************/
+/************** WITHDRAW (FINAL FIX) **************/
 withdrawBtn.onclick = () => {
-  const upi = document.getElementById("upi").value;
+  const upi = upiInput.value.trim();
 
   if (coins < 100) {
     alert("Minimum 100 coins required");
@@ -118,8 +118,8 @@ withdrawBtn.onclick = () => {
     return;
   }
 
-  // FIRE & FORGET (NO NETWORK ERROR)
-  fetch("https://script.google.com/macros/s/AKfycby-GuITgMyVWXad-5N56VN3DKJLrhkwain4wBlI6o_IaGFn-2usHhV0HPqFR_0b2RBjyg/exec", {
+  // Fire-and-forget POST (no CORS issues)
+  fetch(SCRIPT_URL, {
     method: "POST",
     mode: "no-cors",
     headers: { "Content-Type": "application/json" },
@@ -130,5 +130,5 @@ withdrawBtn.onclick = () => {
 
   coins = 0;
   saveCoins();
-  document.getElementById("upi").value = "";
+  upiInput.value = "";
 };
