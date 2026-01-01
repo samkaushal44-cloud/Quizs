@@ -1,145 +1,102 @@
-// ===== QUESTIONS =====
-const questions = [
-  {q:"India capital?", o:["Delhi","Mumbai","Kolkata","Chennai"], a:0},
-  {q:"2 + 2 = ?", o:["3","4","5","6"], a:1},
-  {q:"Sun rises from?", o:["North","South","East","West"], a:2},
-  {q:"HTML used for?", o:["Design","Structure","DB","Server"], a:1},
-  {q:"CSS full form?", o:["Style","Sheet","Cascading Style Sheets","Code"], a:2},
-  {q:"JS is?", o:["Language","Library","DB","OS"], a:0},
-  {q:"5 × 5 = ?", o:["10","20","25","30"], a:2},
-  {q:"RAM is?", o:["CPU","GPU","Memory","Disk"], a:2},
-  {q:"HTTP is?", o:["Protocol","Language","Server","OS"], a:0},
-  {q:"India PM?", o:["Modi","Rahul","Kejriwal","Amit"], a:0}
-];
-
-// ===== STATE =====
-let index = 0;
 let coins = Number(localStorage.getItem("coins") || 50);
-let timer, time = 10;
+let bonusDay = localStorage.getItem("bonusDay");
+let today = new Date().toDateString();
 
-// DAILY AD LIMIT
-const MAX_ADS = 5;
-const today = new Date().toDateString();
-let lastDay = localStorage.getItem("lastDay");
-let dailyAds = Number(localStorage.getItem("dailyAds") || 0);
-
-// Reset daily limit
-if(lastDay !== today){
-  dailyAds = 0;
-  localStorage.setItem("dailyAds", 0);
-  localStorage.setItem("lastDay", today);
+if(bonusDay !== today){
+  coins += 10;
+  localStorage.setItem("bonusDay", today);
 }
 
-// ===== ELEMENTS =====
-const card = document.getElementById("card");
-const coinBox = document.getElementById("coins");
-const timeBox = document.getElementById("time");
-const bar = document.querySelector(".bar");
+document.getElementById("coins").innerText = coins;
 
-// ===== INIT =====
-coinBox.innerText = coins;
-loadQuestion();
+let questions=[], index=0, timer, time=10, cat=9;
 
-// ===== QUIZ =====
-function loadQuestion(){
+// START QUIZ
+function startQuiz(){
+  cat = document.getElementById("catSelect").value;
+  document.getElementById("category").innerText =
+    document.getElementById("catSelect").selectedOptions[0].text;
+  fetchQuestions();
+}
+
+// FETCH API
+function fetchQuestions(){
+  fetch(`https://opentdb.com/api.php?amount=10&category=${cat}&type=multiple`)
+  .then(r=>r.json())
+  .then(d=>{
+    questions = d.results.map(q=>({
+      q:q.question,
+      o:[...q.incorrect_answers,q.correct_answer].sort(),
+      a:q.correct_answer
+    }));
+    index=0;
+    loadQ();
+  })
+  .catch(()=>{
+    alert("API failed, retry");
+  });
+}
+
+function loadQ(){
   clearInterval(timer);
-  time = 10;
-  timeBox.innerText = time;
-  bar.style.width = "100%";
+  time=10;
+  document.getElementById("time").innerText=time;
+  document.querySelector(".bar").style.width="100%";
 
-  const q = questions[index];
-  card.innerHTML = `
-    <h2>${q.q}</h2>
-    ${q.o.map((t,i)=>`<button class="opt" onclick="answer(${i})">${t}</button>`).join("")}
-  `;
+  let q=questions[index];
+  let card=document.getElementById("card");
+  card.innerHTML=`<h3>${q.q}</h3>`+
+    q.o.map(o=>`<button class="opt" onclick="ans('${o}')">${o}</button>`).join("");
 
-  timer = setInterval(()=>{
+  timer=setInterval(()=>{
     time--;
-    timeBox.innerText = time;
-    bar.style.width = (time*10) + "%";
-    if(time<=0){
-      clearInterval(timer);
-      next();
-    }
+    document.getElementById("time").innerText=time;
+    document.querySelector(".bar").style.width=(time*10)+"%";
+    if(time<=0){clearInterval(timer);next();}
   },1000);
 }
 
-function answer(i){
+function ans(v){
   clearInterval(timer);
-  const q = questions[index];
-  const opts = document.querySelectorAll(".opt");
-
-  opts.forEach((b,bi)=>{
-    b.disabled = true;
-    if(bi === q.a) b.style.background="#22c55e";
-    if(bi === i && bi !== q.a) b.style.background="#ef4444";
-  });
-
-  if(i === q.a){
-    coins += 5;
-    saveCoins();
-  }
-
-  setTimeout(next, 800);
+  let q=questions[index];
+  if(v===q.a){coins+=5;save();}
+  setTimeout(next,500);
 }
 
 function next(){
   index++;
-  if(index >= questions.length){
-    finish();
-  }else{
-    loadQuestion();
-  }
+  if(index>=questions.length){finish();}
+  else loadQ();
 }
 
-// ===== FINISH =====
 function finish(){
-  let disabled = dailyAds >= MAX_ADS ? "disabled" : "";
-  card.innerHTML = `
-    <h2>Questions Finished!</h2>
-    <p>🎥 Ads Today: ${dailyAds}/${MAX_ADS}</p>
-    <button class="reward-btn" ${disabled} onclick="watchAd()">
-      Watch Ad & Get +20 Coins
-    </button>
-  `;
+  document.getElementById("card").innerHTML=
+  `<h3>Quiz Finished</h3>
+   <button class="reward-btn" onclick="watchAd()">Watch Ad +20</button>`;
 }
 
-// ===== AD FLOW =====
+// REWARDED AD (REAL FEEL)
 function watchAd(){
-  if(dailyAds >= MAX_ADS){
-    alert("Daily ad limit reached. Try tomorrow.");
-    return;
-  }
-
-  dailyAds++;
-  localStorage.setItem("dailyAds", dailyAds);
-
-  let sec = 5;
-  card.innerHTML = `<h2>Ad Playing...</h2><p>Please wait ${sec}s</p>`;
-
-  const fakeAd = setInterval(()=>{
-    sec--;
-    card.innerHTML = `<h2>Ad Playing...</h2><p>Please wait ${sec}s</p>`;
-    if(sec<=0){
-      clearInterval(fakeAd);
-      coins += 20;
-      saveCoins();
-      finish();
-    }
-  },1000);
+  localStorage.setItem("rewardReturn","1");
+  location.href="https://www.topcreativeformat.com/28277074";
 }
 
-// ===== COINS =====
-function saveCoins(){
-  localStorage.setItem("coins", coins);
-  coinBox.innerText = coins;
+if(localStorage.getItem("rewardReturn")){
+  coins+=20;
+  save();
+  localStorage.removeItem("rewardReturn");
 }
 
-// ===== WITHDRAW =====
-document.querySelector(".withdraw").onclick = ()=>{
-  if(coins < 100){
-    alert("Minimum 100 coins required");
-  }else{
-    alert("Withdraw request submitted");
-  }
+// SAVE
+function save(){
+  localStorage.setItem("coins",coins);
+  document.getElementById("coins").innerText=coins;
+}
+
+// WITHDRAW
+document.querySelector(".withdraw").onclick=()=>{
+  let upi=document.getElementById("upi").value;
+  if(coins<100) alert("Min 100 coins");
+  else if(!upi) alert("Enter UPI");
+  else alert("Withdraw Requested");
 };
