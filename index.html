@@ -113,10 +113,9 @@ body{
   margin-top:16px;
   background:#ff9800;
   color:#000;
-  padding:12px;
+  padding:10px;
   border-radius:14px;
   text-align:center;
-  font-weight:700;
 }
 </style>
 </head>
@@ -124,6 +123,7 @@ body{
 <body>
 
 <div class="card">
+
   <div class="title">Quiz Jeeto</div>
 
   <div class="info">
@@ -145,13 +145,26 @@ body{
     <button onclick="alert('Withdraw clicked')">Withdraw</button>
   </div>
 
-  <div class="banner">🔥 Banner Ad 320 × 50</div>
+  <!-- 🔥 ADSTERRA BANNER -->
+  <div class="banner">
+    <script type="text/javascript">
+      atOptions = {
+        'key' : '5504539',
+        'format' : 'iframe',
+        'height' : 50,
+        'width' : 320,
+        'params' : {}
+      };
+    </script>
+    <script type="text/javascript" src="//www.highperformanceformat.com/5504539/invoke.js"></script>
+  </div>
+
 </div>
 
 <script>
 let questions=[],i=0,coins=0,timer,locked=false;
 
-/* BACKUP QUESTIONS – ALWAYS WORK */
+/* BACKUP QUESTIONS */
 const backupQuestions=[
  {q:"HTML ka full form kya hai?",
   a:["Hyper Text Markup Language","High Text Machine Language","Hyper Tool Multi Language","None"],c:0},
