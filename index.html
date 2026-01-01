@@ -2,57 +2,99 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Quiz Website</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- ✅ Google AdSense MAIN SCRIPT (ONLY ONCE) -->
+<!-- ✅ AdSense META verification -->
+<meta name="google-adsense-account" content="ca-pub-7784279882105891">
+
+<!-- ✅ AdSense main script -->
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7784279882105891"
-     crossorigin="anonymous"></script>
+crossorigin="anonymous"></script>
+
+<title>Premium Quiz</title>
 
 <style>
 body{
-  font-family: Arial, sans-serif;
-  background:#f2f2f2;
+  font-family:'Poppins',sans-serif;
+  background:linear-gradient(135deg,#1a237e,#0d47a1,#311b92);
+  min-height:100vh;
   margin:0;
-  padding:0;
+  display:flex;
+  justify-content:center;
+  align-items:center;
 }
+
 .container{
-  max-width:600px;
-  margin:30px auto;
-  background:#fff;
-  padding:20px;
-  border-radius:10px;
+  width:92%;
+  max-width:420px;
+  background:rgba(255,255,255,0.12);
+  backdrop-filter:blur(18px);
+  border-radius:22px;
+  padding:24px;
+  box-shadow:0 25px 45px rgba(0,0,0,.4);
+  color:#fff;
 }
+
 h2{
   text-align:center;
+  font-size:20px;
+  margin-bottom:18px;
 }
+
+.progress{
+  height:8px;
+  background:rgba(255,255,255,.25);
+  border-radius:10px;
+  overflow:hidden;
+  margin-bottom:20px;
+}
+.progress-bar{
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg,#00e5ff,#1de9b6);
+  transition:.4s;
+}
+
 .option{
-  display:block;
-  padding:12px;
-  margin:10px 0;
-  background:#e9e9e9;
-  border-radius:6px;
+  padding:14px;
+  margin:12px 0;
+  border-radius:14px;
+  background:rgba(255,255,255,.15);
+  border:1px solid rgba(255,255,255,.25);
   cursor:pointer;
+  transition:.25s;
 }
 .option:hover{
-  background:#d4d4d4;
+  background:rgba(255,255,255,.3);
+  transform:scale(1.03);
 }
+.option.correct{
+  background:linear-gradient(135deg,#00c853,#2e7d32);
+}
+.option.wrong{
+  background:linear-gradient(135deg,#d50000,#b71c1c);
+}
+
 button{
   width:100%;
-  padding:12px;
-  background:#2196f3;
-  color:#fff;
+  padding:14px;
+  margin-top:15px;
+  background:linear-gradient(135deg,#ff9800,#f57c00);
   border:none;
-  border-radius:6px;
+  border-radius:16px;
+  color:#fff;
   font-size:16px;
   cursor:pointer;
+  box-shadow:0 8px 20px rgba(0,0,0,.4);
 }
+button:hover{
+  transform:translateY(-2px);
+}
+
 #adBox{
   display:none;
-  margin-top:20px;
-}
-.hidden{
-  display:none;
+  margin-top:25px;
+  text-align:center;
 }
 </style>
 </head>
@@ -61,92 +103,94 @@ button{
 
 <div class="container">
 
-  <h2 id="question">Question will load...</h2>
+  <div class="progress">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
 
+  <h2 id="question">Loading...</h2>
   <div id="options"></div>
 
   <button onclick="nextQuestion()">Next Question</button>
 
-  <!-- ✅ Ad Box (10 questions ke baad) -->
+  <!-- ✅ Ad after 10 questions -->
   <div id="adBox">
-    <hr>
-    <p style="text-align:center;font-weight:bold;">Sponsored Ad</p>
-
+    <p>Sponsored</p>
     <ins class="adsbygoogle"
-         style="display:block"
-         data-ad-client="ca-pub-7784279882105891"
-         data-ad-slot="1234567890"
-         data-ad-format="auto"
-         data-full-width-responsive="true"></ins>
-
+      style="display:block"
+      data-ad-client="ca-pub-7784279882105891"
+      data-ad-slot="1234567890"
+      data-ad-format="auto"
+      data-full-width-responsive="true"></ins>
     <script>
       (adsbygoogle = window.adsbygoogle || []).push({});
     </script>
-
     <br>
-    <button onclick="continueQuiz()">Continue Quiz</button>
+    <button onclick="continueQuiz()">Continue</button>
   </div>
 
 </div>
 
 <script>
-const questions = [
-  {q:"HTML ka full form kya hai?", a:["Hyper Text Markup Language","High Text Machine Language","Hyper Tool Multi Language","None"], c:0},
-  {q:"CSS ka use kis liye hota hai?", a:["Logic","Design","Database","Server"], c:1},
-  {q:"JS ka full form?", a:["JavaSource","JavaScript","JustScript","None"], c:1},
-  {q:"India ki capital?", a:["Mumbai","Delhi","Kolkata","Chennai"], c:1},
-  {q:"2 + 2 = ?", a:["3","4","5","6"], c:1},
-  {q:"Browser ka example?", a:["Chrome","Windows","Linux","Android"], c:0},
-  {q:"HTML tag kaise hota hai?", a:["{}","<>","()","[]"], c:1},
-  {q:"CSS file extension?", a:[".html",".css",".js",".php"], c:1},
-  {q:"JS run hota hai?", a:["Server","Browser","Database","API"], c:1},
-  {q:"Website ka structure kis se?", a:["CSS","JS","HTML","SQL"], c:2},
+const questions=[
+ {q:"HTML ka full form kya hai?",a:["Hyper Text Markup Language","High Text Machine Language","Hyper Tool Multi Language","None"],c:0},
+ {q:"CSS ka use kis liye hota hai?",a:["Logic","Design","Database","Server"],c:1},
+ {q:"JavaScript kis me run hoti hai?",a:["Database","Browser","Server","Compiler"],c:1},
+ {q:"India ki capital?",a:["Mumbai","Delhi","Kolkata","Chennai"],c:1},
+ {q:"2 + 2 = ?",a:["3","4","5","6"],c:1},
+ {q:"HTML tag kaise hota hai?",a:["{}","<>","()","[]"],c:1},
+ {q:"CSS file extension?",a:[".html",".css",".js",".php"],c:1},
+ {q:"JS ka full form?",a:["Java Script","Just Script","Java Source","None"],c:0},
+ {q:"Website ka structure kis se?",a:["HTML","CSS","JS","SQL"],c:0},
+ {q:"Browser example?",a:["Chrome","Windows","Linux","Android"],c:0}
 ];
 
-let index = 0;
-let count = 0;
+let index=0,count=0,lock=false;
 
-const questionEl = document.getElementById("question");
-const optionsEl = document.getElementById("options");
-const adBox = document.getElementById("adBox");
+const qEl=document.getElementById("question");
+const oEl=document.getElementById("options");
+const adBox=document.getElementById("adBox");
+const pBar=document.getElementById("progressBar");
 
 function loadQuestion(){
-  const q = questions[index];
-  questionEl.innerText = q.q;
-  optionsEl.innerHTML = "";
-  q.a.forEach(opt=>{
-    const div = document.createElement("div");
-    div.className = "option";
-    div.innerText = opt;
-    optionsEl.appendChild(div);
-  });
+ lock=false;
+ const q=questions[index];
+ qEl.innerText=q.q;
+ oEl.innerHTML="";
+ pBar.style.width=((index+1)/questions.length*100)+"%";
+
+ q.a.forEach((opt,i)=>{
+  const d=document.createElement("div");
+  d.className="option";
+  d.innerText=opt;
+  d.onclick=()=>{
+    if(lock) return;
+    lock=true;
+    if(i===q.c){ d.classList.add("correct"); }
+    else{ d.classList.add("wrong"); }
+  };
+  oEl.appendChild(d);
+ });
 }
 
 function nextQuestion(){
-  count++;
-  index++;
-
-  if(count % 10 === 0){
-    adBox.style.display = "block";
-    return;
-  }
-
-  if(index >= questions.length){
-    alert("Quiz Finished!");
-    index = 0;
-    count = 0;
-  }
-  loadQuestion();
+ count++; index++;
+ if(count%10===0){
+   adBox.style.display="block";
+   return;
+ }
+ if(index>=questions.length){
+   alert("Quiz Finished!");
+   index=0; count=0;
+ }
+ loadQuestion();
 }
 
 function continueQuiz(){
-  adBox.style.display = "none";
-
-  if(index >= questions.length){
-    index = 0;
-    count = 0;
-  }
-  loadQuestion();
+ adBox.style.display="none";
+ if(index>=questions.length){
+   index=0; count=0;
+ }
+ loadQuestion();
 }
 
 loadQuestion();
