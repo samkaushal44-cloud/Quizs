@@ -1,114 +1,90 @@
-*{
-  box-sizing:border-box;
-  -webkit-tap-highlight-color:transparent;
-}
-
 body{
   margin:0;
-  font-family:Poppins,Arial,sans-serif;
-  background:linear-gradient(135deg,#5f6cff,#6a7bff);
-  min-height:100vh;
-  display:flex;
-  justify-content:center;
-  align-items:center; /* 🔥 FIX 1 */
-  padding:10px;
+  font-family:system-ui, Arial;
+  background:#eef2f7;
 }
 
-/* MAIN CARD */
-.container{
-  width:100%;
-  max-width:420px;
-  background:#ffffff;
-  border-radius:18px;
-  padding:16px;
-  box-shadow:0 15px 30px rgba(0,0,0,.25);
-}
-
-/* TOP BAR */
-.top{
+/* Top bar */
+.topbar{
+  background:#fff;
+  padding:12px 16px;
   display:flex;
   justify-content:space-between;
   align-items:center;
-  font-size:14px;
-  color:#333;
-  margin-bottom:6px;
+  box-shadow:0 2px 6px rgba(0,0,0,0.1);
+  position:sticky;
+  top:0;
 }
 
-/* PROGRESS BAR */
-.progress{
-  height:10px;                /* 🔥 FIX 2 */
-  background:#ddd;
-  border-radius:10px;
-  overflow:hidden;
-  margin:8px 0 14px;
+.logo{
+  font-weight:700;
 }
 
-.progress-bar{
-  height:100%;
-  width:0%;
-  background:linear-gradient(
-    90deg,
-    #00c853,
-    #ffeb3b,
-    #ff9800,
-    #ff5252
-  );                            /* 🔥 FIX 3 */
-  transition:0.4s;
+.coins{
+  font-weight:600;
 }
 
-/* QUESTION */
-h2{
-  font-size:17px;              /* 🔥 FIX 4 */
-  line-height:1.4;
-  color:#222;
-  margin-bottom:12px;
+/* Layout */
+.container{
+  max-width:420px;
+  margin:20px auto;
+  padding:0 12px;
 }
 
-/* OPTIONS */
+.card{
+  background:#fff;
+  border-radius:16px;
+  padding:20px;
+  box-shadow:0 8px 25px rgba(0,0,0,0.08);
+}
+
+.question{
+  font-size:20px;
+  font-weight:600;
+  margin-bottom:16px;
+}
+
+/* Options */
 .option{
-  background:#f3f5ff;
-  border:2px solid #d6dbff;
-  padding:13px;
-  margin:8px 0;                /* 🔥 FIX 5 */
+  background:#f4f6f8;
+  padding:14px;
   border-radius:12px;
-  font-size:15px;
+  margin-bottom:12px;
   cursor:pointer;
+  border:2px solid transparent;
+}
+
+.option:hover{
+  background:#e9edf1;
 }
 
 .option.correct{
-  background:#c8f7d4;
-  border-color:#00c853;
+  background:#e7f6ec;
+  border-color:#2ecc71;
+  color:#1e8449;
 }
 
 .option.wrong{
-  background:#ffd6d6;
-  border-color:#ff5252;
+  background:#fdecea;
+  border-color:#e74c3c;
+  color:#922b21;
 }
 
-/* BUTTONS */
-button{
+/* Button */
+#nextBtn{
+  display:none;
   width:100%;
   padding:14px;
-  margin-top:12px;
   border:none;
-  border-radius:14px;
+  border-radius:12px;
+  background:#2563eb;
+  color:#fff;
   font-size:16px;
   font-weight:600;
-  cursor:pointer;
 }
 
-.watch-btn{
-  background:#ffc107;
-  color:#000;
-}
-
-.withdraw-btn{
-  background:#2e7d32;
-  color:#fff;
-}
-
-/* WITHDRAW */
-#withdraw{
-  display:none;
+/* Ads */
+.adBox{
   text-align:center;
+  margin:16px 0;
 }
