@@ -2,283 +2,153 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Quiz Jeeto</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-*{box-sizing:border-box;font-family:Arial,sans-serif}
-
 body{
   margin:0;
-  min-height:100vh;
-  background:linear-gradient(135deg,#4e54c8,#8f94fb);
-  display:flex;
-  justify-content:center;
-  align-items:flex-start;
-  padding:20px;
+  font-family:Arial;
+  background:#f2f2f2;
 }
-
-.app{
-  width:100%;
-  max-width:420px;
-  background:#254aa5;
-  border-radius:24px;
-  padding:20px;
-  color:#fff;
-  box-shadow:0 20px 40px rgba(0,0,0,.25);
+.container{
+  max-width:500px;
+  margin:auto;
+  padding:15px;
 }
-
-.header{
-  text-align:center;
-  font-size:28px;
-  font-weight:bold;
-  margin-bottom:15px;
-}
-
-.top{
-  display:flex;
-  justify-content:space-between;
-  margin-bottom:10px;
-}
-
-.badge{
-  background:rgba(255,255,255,.15);
-  padding:8px 14px;
-  border-radius:20px;
-  font-size:14px;
-}
-
-.progress{
-  height:8px;
-  background:#ccc;
-  border-radius:10px;
-  overflow:hidden;
-  margin:12px 0;
-}
-
-.progress div{
-  height:100%;
-  width:100%;
-  background:linear-gradient(to right,#00ff6a,#ffcc00,#ff3b3b);
-  transition:width 1s linear;
-}
-
-.questionBox{
-  background:linear-gradient(135deg,#1e3c91,#2f5fd0);
-  padding:20px;
-  border-radius:18px;
-  margin-top:10px;
-}
-
-.question{
-  font-size:18px;
-  margin-bottom:15px;
-}
-
-.option{
-  background:rgba(255,255,255,.2);
-  padding:12px;
-  border-radius:14px;
-  margin-bottom:10px;
-  text-align:center;
-  cursor:pointer;
-  transition:.3s;
-}
-
-.option:hover{background:rgba(255,255,255,.35)}
-.option.correct{background:#00c853}
-.option.wrong{background:#d50000}
-
-.hidden{display:none}
-
-.finish{
-  background:rgba(255,255,255,.15);
-  padding:18px;
-  border-radius:18px;
-  text-align:center;
-  margin-top:15px;
-}
-
-button{
-  padding:12px 18px;
-  border:none;
-  border-radius:12px;
-  font-size:16px;
-  cursor:pointer;
-}
-
-.rewardBtn{
-  background:#ff9800;
-  color:#000;
-  width:100%;
-}
-
-.withdrawBtn{
+.question-box{
   background:#fff;
-  color:#000;
-  margin-top:10px;
+  padding:15px;
+  border-radius:10px;
+  margin-bottom:10px;
 }
-
-.banner{
-  margin-top:15px;
-  background:#ff9800;
-  color:#000;
-  padding:14px;
-  border-radius:16px;
-  text-align:center;
+.option{
+  background:#eee;
+  padding:12px;
+  border-radius:8px;
+  margin:8px 0;
+  cursor:pointer;
+}
+.option.correct{background:#4CAF50;color:#fff;}
+.option.wrong{background:#f44336;color:#fff;}
+#nextBtn{
+  display:none;
+  width:100%;
+  padding:12px;
+  border:none;
+  background:#2196F3;
+  color:#fff;
+  border-radius:8px;
+  font-size:16px;
+}
+.coins{
+  text-align:right;
   font-weight:bold;
+  margin-bottom:10px;
+}
+#adBox{
+  text-align:center;
+  margin:10px 0;
 }
 </style>
 </head>
 
 <body>
 
-<div class="app">
+<div class="container">
+  <div class="coins">Coins: <span id="coins">0</span></div>
 
-  <div class="header">Quiz Jeeto</div>
-
-  <div class="top">
-    <div class="badge">Coins: <span id="coins">0</span></div>
-    <div class="badge">Level: GK / HISTORY</div>
+  <!-- Banner Ad -->
+  <div id="adBox">
+    <script type="text/javascript">
+      atOptions = {
+        'key' : '28277001',
+        'format' : 'iframe',
+        'height' : 50,
+        'width' : 320,
+        'params' : {}
+      };
+    </script>
+    <script type="text/javascript" src="//www.topcreativeformat.com/28277001/invoke.js"></script>
   </div>
 
-  <div class="badge" style="text-align:center">Time: <span id="time">10</span>s</div>
-
-  <div class="progress"><div id="bar"></div></div>
-
-  <!-- QUESTION -->
-  <div id="quiz" class="questionBox">
-    <div id="question" class="question"></div>
+  <div class="question-box">
+    <h3 id="question"></h3>
     <div id="options"></div>
   </div>
 
-  <!-- FINISH + REWARD -->
-  <div id="finish" class="finish hidden">
-    <h3>Questions Finished!</h3>
-    <button class="rewardBtn" onclick="watchAd()">🎥 Watch Ad & Get +20 Coins</button>
-    <div id="rewardMsg" class="hidden" style="margin-top:10px">Reward Added ✔ (+20)</div>
-  </div>
-
-  <!-- WITHDRAW (ALWAYS SEPARATE) -->
-  <div class="finish">
-    💰 Minimum Withdraw: <b>100 Coins</b><br>
-    <button class="withdrawBtn" onclick="withdraw()">Withdraw</button>
-  </div>
-
-  <!-- BANNER AD -->
-  <div class="banner">🔥 Banner Ad 320 × 50</div>
-
+  <button id="nextBtn" onclick="nextQuestion()">Next Question</button>
 </div>
 
-<script>
-let coins = 0;
-let index = 0;
-let timer;
-let timeLeft = 10;
+<!-- Social Bar Ad -->
+<script type="text/javascript">
+  atOptions = {
+    'key' : '28277074',
+    'format' : 'socialbar',
+    'params' : {}
+  };
+</script>
+<script type="text/javascript" src="//www.topcreativeformat.com/28277074/invoke.js"></script>
 
-const questions = [
-  {
-    q:"Who wrote the National Anthem?",
-    o:["Tagore","Premchand","Bankim","Nehru"],
-    a:0
-  },
-  {
-    q:"Which bank collapsed in 2008 crisis?",
-    o:["HSBC","Barclays","Lehman Brothers","Lloyds"],
-    a:2
-  },
-  {
-    q:"HTML ka full form kya hai?",
-    o:["Hyper Text Markup Language","High Text Machine","Hyper Tool","None"],
-    a:0
-  }
+<script>
+let questions = [
+ {q:"India capital?", o:["Delhi","Mumbai","Kolkata","Chennai"], a:0},
+ {q:"2 + 2 = ?", o:["3","4","5","6"], a:1},
+ {q:"Sun rises from?", o:["North","South","East","West"], a:2},
+ {q:"HTML use for?", o:["Design","Structure","DB","Server"], a:1},
+ {q:"CSS full form?", o:["Style","Sheet","Cascading Style Sheets","Code"], a:2},
+ {q:"JS used for?", o:["Logic","Design","Server","None"], a:0}
 ];
 
+let index = 0;
+let coins = 0;
+
 function loadQuestion(){
-  if(index >= questions.length){
-    document.getElementById("quiz").classList.add("hidden");
-    document.getElementById("finish").classList.remove("hidden");
-    return;
+  let q = questions[index];
+  document.getElementById("question").innerText = q.q;
+  let optDiv = document.getElementById("options");
+  optDiv.innerHTML="";
+  q.o.forEach((opt,i)=>{
+    let d=document.createElement("div");
+    d.className="option";
+    d.innerText=opt;
+    d.onclick=()=>checkAnswer(d,i);
+    optDiv.appendChild(d);
+  });
+}
+
+function checkAnswer(el,i){
+  let q = questions[index];
+  let opts = document.querySelectorAll(".option");
+  opts.forEach(o=>o.onclick=null);
+
+  if(i===q.a){
+    el.classList.add("correct");
+    coins+=10;
+  }else{
+    el.classList.add("wrong");
+    opts[q.a].classList.add("correct");
   }
 
-  timeLeft = 10;
-  document.getElementById("time").innerText = timeLeft;
-  document.getElementById("bar").style.width = "100%";
-
-  const q = questions[index];
-  document.getElementById("question").innerText = q.q;
-
-  const optBox = document.getElementById("options");
-  optBox.innerHTML = "";
-
-  q.o.forEach((opt,i)=>{
-    const div = document.createElement("div");
-    div.className="option";
-    div.innerText=opt;
-    div.onclick=()=>selectOption(div,i);
-    optBox.appendChild(div);
-  });
-
-  startTimer();
+  document.getElementById("coins").innerText=coins;
+  document.getElementById("nextBtn").style.display="block";
 }
 
-function startTimer(){
-  clearInterval(timer);
-  timer = setInterval(()=>{
-    timeLeft--;
-    document.getElementById("time").innerText=timeLeft;
-    document.getElementById("bar").style.width=(timeLeft*10)+"%";
-    if(timeLeft<=0){
-      clearInterval(timer);
-      index++;
-      loadQuestion();
-    }
-  },1000);
-}
+function nextQuestion(){
+  document.getElementById("nextBtn").style.display="none";
+  index++;
 
-function selectOption(el,i){
-  clearInterval(timer);
-  const correct = questions[index].a;
-  const opts = document.querySelectorAll(".option");
+  if(index % 5 === 0){
+    alert("Ad dekho aur next question pao");
+  }
 
-  opts.forEach((o,idx)=>{
-    if(idx===correct) o.classList.add("correct");
-    if(idx===i && i!==correct) o.classList.add("wrong");
-    o.onclick=null;
-  });
-
-  if(i===correct){
-    coins+=10;
+  if(index >= questions.length){
+    alert("Quiz Finished! Coins: "+coins);
+    index=0;
+    coins=0;
     document.getElementById("coins").innerText=coins;
   }
-
-  setTimeout(()=>{
-    index++;
-    loadQuestion();
-  },1200);
-}
-
-function watchAd(){
-  // yahan real Adsterra / AdMob reward logic lagega
-  coins+=20;
-  document.getElementById("coins").innerText=coins;
-  document.getElementById("rewardMsg").classList.remove("hidden");
-
-  setTimeout(()=>{
-    document.getElementById("rewardMsg").classList.add("hidden");
-    index=0;
-    document.getElementById("finish").classList.add("hidden");
-    document.getElementById("quiz").classList.remove("hidden");
-    loadQuestion();
-  },1500);
-}
-
-function withdraw(){
-  if(coins<100){
-    alert("Minimum 100 coins required");
-  }else{
-    alert("Withdraw request sent");
-  }
+  loadQuestion();
 }
 
 loadQuestion();
