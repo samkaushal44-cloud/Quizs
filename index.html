@@ -1,158 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Quiz Jeeto</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <title>Quiz Jeeto</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<style>
-body{
-  margin:0;
-  font-family:Arial;
-  background:#f2f2f2;
-}
-.container{
-  max-width:500px;
-  margin:auto;
-  padding:15px;
-}
-.question-box{
-  background:#fff;
-  padding:15px;
-  border-radius:10px;
-  margin-bottom:10px;
-}
-.option{
-  background:#eee;
-  padding:12px;
-  border-radius:8px;
-  margin:8px 0;
-  cursor:pointer;
-}
-.option.correct{background:#4CAF50;color:#fff;}
-.option.wrong{background:#f44336;color:#fff;}
-#nextBtn{
-  display:none;
-  width:100%;
-  padding:12px;
-  border:none;
-  background:#2196F3;
-  color:#fff;
-  border-radius:8px;
-  font-size:16px;
-}
-.coins{
-  text-align:right;
-  font-weight:bold;
-  margin-bottom:10px;
-}
-#adBox{
-  text-align:center;
-  margin:10px 0;
-}
-</style>
+  <!-- CSS -->
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<div class="container">
-  <div class="coins">Coins: <span id="coins">0</span></div>
-
-  <!-- Banner Ad -->
-  <div id="adBox">
-    <script type="text/javascript">
-      atOptions = {
-        'key' : '28277001',
-        'format' : 'iframe',
-        'height' : 50,
-        'width' : 320,
-        'params' : {}
-      };
-    </script>
-    <script type="text/javascript" src="//www.topcreativeformat.com/28277001/invoke.js"></script>
+  <!-- Top Bar -->
+  <div class="topbar">
+    <div class="logo">Quiz Jeeto</div>
+    <div class="coins">Coins: <span id="coins">0</span></div>
   </div>
 
-  <div class="question-box">
-    <h3 id="question"></h3>
-    <div id="options"></div>
+  <div class="container">
+
+    <!-- Banner Ad -->
+    <div class="adBox">
+      <script type="text/javascript">
+        atOptions = {
+          'key' : '28277001',
+          'format' : 'iframe',
+          'height' : 50,
+          'width' : 320,
+          'params' : {}
+        };
+      </script>
+      <script type="text/javascript" src="//www.topcreativeformat.com/28277001/invoke.js"></script>
+    </div>
+
+    <!-- Quiz Card -->
+    <div class="card">
+      <div id="question" class="question"></div>
+      <div id="options"></div>
+      <button id="nextBtn">Next Question</button>
+    </div>
+
   </div>
 
-  <button id="nextBtn" onclick="nextQuestion()">Next Question</button>
-</div>
+  <!-- Social Bar Ad -->
+  <script type="text/javascript">
+    atOptions = {
+      'key' : '28277074',
+      'format' : 'socialbar',
+      'params' : {}
+    };
+  </script>
+  <script type="text/javascript" src="//www.topcreativeformat.com/28277074/invoke.js"></script>
 
-<!-- Social Bar Ad -->
-<script type="text/javascript">
-  atOptions = {
-    'key' : '28277074',
-    'format' : 'socialbar',
-    'params' : {}
-  };
-</script>
-<script type="text/javascript" src="//www.topcreativeformat.com/28277074/invoke.js"></script>
-
-<script>
-let questions = [
- {q:"India capital?", o:["Delhi","Mumbai","Kolkata","Chennai"], a:0},
- {q:"2 + 2 = ?", o:["3","4","5","6"], a:1},
- {q:"Sun rises from?", o:["North","South","East","West"], a:2},
- {q:"HTML use for?", o:["Design","Structure","DB","Server"], a:1},
- {q:"CSS full form?", o:["Style","Sheet","Cascading Style Sheets","Code"], a:2},
- {q:"JS used for?", o:["Logic","Design","Server","None"], a:0}
-];
-
-let index = 0;
-let coins = 0;
-
-function loadQuestion(){
-  let q = questions[index];
-  document.getElementById("question").innerText = q.q;
-  let optDiv = document.getElementById("options");
-  optDiv.innerHTML="";
-  q.o.forEach((opt,i)=>{
-    let d=document.createElement("div");
-    d.className="option";
-    d.innerText=opt;
-    d.onclick=()=>checkAnswer(d,i);
-    optDiv.appendChild(d);
-  });
-}
-
-function checkAnswer(el,i){
-  let q = questions[index];
-  let opts = document.querySelectorAll(".option");
-  opts.forEach(o=>o.onclick=null);
-
-  if(i===q.a){
-    el.classList.add("correct");
-    coins+=10;
-  }else{
-    el.classList.add("wrong");
-    opts[q.a].classList.add("correct");
-  }
-
-  document.getElementById("coins").innerText=coins;
-  document.getElementById("nextBtn").style.display="block";
-}
-
-function nextQuestion(){
-  document.getElementById("nextBtn").style.display="none";
-  index++;
-
-  if(index % 5 === 0){
-    alert("Ad dekho aur next question pao");
-  }
-
-  if(index >= questions.length){
-    alert("Quiz Finished! Coins: "+coins);
-    index=0;
-    coins=0;
-    document.getElementById("coins").innerText=coins;
-  }
-  loadQuestion();
-}
-
-loadQuestion();
-</script>
-
+  <!-- JS -->
+  <script src="script.js"></script>
 </body>
 </html>
