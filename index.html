@@ -19,7 +19,6 @@ body{
   padding:12px;
 }
 
-/* FULL BLUE CARD */
 .card{
   width:100%;
   max-width:420px;
@@ -30,7 +29,6 @@ body{
   color:#fff;
 }
 
-/* TITLE */
 .title{
   text-align:center;
   font-size:26px;
@@ -38,7 +36,6 @@ body{
   margin-bottom:12px;
 }
 
-/* INFO BAR */
 .info{
   display:flex;
   justify-content:space-between;
@@ -52,7 +49,6 @@ body{
   font-weight:600;
 }
 
-/* TIME */
 .time{
   text-align:center;
   font-size:16px;
@@ -60,7 +56,6 @@ body{
   margin:6px 0 8px;
 }
 
-/* PROGRESS */
 .progress{
   height:8px;
   background:rgba(255,255,255,0.25);
@@ -72,10 +67,8 @@ body{
   height:100%;
   width:0%;
   background:linear-gradient(90deg,#00c853,#ffeb3b,#ff5252);
-  transition:.3s;
 }
 
-/* QUESTION */
 .question{
   font-size:20px;
   font-weight:600;
@@ -83,7 +76,6 @@ body{
   margin-bottom:16px;
 }
 
-/* OPTIONS */
 .option{
   background:rgba(255,255,255,0.18);
   padding:14px;
@@ -101,7 +93,6 @@ body{
   background:linear-gradient(135deg,#d50000,#b71c1c);
 }
 
-/* WITHDRAW */
 .withdraw{
   margin-top:16px;
   background:rgba(255,255,255,0.18);
@@ -116,10 +107,8 @@ body{
   border-radius:12px;
   font-size:15px;
   font-weight:600;
-  cursor:pointer;
 }
 
-/* BANNER */
 .banner{
   margin-top:16px;
   background:#ff9800;
@@ -135,7 +124,6 @@ body{
 <body>
 
 <div class="card">
-
   <div class="title">Quiz Jeeto</div>
 
   <div class="info">
@@ -158,90 +146,100 @@ body{
   </div>
 
   <div class="banner">🔥 Banner Ad 320 × 50</div>
-
 </div>
 
 <script>
 let questions=[],i=0,coins=0,timer,locked=false;
 
+/* BACKUP QUESTIONS – ALWAYS WORK */
+const backupQuestions=[
+ {q:"HTML ka full form kya hai?",
+  a:["Hyper Text Markup Language","High Text Machine Language","Hyper Tool Multi Language","None"],c:0},
+ {q:"Who wrote the National Anthem of India?",
+  a:["Rabindranath Tagore","Premchand","Bankim","Nehru"],c:0},
+ {q:"Which bank collapsed in 2008 financial crisis?",
+  a:["Barclays","HSBC","Lehman Brothers","Lloyds"],c:2}
+];
+
 function decode(t){
-  let x=document.createElement("textarea");
-  x.innerHTML=t; return x.value;
+ let x=document.createElement("textarea");
+ x.innerHTML=t; return x.value;
 }
 
 async function load(){
+ try{
   let r=await fetch("https://opentdb.com/api.php?amount=10&type=multiple");
   let d=await r.json();
+  if(!d.results || d.results.length===0) throw "empty";
   questions=d.results.map(q=>{
     let a=[...q.incorrect_answers,q.correct_answer].sort();
-    return{
-      q:decode(q.question),
-      a:a.map(decode),
-      c:a.indexOf(q.correct_answer)
-    };
+    return{q:decode(q.question),a:a.map(decode),c:a.indexOf(q.correct_answer)};
   });
-  show();
+ }catch(e){
+  questions=backupQuestions;
+ }
+ show();
 }
 
 function start(){
-  clearInterval(timer);
-  let t=10;
+ clearInterval(timer);
+ let t=10;
+ time.innerText=t;
+ bar.style.width="0%";
+ timer=setInterval(()=>{
+  t--;
   time.innerText=t;
-  bar.style.width="0%";
-  timer=setInterval(()=>{
-    t--;
-    time.innerText=t;
-    bar.style.width=((10-t)*10)+"%";
-    if(t<=0){
-      clearInterval(timer);
-      revealCorrect();
-      setTimeout(next,800);
-    }
-  },1000);
+  bar.style.width=((10-t)*10)+"%";
+  if(t<=0){
+    clearInterval(timer);
+    revealCorrect();
+    setTimeout(next,800);
+  }
+ },1000);
 }
 
 function show(){
-  locked=false;
-  if(i>=questions.length){
-    question.innerText="Questions Finished!";
-    options.innerHTML="";
-    return;
-  }
-
-  let q=questions[i];
-  question.innerText=q.q;
-  options.innerHTML="";
-
-  q.a.forEach((o,idx)=>{
-    let d=document.createElement("div");
-    d.className="option";
-    d.innerText=o;
-
-    d.onclick=()=>{
-      if(locked) return;
-      locked=true;
-      clearInterval(timer);
-
-      if(idx===q.c){
-        d.classList.add("correct");
-        coins+=10;
-        document.getElementById("coins").innerText=coins;
-      }else{
-        d.classList.add("wrong");
-        revealCorrect();   // ✅ show correct answer
-      }
-
-      setTimeout(next,800);
-    };
-
-    options.appendChild(d);
-  });
-
-  start();
+ locked=false;
+ if(i>=questions.length){
+   question.innerText="Questions Finished!";
+   options.innerHTML="";
+   return;
+ }
+ let q=questions[i];
+ question.innerText=q.q;
+ options.innerHTML="";
+ q.a.forEach((o,idx)=>{
+  let d=document.createElement("div");
+  d.className="option";
+  d.innerText=o;
+  d.onclick=()=>{
+   if(locked) return;
+   locked=true;
+   clearInterval(timer);
+   if(idx===q.c){
+     d.classList.add("correct");
+     coins+=10;
+     document.getElementById("coins").innerText=coins;
+   }else{
+     d.classList.add("wrong");
+     revealCorrect();
+   }
+   setTimeout(next,800);
+  };
+  options.appendChild(d);
+ });
+ start();
 }
 
 function revealCorrect(){
-  let opts=document.querySelectorAll(".option");
-  let correctIndex=questions[i].c;
-  opts[correctIndex].classList.add("correct");
+ document.querySelectorAll(".option")[questions[i].c]
+   .classList.add("correct");
 }
+
+function next(){ i++; show(); }
+
+load();
+</script>
+
+</body>
+</html>
