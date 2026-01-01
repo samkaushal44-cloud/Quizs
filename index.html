@@ -1,56 +1,76 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <title>Quiz Jeeto</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="style.css?v=200">
+<link rel="stylesheet" href="style.css?v=500">
 </head>
 
 <body>
 
 <div class="app">
 
-<h1>Quiz Jeeto</h1>
+  <h1>Quiz Jeeto</h1>
 
-<div class="info-row">
-  <div class="pill">Coins: <span id="coins">0</span></div>
-  <div class="pill" id="category">GK</div>
+  <div class="info-row">
+    <div class="pill">Coins: <span id="coins">50</span></div>
+    <div class="pill" id="category">GK</div>
+  </div>
+
+  <div class="time-box">Time: <span id="time">10</span>s</div>
+
+  <div class="progress">
+    <div class="bar"></div>
+  </div>
+
+  <!-- CATEGORY SELECT -->
+  <div class="card" id="catCard">
+    <select id="catSelect">
+      <option value="9">GK</option>
+      <option value="19">Math</option>
+      <option value="23">History</option>
+    </select>
+    <button class="reward-btn" onclick="startQuiz()">Start Quiz</button>
+  </div>
+
+  <!-- QUIZ CARD -->
+  <div class="card" id="card">
+    Select category & start quiz
+  </div>
+
+  <!-- WITHDRAW -->
+  <div class="card">
+    <input id="upi" placeholder="Enter UPI ID">
+    <button class="withdraw">Withdraw</button>
+  </div>
+
+  <!-- ✅ REAL BANNER AD -->
+  <div class="banner">
+    <script type="text/javascript">
+      atOptions = {
+        'key' : '28277001',
+        'format' : 'iframe',
+        'height' : 50,
+        'width' : 320,
+        'params' : {}
+      };
+    </script>
+    <script type="text/javascript" src="//www.topcreativeformat.com/28277001/invoke.js"></script>
+  </div>
+
 </div>
 
-<div class="time-box">Time: <span id="time">10</span>s</div>
-
-<div class="progress"><div class="bar"></div></div>
-
-<!-- CATEGORY -->
-<div class="card">
-  <select id="catSelect">
-    <option value="9">GK</option>
-    <option value="19">Math</option>
-    <option value="23">History</option>
-  </select>
-  <button class="reward-btn" onclick="startQuiz()">Start Quiz</button>
-</div>
-
-<!-- QUIZ -->
-<div class="card" id="card">Select category</div>
-
-<!-- WITHDRAW -->
-<div class="card">
-  <input id="upi" placeholder="Enter UPI ID">
-  <button class="withdraw">Withdraw</button>
-</div>
-
-<div class="banner">🔥 Banner Ad</div>
-
-</div>
-
-<!-- SOCIAL BAR -->
-<script>
-atOptions={key:'28277074',format:'socialbar',params:{}};
+<!-- ✅ SOCIAL BAR AD (AUTO) -->
+<script type="text/javascript">
+  atOptions = {
+    'key' : '28277074',
+    'format' : 'socialbar',
+    'params' : {}
+  };
 </script>
-<script src="//www.topcreativeformat.com/28277074/invoke.js"></script>
+<script type="text/javascript" src="//www.topcreativeformat.com/28277074/invoke.js"></script>
 
-<script src="script.js?v=200"></script>
+<script src="script.js?v=500"></script>
 </body>
 </html>
