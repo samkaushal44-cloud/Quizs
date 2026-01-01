@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- ✅ AdSense META verification -->
+<!-- AdSense verification -->
 <meta name="google-adsense-account" content="ca-pub-7784279882105891">
 
-<!-- ✅ AdSense main script -->
+<!-- AdSense main script -->
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7784279882105891"
 crossorigin="anonymous"></script>
 
@@ -15,38 +15,36 @@ crossorigin="anonymous"></script>
 
 <style>
 body{
-  font-family:'Poppins',sans-serif;
+  font-family:Poppins,sans-serif;
   background:linear-gradient(135deg,#1a237e,#0d47a1,#311b92);
   min-height:100vh;
   margin:0;
   display:flex;
   justify-content:center;
   align-items:center;
-}
-
-.container{
-  width:92%;
-  max-width:420px;
-  background:rgba(255,255,255,0.12);
-  backdrop-filter:blur(18px);
-  border-radius:22px;
-  padding:24px;
-  box-shadow:0 25px 45px rgba(0,0,0,.4);
   color:#fff;
 }
-
-h2{
-  text-align:center;
-  font-size:20px;
-  margin-bottom:18px;
+.container{
+  width:94%;
+  max-width:420px;
+  background:rgba(255,255,255,.12);
+  backdrop-filter:blur(18px);
+  border-radius:22px;
+  padding:20px;
+  box-shadow:0 25px 45px rgba(0,0,0,.4);
 }
-
+.top{
+  display:flex;
+  justify-content:space-between;
+  font-size:14px;
+  margin-bottom:10px;
+}
 .progress{
-  height:8px;
+  height:7px;
   background:rgba(255,255,255,.25);
   border-radius:10px;
   overflow:hidden;
-  margin-bottom:20px;
+  margin:10px 0 18px;
 }
 .progress-bar{
   height:100%;
@@ -54,7 +52,6 @@ h2{
   background:linear-gradient(90deg,#00e5ff,#1de9b6);
   transition:.4s;
 }
-
 .option{
   padding:14px;
   margin:12px 0;
@@ -62,39 +59,25 @@ h2{
   background:rgba(255,255,255,.15);
   border:1px solid rgba(255,255,255,.25);
   cursor:pointer;
-  transition:.25s;
 }
-.option:hover{
-  background:rgba(255,255,255,.3);
-  transform:scale(1.03);
+.option.correct{background:linear-gradient(135deg,#00c853,#2e7d32);}
+.option.wrong{background:linear-gradient(135deg,#d50000,#b71c1c);}
+#adBanner{
+  margin-top:15px;
 }
-.option.correct{
-  background:linear-gradient(135deg,#00c853,#2e7d32);
+#withdraw{
+  display:none;
+  text-align:center;
 }
-.option.wrong{
-  background:linear-gradient(135deg,#d50000,#b71c1c);
-}
-
 button{
   width:100%;
   padding:14px;
-  margin-top:15px;
   background:linear-gradient(135deg,#ff9800,#f57c00);
   border:none;
   border-radius:16px;
   color:#fff;
   font-size:16px;
-  cursor:pointer;
-  box-shadow:0 8px 20px rgba(0,0,0,.4);
-}
-button:hover{
-  transform:translateY(-2px);
-}
-
-#adBox{
-  display:none;
-  margin-top:25px;
-  text-align:center;
+  margin-top:15px;
 }
 </style>
 </head>
@@ -103,97 +86,109 @@ button:hover{
 
 <div class="container">
 
-  <div class="progress">
-    <div class="progress-bar" id="progressBar"></div>
-  </div>
+<!-- TOP INFO -->
+<div class="top">
+  <div>⏱ <span id="timer">15</span>s</div>
+  <div>💰 Coins: <span id="coins">0</span></div>
+</div>
 
-  <h2 id="question">Loading...</h2>
-  <div id="options"></div>
+<!-- BANNER AD -->
+<div id="adBanner">
+  <ins class="adsbygoogle"
+    style="display:block"
+    data-ad-client="ca-pub-7784279882105891"
+    data-ad-slot="1111111111"
+    data-ad-format="auto"
+    data-full-width-responsive="true"></ins>
+  <script>(adsbygoogle=window.adsbygoogle||[]).push({});</script>
+</div>
 
-  <button onclick="nextQuestion()">Next Question</button>
+<div class="progress">
+  <div class="progress-bar" id="progressBar"></div>
+</div>
 
-  <!-- ✅ Ad after 10 questions -->
-  <div id="adBox">
-    <p>Sponsored</p>
-    <ins class="adsbygoogle"
-      style="display:block"
-      data-ad-client="ca-pub-7784279882105891"
-      data-ad-slot="1234567890"
-      data-ad-format="auto"
-      data-full-width-responsive="true"></ins>
-    <script>
-      (adsbygoogle = window.adsbygoogle || []).push({});
-    </script>
-    <br>
-    <button onclick="continueQuiz()">Continue</button>
-  </div>
+<h2 id="question">Loading…</h2>
+<div id="options"></div>
+
+<!-- WITHDRAW PAGE -->
+<div id="withdraw">
+  <h2>Withdraw</h2>
+  <p>Total Coins: <span id="finalCoins"></span></p>
+  <p>Minimum Withdraw: 50 Coins</p>
+  <button onclick="alert('Withdraw request sent')">Withdraw Now</button>
+</div>
 
 </div>
 
 <script>
-const questions=[
- {q:"HTML ka full form kya hai?",a:["Hyper Text Markup Language","High Text Machine Language","Hyper Tool Multi Language","None"],c:0},
- {q:"CSS ka use kis liye hota hai?",a:["Logic","Design","Database","Server"],c:1},
- {q:"JavaScript kis me run hoti hai?",a:["Database","Browser","Server","Compiler"],c:1},
- {q:"India ki capital?",a:["Mumbai","Delhi","Kolkata","Chennai"],c:1},
- {q:"2 + 2 = ?",a:["3","4","5","6"],c:1},
- {q:"HTML tag kaise hota hai?",a:["{}","<>","()","[]"],c:1},
- {q:"CSS file extension?",a:[".html",".css",".js",".php"],c:1},
- {q:"JS ka full form?",a:["Java Script","Just Script","Java Source","None"],c:0},
- {q:"Website ka structure kis se?",a:["HTML","CSS","JS","SQL"],c:0},
- {q:"Browser example?",a:["Chrome","Windows","Linux","Android"],c:0}
-];
-
-let index=0,count=0,lock=false;
-
+let questions=[],index=0,coins=0,timer,lock=false;
 const qEl=document.getElementById("question");
 const oEl=document.getElementById("options");
-const adBox=document.getElementById("adBox");
+const tEl=document.getElementById("timer");
 const pBar=document.getElementById("progressBar");
+const cEl=document.getElementById("coins");
+
+async function loadAPI(){
+ const res=await fetch("https://opentdb.com/api.php?amount=10&type=multiple");
+ const data=await res.json();
+ questions=data.results.map(q=>{
+  const opts=[...q.incorrect_answers,q.correct_answer].sort();
+  return{q:q.question,a:opts,c:opts.indexOf(q.correct_answer)};
+ });
+ loadQuestion();
+}
+
+function startTimer(){
+ let t=15;
+ tEl.innerText=t;
+ timer=setInterval(()=>{
+  t--;
+  tEl.innerText=t;
+  if(t<=0){
+    clearInterval(timer);
+    nextAuto();
+  }
+ },1000);
+}
 
 function loadQuestion(){
  lock=false;
+ clearInterval(timer);
+ if(index>=questions.length){
+  document.getElementById("withdraw").style.display="block";
+  document.getElementById("finalCoins").innerText=coins;
+  qEl.style.display=oEl.style.display="none";
+  return;
+ }
  const q=questions[index];
- qEl.innerText=q.q;
+ qEl.innerHTML=q.q;
  oEl.innerHTML="";
  pBar.style.width=((index+1)/questions.length*100)+"%";
-
  q.a.forEach((opt,i)=>{
   const d=document.createElement("div");
   d.className="option";
-  d.innerText=opt;
+  d.innerHTML=opt;
   d.onclick=()=>{
     if(lock) return;
     lock=true;
-    if(i===q.c){ d.classList.add("correct"); }
-    else{ d.classList.add("wrong"); }
+    if(i===q.c){
+      d.classList.add("correct");
+      coins+=10;
+      cEl.innerText=coins;
+    }else d.classList.add("wrong");
+    setTimeout(nextAuto,800);
   };
   oEl.appendChild(d);
  });
+ startTimer();
 }
 
-function nextQuestion(){
- count++; index++;
- if(count%10===0){
-   adBox.style.display="block";
-   return;
- }
- if(index>=questions.length){
-   alert("Quiz Finished!");
-   index=0; count=0;
- }
+function nextAuto(){
+ index++;
  loadQuestion();
 }
 
-function continueQuiz(){
- adBox.style.display="none";
- if(index>=questions.length){
-   index=0; count=0;
- }
- loadQuestion();
-}
-
-loadQuestion();
+loadAPI();
 </script>
 
 </body>
