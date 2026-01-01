@@ -6,205 +6,282 @@
 <title>Quiz Jeeto</title>
 
 <style>
-*{box-sizing:border-box}
+*{box-sizing:border-box;font-family:Arial,sans-serif}
+
 body{
   margin:0;
-  font-family:Poppins,Arial,sans-serif;
-  background:linear-gradient(135deg,#5f6cff,#6a7bff);
   min-height:100vh;
+  background:linear-gradient(135deg,#4e54c8,#8f94fb);
   display:flex;
   justify-content:center;
   align-items:flex-start;
-  padding:12px;
+  padding:20px;
 }
-.card{
+
+.app{
   width:100%;
   max-width:420px;
-  background:linear-gradient(135deg,#1f3c88,#2f5bd3);
+  background:#254aa5;
   border-radius:24px;
-  padding:16px;
+  padding:20px;
   color:#fff;
-  box-shadow:0 22px 45px rgba(0,0,0,.4);
+  box-shadow:0 20px 40px rgba(0,0,0,.25);
 }
-.title{text-align:center;font-size:26px;font-weight:700;margin-bottom:10px}
-.info{display:flex;justify-content:space-between;margin-bottom:8px}
-.badge{background:rgba(255,255,255,.18);padding:6px 16px;border-radius:20px;font-size:14px;font-weight:600}
-.time{text-align:center;font-size:16px;font-weight:600;margin:6px 0}
-.progress{height:8px;background:rgba(255,255,255,.25);border-radius:10px;overflow:hidden;margin-bottom:14px}
-.progress-bar{height:100%;width:0%;background:linear-gradient(90deg,#00c853,#ffeb3b,#ff5252)}
-.question{font-size:20px;font-weight:600;margin:14px 0}
+
+.header{
+  text-align:center;
+  font-size:28px;
+  font-weight:bold;
+  margin-bottom:15px;
+}
+
+.top{
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:10px;
+}
+
+.badge{
+  background:rgba(255,255,255,.15);
+  padding:8px 14px;
+  border-radius:20px;
+  font-size:14px;
+}
+
+.progress{
+  height:8px;
+  background:#ccc;
+  border-radius:10px;
+  overflow:hidden;
+  margin:12px 0;
+}
+
+.progress div{
+  height:100%;
+  width:100%;
+  background:linear-gradient(to right,#00ff6a,#ffcc00,#ff3b3b);
+  transition:width 1s linear;
+}
+
+.questionBox{
+  background:linear-gradient(135deg,#1e3c91,#2f5fd0);
+  padding:20px;
+  border-radius:18px;
+  margin-top:10px;
+}
+
+.question{
+  font-size:18px;
+  margin-bottom:15px;
+}
+
 .option{
-  background:rgba(255,255,255,.18);
-  padding:14px;margin:10px 0;border-radius:16px;
-  text-align:center;cursor:pointer;border:1px solid rgba(255,255,255,.25)
+  background:rgba(255,255,255,.2);
+  padding:12px;
+  border-radius:14px;
+  margin-bottom:10px;
+  text-align:center;
+  cursor:pointer;
+  transition:.3s;
 }
-.option.correct{background:linear-gradient(135deg,#00c853,#2e7d32)}
-.option.wrong{background:linear-gradient(135deg,#d50000,#b71c1c)}
+
+.option:hover{background:rgba(255,255,255,.35)}
+.option.correct{background:#00c853}
+.option.wrong{background:#d50000}
+
 .hidden{display:none}
-button{
-  padding:12px 20px;border:none;border-radius:14px;
-  font-size:15px;font-weight:600;cursor:pointer
-}
+
 .finish{
-  margin-top:12px;background:rgba(255,255,255,.18);
-  border-radius:16px;padding:14px;text-align:center
+  background:rgba(255,255,255,.15);
+  padding:18px;
+  border-radius:18px;
+  text-align:center;
+  margin-top:15px;
 }
+
+button{
+  padding:12px 18px;
+  border:none;
+  border-radius:12px;
+  font-size:16px;
+  cursor:pointer;
+}
+
+.rewardBtn{
+  background:#ff9800;
+  color:#000;
+  width:100%;
+}
+
+.withdrawBtn{
+  background:#fff;
+  color:#000;
+  margin-top:10px;
+}
+
 .banner{
-  margin-top:16px;background:#ff9800;color:#000;
-  padding:10px;border-radius:14px;text-align:center
+  margin-top:15px;
+  background:#ff9800;
+  color:#000;
+  padding:14px;
+  border-radius:16px;
+  text-align:center;
+  font-weight:bold;
 }
 </style>
 </head>
 
 <body>
-<div class="card">
 
-  <div class="title">Quiz Jeeto</div>
+<div class="app">
 
-  <div class="info">
+  <div class="header">Quiz Jeeto</div>
+
+  <div class="top">
     <div class="badge">Coins: <span id="coins">0</span></div>
     <div class="badge">Level: GK / HISTORY</div>
   </div>
 
-  <div class="time">Time: <span id="time">10</span>s</div>
+  <div class="badge" style="text-align:center">Time: <span id="time">10</span>s</div>
 
-  <div class="progress">
-    <div class="progress-bar" id="bar"></div>
+  <div class="progress"><div id="bar"></div></div>
+
+  <!-- QUESTION -->
+  <div id="quiz" class="questionBox">
+    <div id="question" class="question"></div>
+    <div id="options"></div>
   </div>
-
-  <div id="question" class="question">Loading...</div>
-  <div id="options"></div>
 
   <!-- FINISH + REWARD -->
   <div id="finish" class="finish hidden">
     <h3>Questions Finished!</h3>
-    <button id="rewardBtn" onclick="watchAd()">🎥 Watch Ad & Get +20 Coins</button>
-    <div style="margin-top:10px">
-      💰 Minimum Withdraw: <b>100 Coins</b><br>
-      <button onclick="alert('Withdraw clicked')">Withdraw</button>
-    </div>
+    <button class="rewardBtn" onclick="watchAd()">🎥 Watch Ad & Get +20 Coins</button>
+    <div id="rewardMsg" class="hidden" style="margin-top:10px">Reward Added ✔ (+20)</div>
   </div>
 
-  <!-- 🔥 BOTTOM BANNER (ADSTERRA 320x50) -->
-  <div class="banner">
-    <script type="text/javascript">
-      atOptions = {
-        'key' : '5504539',
-        'format' : 'iframe',
-        'height' : 50,
-        'width' : 320,
-        'params' : {}
-      };
-    </script>
-    <script type="text/javascript" src="//www.highperformanceformat.com/5504539/invoke.js"></script>
+  <!-- WITHDRAW (ALWAYS SEPARATE) -->
+  <div class="finish">
+    💰 Minimum Withdraw: <b>100 Coins</b><br>
+    <button class="withdrawBtn" onclick="withdraw()">Withdraw</button>
   </div>
+
+  <!-- BANNER AD -->
+  <div class="banner">🔥 Banner Ad 320 × 50</div>
 
 </div>
 
 <script>
-let coins = 0, i = 0, locked = false, timer;
-const timeEl = document.getElementById("time");
-const bar = document.getElementById("bar");
-const coinsEl = document.getElementById("coins");
-const questionEl = document.getElementById("question");
-const optionsEl = document.getElementById("options");
-const finishEl = document.getElementById("finish");
+let coins = 0;
+let index = 0;
+let timer;
+let timeLeft = 10;
 
-// 🔹 QUESTIONS (backup/local – always work)
 const questions = [
- {q:"HTML ka full form kya hai?",
-  a:["Hyper Text Markup Language","High Text Machine Language","Hyper Tool Multi Language","None"], c:0},
- {q:"Who wrote the National Anthem of India?",
-  a:["Rabindranath Tagore","Premchand","Bankim","Nehru"], c:0},
- {q:"Which bank collapsed in 2008 financial crisis?",
-  a:["Barclays","HSBC","Lehman Brothers","Lloyds"], c:2}
+  {
+    q:"Who wrote the National Anthem?",
+    o:["Tagore","Premchand","Bankim","Nehru"],
+    a:0
+  },
+  {
+    q:"Which bank collapsed in 2008 crisis?",
+    o:["HSBC","Barclays","Lehman Brothers","Lloyds"],
+    a:2
+  },
+  {
+    q:"HTML ka full form kya hai?",
+    o:["Hyper Text Markup Language","High Text Machine","Hyper Tool","None"],
+    a:0
+  }
 ];
+
+function loadQuestion(){
+  if(index >= questions.length){
+    document.getElementById("quiz").classList.add("hidden");
+    document.getElementById("finish").classList.remove("hidden");
+    return;
+  }
+
+  timeLeft = 10;
+  document.getElementById("time").innerText = timeLeft;
+  document.getElementById("bar").style.width = "100%";
+
+  const q = questions[index];
+  document.getElementById("question").innerText = q.q;
+
+  const optBox = document.getElementById("options");
+  optBox.innerHTML = "";
+
+  q.o.forEach((opt,i)=>{
+    const div = document.createElement("div");
+    div.className="option";
+    div.innerText=opt;
+    div.onclick=()=>selectOption(div,i);
+    optBox.appendChild(div);
+  });
+
+  startTimer();
+}
 
 function startTimer(){
   clearInterval(timer);
-  let t = 10;
-  timeEl.innerText = t;
-  bar.style.width = "0%";
   timer = setInterval(()=>{
-    t--;
-    timeEl.innerText = t;
-    bar.style.width = ((10-t)*10)+"%";
-    if(t<=0){
+    timeLeft--;
+    document.getElementById("time").innerText=timeLeft;
+    document.getElementById("bar").style.width=(timeLeft*10)+"%";
+    if(timeLeft<=0){
       clearInterval(timer);
-      revealCorrect();
-      setTimeout(next,800);
+      index++;
+      loadQuestion();
     }
   },1000);
 }
 
-function show(){
-  locked=false;
-  if(i>=questions.length){
-    questionEl.classList.add("hidden");
-    optionsEl.innerHTML="";
-    finishEl.classList.remove("hidden");
-    return;
-  }
-  const q = questions[i];
-  questionEl.classList.remove("hidden");
-  questionEl.innerText = q.q;
-  optionsEl.innerHTML="";
-  q.a.forEach((opt,idx)=>{
-    const d = document.createElement("div");
-    d.className="option";
-    d.innerText=opt;
-    d.onclick=()=>{
-      if(locked) return;
-      locked=true; clearInterval(timer);
-      if(idx===q.c){
-        d.classList.add("correct");
-        coins+=10; coinsEl.innerText=coins;
-      }else{
-        d.classList.add("wrong");
-        revealCorrect();
-      }
-      setTimeout(next,800);
-    };
-    optionsEl.appendChild(d);
-  });
-  startTimer();
-}
-
-function revealCorrect(){
-  const q = questions[i];
+function selectOption(el,i){
+  clearInterval(timer);
+  const correct = questions[index].a;
   const opts = document.querySelectorAll(".option");
-  if(opts[q.c]) opts[q.c].classList.add("correct");
-}
 
-function next(){ i++; show(); }
+  opts.forEach((o,idx)=>{
+    if(idx===correct) o.classList.add("correct");
+    if(idx===i && i!==correct) o.classList.add("wrong");
+    o.onclick=null;
+  });
 
-// 🎥 REWARDED AD → COINS → NEW QUESTIONS
-function watchAd(){
-  // Adsterra Social Bar / Direct Link
-  window.open("https://www.highperformanceformat.com/28277074","_blank");
+  if(i===correct){
+    coins+=10;
+    document.getElementById("coins").innerText=coins;
+  }
 
-  const btn = document.getElementById("rewardBtn");
-  btn.disabled = true;
-  btn.innerText = "Watching Ad...";
-
-  // ⏳ wait 15 sec then reward + restart quiz
   setTimeout(()=>{
-    coins += 20;
-    coinsEl.innerText = coins;
-
-    // 🔁 RESET QUIZ
-    i = 0;
-    finishEl.classList.add("hidden");
-    btn.disabled = false;
-    btn.innerText = "🎥 Watch Ad & Get +20 Coins";
-
-    show(); // ✅ NEW QUESTIONS START
-
-  },15000);
+    index++;
+    loadQuestion();
+  },1200);
 }
 
-// start first round
-show();
+function watchAd(){
+  // yahan real Adsterra / AdMob reward logic lagega
+  coins+=20;
+  document.getElementById("coins").innerText=coins;
+  document.getElementById("rewardMsg").classList.remove("hidden");
+
+  setTimeout(()=>{
+    document.getElementById("rewardMsg").classList.add("hidden");
+    index=0;
+    document.getElementById("finish").classList.add("hidden");
+    document.getElementById("quiz").classList.remove("hidden");
+    loadQuestion();
+  },1500);
+}
+
+function withdraw(){
+  if(coins<100){
+    alert("Minimum 100 coins required");
+  }else{
+    alert("Withdraw request sent");
+  }
+}
+
+loadQuestion();
 </script>
 
 </body>
