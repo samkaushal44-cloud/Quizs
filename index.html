@@ -1,56 +1,56 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
 <title>Quiz Jeeto</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<link rel="stylesheet" href="style.css?v=100">
+<link rel="stylesheet" href="style.css?v=200">
 </head>
 
 <body>
 
 <div class="app">
 
-  <h1>Quiz Jeeto</h1>
+<h1>Quiz Jeeto</h1>
 
-  <div class="info-row">
-    <div class="pill">Coins: <span id="coins">50</span></div>
-    <div class="pill">Level: GK</div>
-  </div>
+<div class="info-row">
+  <div class="pill">Coins: <span id="coins">0</span></div>
+  <div class="pill" id="category">GK</div>
+</div>
 
-  <div class="time-box">Time: <span id="time">10</span>s</div>
+<div class="time-box">Time: <span id="time">10</span>s</div>
 
-  <div class="progress">
-    <div class="bar"></div>
-  </div>
+<div class="progress"><div class="bar"></div></div>
 
-  <!-- QUIZ CARD -->
-  <div class="card" id="card">
-    Loading...
-  </div>
+<!-- CATEGORY -->
+<div class="card">
+  <select id="catSelect">
+    <option value="9">GK</option>
+    <option value="19">Math</option>
+    <option value="23">History</option>
+  </select>
+  <button class="reward-btn" onclick="startQuiz()">Start Quiz</button>
+</div>
 
-  <!-- WITHDRAW -->
-  <div class="card">
-    <p>💰 Minimum Withdraw: 100 Coins</p>
-    <button class="withdraw">Withdraw</button>
-  </div>
+<!-- QUIZ -->
+<div class="card" id="card">Select category</div>
 
-  <!-- BANNER PLACE -->
-  <div class="banner">🔥 Banner Ad 320 × 50</div>
+<!-- WITHDRAW -->
+<div class="card">
+  <input id="upi" placeholder="Enter UPI ID">
+  <button class="withdraw">Withdraw</button>
+</div>
+
+<div class="banner">🔥 Banner Ad</div>
 
 </div>
 
-<!-- SOCIAL BAR AD -->
-<script type="text/javascript">
-atOptions = {
-  'key' : '28277074',
-  'format' : 'socialbar',
-  'params' : {}
-};
+<!-- SOCIAL BAR -->
+<script>
+atOptions={key:'28277074',format:'socialbar',params:{}};
 </script>
 <script src="//www.topcreativeformat.com/28277074/invoke.js"></script>
 
-<script src="script.js?v=100"></script>
+<script src="script.js?v=200"></script>
 </body>
 </html>
