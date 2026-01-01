@@ -1,123 +1,19 @@
-* {
-  box-sizing: border-box;
-  font-family: Arial, sans-serif;
-}
-
 body {
-  margin: 0;
-  min-height: 100vh;
-  background: linear-gradient(135deg, #02007a, #3a00ff);
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  font-family: Arial, sans-serif;
+  background: #f2f2f2;
+  text-align: center;
 }
 
-/* FULL MOBILE WIDTH FIX */
-.app {
-  width: 100%;
-  max-width: 420px;
-  padding: 12px;
-}
-
-/* CENTER CARD */
-.card {
-  background: #111827;
-  color: #fff;
-  border-radius: 20px;
+#quizBox {
+  background: #fff;
   padding: 20px;
-  width: 100%;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+  margin: 15px;
+  border-radius: 10px;
 }
 
-/* HEADER */
-h1 {
-  margin-top: 0;
-  text-align: center;
-}
-
-.top {
-  display: flex;
-  justify-content: space-between;
-  font-size: 14px;
-  opacity: 0.9;
-}
-
-/* TIMER */
-.timer {
-  margin: 10px 0;
-  font-size: 14px;
-}
-
-.bar {
-  height: 6px;
-  background: #333;
-  border-radius: 6px;
-  overflow: hidden;
-}
-
-.fill {
-  height: 100%;
-  width: 100%;
-  background: linear-gradient(to right, green, yellow, red);
-}
-
-/* QUESTION */
-#question {
-  margin: 15px 0;
-  font-size: 20px;
-  line-height: 1.4;
-}
-
-/* OPTIONS */
-.option {
-  width: 100%;
-  padding: 14px;
-  margin: 8px 0;
-  border: none;
-  border-radius: 12px;
-  background: #1d4ed8;
-  color: #fff;
+button {
+  padding: 10px 20px;
+  margin: 8px;
   font-size: 16px;
-}
-
-.option.correct { background: #16a34a; }
-.option.wrong { background: #dc2626; }
-
-/* BUTTONS */
-.ad-btn {
-  background: #f59e0b;
-  color: #000;
-  padding: 14px;
-  border: none;
-  border-radius: 12px;
-  width: 100%;
-  margin-top: 12px;
-  font-size: 16px;
-}
-
-.withdraw-btn {
-  background: #22c55e;
-  color: #000;
-  padding: 14px;
-  border: none;
-  border-radius: 12px;
-  width: 100%;
-  margin-top: 10px;
-  font-size: 16px;
-}
-
-/* BANNER – FIXED BOTTOM, NO OVERLAP */
-.banner {
-  position: fixed;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100%;
-  max-width: 420px;
-  background: #b91c1c;
-  color: #fff;
-  text-align: center;
-  padding: 10px;
-  font-weight: bold;
-  border-radius: 12px 12px 0 0;
+  cursor: pointer;
 }
