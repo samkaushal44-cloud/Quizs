@@ -1,5 +1,4 @@
-/************** DATA ****************/
-
+/************** OFFLINE FALLBACK ****************/
 const offlineQuestions = [
   {q:"India capital?", o:["Delhi","Mumbai","Kolkata","Chennai"], a:"Delhi"},
   {q:"2 + 2 = ?", o:["3","4","5","6"], a:"4"},
@@ -14,14 +13,28 @@ const offlineQuestions = [
 ];
 
 /************** STATE ****************/
-
 let coins = Number(localStorage.getItem("coins") || 50);
 let questions = [];
 let index = 0;
 let timer, time = 10;
 
-/************** ELEMENTS ****************/
+// Reward control
+const MAX_REWARDED_PER_DAY = 5;
+const today = new Date().toDateString();
+let lastDay = localStorage.getItem("lastRewardDay");
+let rewardedToday = Number(localStorage.getItem("rewardedToday") || 0);
 
+// reset daily counter
+if (lastDay !== today) {
+  rewardedToday = 0;
+  localStorage.setItem("rewardedToday", 0);
+  localStorage.setItem("lastRewardDay", today);
+}
+
+// return-flag protection
+const RETURN_FLAG = "reward_return_pending";
+
+/************** ELEMENTS ****************/
 const coinBox = document.getElementById("coins");
 const timeBox = document.getElementById("time");
 const bar = document.querySelector(".bar");
@@ -29,32 +42,41 @@ const card = document.getElementById("card");
 const catCard = document.querySelector("select").parentElement;
 
 /************** INIT ****************/
-
 coinBox.innerText = coins;
 
-/************** START QUIZ ****************/
+// If user returned from ad, grant reward once
+if (localStorage.getItem(RETURN_FLAG) === "1") {
+  localStorage.removeItem(RETURN_FLAG);
+  if (rewardedToday < MAX_REWARDED_PER_DAY) {
+    rewardedToday++;
+    localStorage.setItem("rewardedToday", rewardedToday);
+    coins += 20;
+    saveCoins();
+  }
+  // restart fresh quiz UI
+  index = 0;
+  catCard.style.display = "block";
+  card.innerHTML = `<h3>Select category & start new quiz</h3>`;
+}
 
+/************** START QUIZ ****************/
 function startQuiz(){
-  catCard.style.display = "none";   // hide category
+  catCard.style.display = "none";
   index = 0;
   fetchQuestions();
 }
 
 /************** FETCH QUESTIONS ****************/
-
 function fetchQuestions(){
   const cat = document.getElementById("catSelect").value;
-
   fetch(`https://opentdb.com/api.php?amount=10&category=${cat}&type=multiple`)
     .then(res => res.json())
     .then(data => {
       if(!data.results || data.results.length === 0) throw "API error";
-
       questions = data.results.map(q => {
         const opts = [...q.incorrect_answers, q.correct_answer].sort();
         return { q: q.question, o: opts, a: q.correct_answer };
       });
-
       loadQuestion();
     })
     .catch(() => {
@@ -64,7 +86,6 @@ function fetchQuestions(){
 }
 
 /************** LOAD QUESTION ****************/
-
 function loadQuestion(){
   clearInterval(timer);
   time = 10;
@@ -80,7 +101,6 @@ function loadQuestion(){
     time--;
     timeBox.innerText = time;
     bar.style.width = (time * 10) + "%";
-
     if(time <= 0){
       clearInterval(timer);
       nextQuestion();
@@ -89,7 +109,6 @@ function loadQuestion(){
 }
 
 /************** ANSWER ****************/
-
 function answer(val){
   clearInterval(timer);
   const q = questions[index];
@@ -105,12 +124,10 @@ function answer(val){
     coins += 5;
     saveCoins();
   }
-
   setTimeout(nextQuestion, 800);
 }
 
 /************** NEXT ****************/
-
 function nextQuestion(){
   index++;
   if(index >= questions.length){
@@ -121,40 +138,37 @@ function nextQuestion(){
 }
 
 /************** FINISH ****************/
-
 function finishQuiz(){
+  const disabled = rewardedToday >= MAX_REWARDED_PER_DAY ? "disabled" : "";
   card.innerHTML = `
     <h2>Questions Finished!</h2>
-    <button class="reward-btn" onclick="watchAd()">🎥 Watch Ad & Get +20 Coins</button>
+    <p>Rewarded today: ${rewardedToday}/${MAX_REWARDED_PER_DAY}</p>
+    <button class="reward-btn" ${disabled} onclick="watchAd()">
+      🎥 Watch Ad & Get +20 Coins
+    </button>
   `;
 }
 
-/************** AD + RESTART QUIZ ****************/
-
+/************** REAL ADSTERRA REDIRECT ****************/
 function watchAd(){
-  // simulate ad
-  card.innerHTML = `<h3>Ad Playing...</h3><p>Please wait</p>`;
-
-  setTimeout(() => {
-    coins += 20;
-    saveCoins();
-
-    // RESET QUIZ
-    index = 0;
-    catCard.style.display = "block";   // show category again
-    card.innerHTML = `<h3>Select category & start new quiz</h3>`;
-  }, 3000);
+  if (rewardedToday >= MAX_REWARDED_PER_DAY) {
+    alert("Daily rewarded ads limit reached. Try tomorrow.");
+    return;
+  }
+  // set return flag BEFORE redirect
+  localStorage.setItem(RETURN_FLAG, "1");
+  // open ad in new tab (replace with your Adsterra link/zone)
+  window.open("https://www.topcreativeformat.com/28277074", "_blank");
+  // keep finish screen; reward will be granted on return
 }
 
 /************** SAVE ****************/
-
 function saveCoins(){
   localStorage.setItem("coins", coins);
   coinBox.innerText = coins;
 }
 
 /************** WITHDRAW ****************/
-
 document.querySelector(".withdraw").onclick = () => {
   const upi = document.getElementById("upi").value;
   if(coins < 100) alert("Minimum 100 coins required");
