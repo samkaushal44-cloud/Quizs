@@ -71,6 +71,15 @@ h1{
   text-align:center;
 }
 
+.opt{
+  width:100%;
+  margin:8px 0;
+  padding:12px;
+  border:none;
+  border-radius:14px;
+  font-size:16px;
+}
+
 .reward-btn{
   background:#f59e0b;
   border:none;
