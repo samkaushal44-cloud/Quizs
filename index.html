@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Quiz Jeeto</title>
 
 <style>
@@ -11,7 +10,7 @@
 body{
   margin:0;
   font-family:Poppins,Arial,sans-serif;
-  background:linear-gradient(135deg,#6a6ff5,#7b7ff7);
+  background:linear-gradient(135deg,#5f6cff,#6a7bff);
   min-height:100vh;
   display:flex;
   justify-content:center;
@@ -24,20 +23,20 @@ body{
   width:100%;
   max-width:420px;
   background:#f2f5ff;
-  border-radius:18px;
+  border-radius:22px;
   padding:14px;
-  box-shadow:0 15px 30px rgba(0,0,0,.25);
+  box-shadow:0 18px 35px rgba(0,0,0,.3);
 }
 
-/* HEADER */
+/* TITLE */
 .title{
   text-align:center;
-  font-size:24px;
+  font-size:26px;
   font-weight:700;
   margin-bottom:10px;
 }
 
-/* INFO BAR */
+/* INFO */
 .info{
   display:flex;
   justify-content:space-between;
@@ -74,31 +73,47 @@ body{
   transition:.3s;
 }
 
+/* QUIZ BOX (BLUE CARD) */
+.quiz-box{
+  background:linear-gradient(135deg,#1f3c88,#2f5bd3);
+  border-radius:22px;
+  padding:20px 16px;
+  margin:10px 0;
+  box-shadow:0 20px 40px rgba(0,0,0,.35);
+}
+
 /* QUESTION */
 .question{
-  font-size:18px;
+  font-size:20px;
   font-weight:600;
-  margin-bottom:12px;
+  color:#fff;
+  margin-bottom:16px;
+  line-height:1.4;
 }
 
 /* OPTIONS */
 .option{
-  background:#6583f5;
+  background:rgba(255,255,255,0.15);
   color:#fff;
   padding:14px;
-  border-radius:14px;
+  margin:12px 0;
+  border-radius:16px;
   text-align:center;
-  margin:10px 0;
   font-size:16px;
   cursor:pointer;
+  border:1px solid rgba(255,255,255,0.25);
 }
-.option.correct{background:#2e7d32}
-.option.wrong{background:#c62828}
+.option.correct{
+  background:linear-gradient(135deg,#00c853,#2e7d32);
+}
+.option.wrong{
+  background:linear-gradient(135deg,#d50000,#b71c1c);
+}
 
 /* WITHDRAW */
 .withdraw{
   background:#fff;
-  border-radius:14px;
+  border-radius:16px;
   padding:12px;
   margin-top:12px;
   text-align:center;
@@ -115,7 +130,7 @@ body{
   background:#ff9800;
   color:#000;
   padding:12px;
-  border-radius:12px;
+  border-radius:14px;
   text-align:center;
   font-weight:700;
 }
@@ -139,9 +154,11 @@ body{
     <div class="progress-bar" id="bar"></div>
   </div>
 
-  <div class="question" id="question">Loading...</div>
-
-  <div id="options"></div>
+  <!-- BLUE QUESTION BOX -->
+  <div class="quiz-box">
+    <div class="question" id="question">Loading...</div>
+    <div id="options"></div>
+  </div>
 
   <div class="withdraw">
     💰 Minimum Withdraw: <b>100 Coins</b><br>
@@ -161,7 +178,7 @@ function decode(t){
 }
 
 async function load(){
-  let r=await fetch("https://opentdb.com/api.php?amount=5&type=multiple");
+  let r=await fetch("https://opentdb.com/api.php?amount=10&type=multiple");
   let d=await r.json();
   questions=d.results.map(q=>{
     let a=[...q.incorrect_answers,q.correct_answer].sort();
