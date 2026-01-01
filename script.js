@@ -1,101 +1,10 @@
-*{
-  box-sizing:border-box;
-  font-family:system-ui, Arial;
-}
+let coins = 50;
+const coinBox = document.getElementById("coins");
 
-body{
-  margin:0;
-  background:linear-gradient(180deg,#5a67d8,#8b8cf7);
-  min-height:100vh;
-}
+coinBox.innerText = coins;
 
-.app{
-  max-width:420px;
-  margin:20px auto;
-  background:#274c9c;
-  border-radius:24px;
-  padding:20px;
-  color:#fff;
-}
-
-h1{
-  text-align:center;
-  margin:10px 0 20px;
-}
-
-.info-row{
-  display:flex;
-  gap:10px;
-  margin-bottom:12px;
-}
-
-.pill{
-  flex:1;
-  background:rgba(255,255,255,0.15);
-  padding:10px;
-  border-radius:20px;
-  text-align:center;
-  font-size:14px;
-}
-
-.time-box{
-  background:rgba(255,255,255,0.15);
-  padding:10px;
-  border-radius:20px;
-  text-align:center;
-  margin-bottom:12px;
-}
-
-.progress{
-  height:8px;
-  background:#1e3a8a;
-  border-radius:10px;
-  overflow:hidden;
-  margin-bottom:20px;
-}
-
-.bar{
-  width:100%;
-  height:100%;
-  background:linear-gradient(90deg,#22c55e,#facc15,#ef4444);
-}
-
-.card{
-  background:rgba(255,255,255,0.15);
-  border-radius:20px;
-  padding:20px;
-  margin-bottom:15px;
-  text-align:center;
-}
-
-.reward-btn{
-  background:#f59e0b;
-  border:none;
-  border-radius:16px;
-  padding:14px;
-  width:100%;
-  font-size:16px;
-  font-weight:600;
-  color:#000;
-}
-
-.min{
-  margin-bottom:10px;
-}
-
-.withdraw{
-  background:#fff;
-  border:none;
-  padding:12px 20px;
-  border-radius:14px;
-  font-size:16px;
-}
-
-.banner{
-  margin-top:10px;
-  background:#f59e0b;
-  padding:14px;
-  border-radius:18px;
-  text-align:center;
-  font-weight:600;
+function watchAd(){
+  alert("Ad Playing...");
+  coins += 20;
+  coinBox.innerText = coins;
 }
